@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title> SICAA </title>
+<script type="text/javascript" src="ejemplojavascript.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+<!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <ul class="navbar-nav">
+    <li class="nav-item active">
+      <a class="nav-link" href="#"> PRINCIPAL</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#"> PROFESOR </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#"> PUBLICACIONES</a>
+    </li>
+  </ul>
+</nav>
+
+<center><h2> ACTUALIZAR INFORMACIÓN</h2></center>
+ <div class="container">
+<div class="form-group">
+<label for="usr"> URL CVLAC:</label>
+  <input type="text" class="form-control" id="urlcvlac">  </input>
+  </br>
+  <button type="button" class="btn btn-primary" onclick="start1()"> Buscar </button>
+</div>
+
+ <center> <h3 id="nombre"></h3> </center>
+ <center> <h5 id="categoria"></h5> </center>
+ <center> <h5 id="nacionalidad"></h5> </center>
+
+
+  <h4 style="display:none" id="tituloArticulos"> ARTICULOS</h4>
+           
+  <table class="table table-bordered" id="tablaArticulos" style="display:none">
+    <thead class="thead-dark">
+      <tr>
+        <th> Titulo </th>
+        <th> Autores</th>
+        <th> Lugar de publicación</th>
+        <th> ISSN </th>
+        <th> Editorial </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    </tbody>
+  </table>
+  
+  <h4 style="display:none" id="tituloLibros"> LIBROS</h4>
+           
+  <table class="table table-bordered" id="tablaLibros" style="display:none">
+    <thead class="thead-dark">
+      <tr>
+        <th> Titulo </th>
+        <th> Autores</th>
+        <th> Lugar de publicación</th>
+        <th> ISBN </th>
+        <th> Editorial </th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+    
+    </tbody>
+  </table>
+  
+   <button type="button"  style="display:none" id="GuardarInfo" class="btn btn-success" onclick="GuardarInformacion()"> Guardar </button>
+ </div> 
+ 
+</body>
+</html>

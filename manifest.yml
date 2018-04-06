@@ -1,0 +1,7 @@
+---
+applications:
+ - name: sicaaDev
+   random-route: true
+   path: dist/SicaaNB.war
+   memory: 256M
+   instances: 1
