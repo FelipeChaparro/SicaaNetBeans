@@ -5,9 +5,9 @@
  */
 package Controller;
 
-import JavaBean.BeanExtracionInformacion;
+import JavaBean.BeanExtraccionResearch;
 import java.io.IOException;
-
+import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -19,25 +19,26 @@ import org.json.simple.JSONObject;
  *
  * @author JUANCHO
  */
-@WebServlet(name = "extraccionSistemasExternosServlet", urlPatterns = {"/extraccionSistemasExternosServlet"})
-public class extraccionSistemasExternosServlet extends HttpServlet {
-
-    public extraccionSistemasExternosServlet() {
+@WebServlet(name = "ExtraccionResearchServlet", urlPatterns = {"/ExtraccionResearchServlet"})
+public class ExtraccionResearchServlet extends HttpServlet {
+       
+    /**
+     * @see HttpServlet#HttpServlet()
+     */
+    public ExtraccionResearchServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
-    
-    /**
+
+	/**
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		BeanExtracionInformacion bean=new BeanExtracionInformacion();
-		String url = request.getParameter("urlcvlac");
+		BeanExtraccionResearch bean= new BeanExtraccionResearch();
+		String url = request.getParameter("urlresearch");
 		System.out.println("la url es"+url);
 		JSONObject retorno=bean.obtenerInformacion(url);
-		//response.setContentType("text/plain");
-		//System.out.println("retorno  :"+retorno);
 		response.setContentType("application/json");
 		response.getWriter().print(retorno);
 	}
@@ -49,5 +50,15 @@ public class extraccionSistemasExternosServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		doGet(request, response);
 	}
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
 
 }
