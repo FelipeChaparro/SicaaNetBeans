@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>SICAA</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+
+	<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
+	<link rel="stylesheet" href="./css/misestilos.css">
+
+	<script type="text/javascript" src="./js/miprogramacion.js"></script>
+
+<!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<!-- Popper JS -->
+     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+
+<!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
+
+</head>
+<body>
+
+
+<nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+  <ul class="navbar-nav">
+    <li class="nav-item active">
+      <a class="nav-link" href="#">Active</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Link</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link" href="#">Link</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link disabled" href="#">Disabled</a>
+    </li>
+  </ul>
+</nav>
+
+<div class="float-sm-right">
+	 </br>
+	 <div class="card" style="width:100%; height:100%">
+     <img class="card-img-top" src="./imagenes/avatar.svg" alt="Card image" style="width:100%">
+     <div class="card-body">
+	      <center>	
+	      <h4 class="card-title">Alexandra Pomares</h4>
+	      <p class="card-text"> Ingenieria de Sistemas </p>
+	      <button class="btn btn-info" data-toggle="modal" data-target="#myModal"> 10000 Javepuntos</button>
+	      </center>
+     </div>
+    </div>
+</div>
+
+
+   <div class="modal fade" id="myModal">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+      
+        <!-- Modal Header -->
+        <div class="modal-header">
+           
+          <h4 class="modal-title"> JAVEPUNTOS </h4>
+         
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+        
+        <!-- Modal body -->
+        <div class="modal-body">
+          <div class="container">
+  <h1>Grid Example</h1>
+  <p>This example demonstrates a 50%/50% split on small, medium, large and xlarge devices. On extra small devices, it will stack (100% width).</p>      
+  <p>Resize the browser window to see the effect.</p> 
+  <div class="container">     
+    <div class="row">
+      <div class="col-sm-6 bg-success">
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.<br>
+        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+      </div>
+      <div class="col-sm-6 bg-warning">
+        Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto.    
+      </div>
+    </div>
+  </div>
+</div>
+        </div>
+        
+        <!-- Modal footer -->
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+        
+      </div>
+    </div>
+  </div>
+     <CENTER><p class="bg-info text-white">MEDALLAS</p></CENTER>
+  	 </br>
+    <table>
+    <tbody>
+      <tr>
+          <td class="rowBadge"><img src="../imagenes/bilingue.png" width="20%"> </img> </td>
+        <td class="rowBadge"><img src="../imagenes/cientifico.png" width="20%"></td>
+        <td class="rowBadge"><img src="../imagenes/directorTG.png" width="20%"></td>
+      </tr>
+      <tr>
+ 		<td class="rowBadge"><img src="../imagenes/star.png" width="20%"></td>
+ 		<td class="rowBadge"><img src="../imagenes/star.png" width="20%"></td>
+ 		<td class="rowBadge"><img src="../imagenes/star.png" width="20%"></td>
+      <tr>
+		<td class="rowBadge">
+			<img src="../imagenes/star.png" width="20%">
+		</td>
+		<td class="rowBadge"><img src="../imagenes/star.png" width="20%"></td>
+		<td class="rowBadge"><img src="../imagenes/star.png" width="20%"></td>
+      </tr>
+    </tbody>
+  </table>
+  </br>
+  </br>
+  </br>
+    </br>
+  <p class="bg-info text-white"></p>
+  <CENTER><p class="bg-info text-white">RANKINGS</p></CENTER>
+  
+
+  <div id="id01" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-teal"> 
+        <span onclick="document.getElementById('id01').style.display='none'" 
+        class="w3-button w3-display-topright">&times;</span>
+        <h2>Modal Header</h2>
+      </header>
+      <div class="w3-container">
+        <p>Some text..</p>
+        <p>Some text..</p>
+      </div>
+      <footer class="w3-container w3-teal">
+        <p>Modal Footer</p>
+      </footer>
+    </div>
+  </div>
+	<CENTER><h2>TOP 3 - Publicaciones</h2></CENTER>
+  <canvas id="bar-chart1" style="height:50%; width:50%"></canvas>
+ 	</br>
+ 	<CENTER><h2>TOP 3 - Información del Perfil</h2></CENTER>
+ <canvas id="bar-chart2" style="height:50%; width:50%"></canvas>
+  	<CENTER><h2>TOP 3 - Profesores Invitados</h2></CENTER>
+ <canvas id="bar-chart3" style="height:50%; width:50%"></canvas>
+   	<CENTER><h2>TOP 3 - Proyectos de Investigación</h2></CENTER>
+ <canvas id="bar-chart4" style="height:50%; width:50%"></canvas>
+   
+       <script>
+
+      new Chart(document.getElementById("bar-chart1"), {
+    	type: 'bar',
+    	data: {
+      	labels: ["2do Puesto: Jaime Pavlich", "1er PUESTO: Alexandra Pomares", "3er Puesto: Angela Carrillo"],
+      	datasets: [
+        {
+          label: "PUNTOS",
+          backgroundColor: ["#2C3E50","#E74C3C","#3498DB"],
+          data: [4500,5000,3850]
+        }
+      ]
+    	},
+    	options: {
+      		legend: { display: false },
+      		title: {
+        		display: true,
+        		text: 'PODIO DE PUNTOS DE PUBLICACIONES POR PROGRAMA ACADEMICO'
+      		},
+      		 scales: {
+            	yAxes: [{
+                	ticks: {
+                   	 beginAtZero:true
+                	}
+            	}]
+        	}
+    	}
+		});
+
+            new Chart(document.getElementById("bar-chart2"), {
+    	type: 'bar',
+    	data: {
+      	labels: ["2do Puesto: Angela Carrillo", "1er PUESTO: Alexandra Pomares", "3er Puesto: Mariela Curiel"],
+      	datasets: [
+        {
+          label: "PUNTOS",
+          backgroundColor: ["#304269","#91BED4","#D9E8F5"],
+          data: [2750,3500,1500]
+        }
+      ]
+    	},
+    	options: {
+      		legend: { display: false },
+      		title: {
+        		display: true,
+        		text: 'PODIO DE PUNTOS DE INFORMACIÓN GENERAL DEL PERFIL'
+      		},
+      		 scales: {
+            	yAxes: [{
+                	ticks: {
+                   	 beginAtZero:true
+                	}
+            	}]
+        	}
+    	}
+		});
+
+
+        new Chart(document.getElementById("bar-chart3"), {
+    	type: 'bar',
+    	data: {
+      	labels: ["2do Puesto: Mariela Curiel", "1er PUESTO: Alexandra Pomares", "3er Puesto: Jaime Pavlich"],
+      	datasets: [
+        {
+          label: "PUNTOS",
+          backgroundColor: ["#979C9C","#F2EBC7","#348899"],
+          data: [10,20,5]
+        }
+      ]
+    	},
+    	options: {
+      		legend: { display: false },
+      		title: {
+        		display: true,
+        		text: 'PODIO DE PUNTOS DE PROFESORES INVITADOS'
+      		},
+      		 scales: {
+            	yAxes: [{
+                	ticks: {
+                   	 beginAtZero:true
+                	}
+            	}]
+        	}
+    	}
+		});
+
+		 new Chart(document.getElementById("bar-chart4"), {
+    	type: 'bar',
+    	data: {
+      	labels: ["2do Puesto: Angela Carrillo", "1er PUESTO: Alexandra Pomares", "3er Puesto: Jaime Pavlich"],
+      	datasets: [
+        {
+          label: "PUNTOS",
+          backgroundColor: ["#DC3522","#D9CB9E","#374140"],
+          data: [200,500,100]
+        }
+      ]
+    	},
+    	options: {
+      		legend: { display: false },
+      		title: {
+        		display: true,
+        		text: 'PODIO DE PUNTOS DE PROYECTOS DE INVESTIGACION'
+      		},
+      		 scales: {
+            	yAxes: [{
+                	ticks: {
+                   	 beginAtZero:true
+                	}
+            	}]
+        	}
+    	}
+		});
+       	
+       </script>
+</body>
+
+
+</html>

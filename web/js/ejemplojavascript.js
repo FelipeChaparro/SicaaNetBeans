@@ -1,20 +1,20 @@
 var jsonCVLAC;
+//var SERVER_URL = "https://sicaadev.mybluemix.net/";
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-siccaV2/";
 
 function start(){
 	var text = document.getElementById("text");
-	getServelet('http://localhost:8080/SicaaNB/EjemploServlet', null, function(serveletResponse) {
+	getServelet(SERVER_URL+'EjemploServlet', null, function(serveletResponse) {
 	    text.innerHTML = serveletResponse;
 	});
 }
-
-
 
 function start1(){
 
 	var respuesta;
 	var url=document.getElementById("urlcvlac").value;
 	var params = "urlcvlac="+url;
-	getServelet('http://localhost:8080/SicaaNB/extraccionSistemasExternosServlet',null, params, function(serveletResponse) {
+	getServelet(SERVER_URL+'extraccionSistemasExternosServlet',null, params, function(serveletResponse) {
 	   //text.innerHTML = serveletResponse;
 	    respuesta=serveletResponse;
             
@@ -235,7 +235,7 @@ function start2(){
 	var respuesta;
 	var url=document.getElementById("urlresearch").value;
 	var params = "urlresearch="+url;
-	getServelet('http://localhost:8080/SicaaNB/ExtraccionResearchServlet', null,params,function(serveletResponse) {
+	getServelet(SERVER_URL+'ExtraccionResearchServlet', null,params,function(serveletResponse) {
 		respuesta=serveletResponse;
 		 var json=JSON.parse(respuesta);
 		
@@ -396,7 +396,7 @@ function start3(){
     var respuesta;
     var url=document.getElementById("urlschoolar").value;
     var params = "urlschoolar="+url;
-    getServelet('http://localhost:8080/SicaaNB/ExtraccionGoogleSchoolar', null,params, function(serveletResponse) {
+    getServelet(SERVER_URL+'ExtraccionGoogleSchoolar', null,params, function(serveletResponse) {
         respuesta=serveletResponse;
         var json=JSON.parse(respuesta);
         alert("bien");
@@ -435,7 +435,7 @@ function start3(){
 function GuardarInformacioncvlac(){
    // alert(jsonCVLAC);
     var json=jsonCVLAC;
-    postServelet("http://localhost:8080/SicaaNB//GuardarInformacionServlet",json,function(serveletResponse) {
+    postServelet(SERVER_URL+"GuardarInformacionServlet",json,function(serveletResponse) {
      //respuesta=serveletResponse;
         console.log("respondio")
     });          

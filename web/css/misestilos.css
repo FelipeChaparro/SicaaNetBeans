@@ -1,0 +1,13 @@
+.rowBadge:hover {
+	background: #6cdbf7;
+}
+table tr {
+	text-align: center;
+}
+table tr p {
+	visibility: hidden;
+}
+table tr p:hover {
+	visibility: visible;
+	color: black;
+}
