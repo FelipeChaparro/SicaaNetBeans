@@ -129,11 +129,16 @@ function login(){
 		"programa": "Ingenieria de Sistemas",
 		"puntos": "1000",
 		"nombre": "\tAlexandra Pomares Quimbaya"
-	}],
+	},],
 	"podioPublicacionFacultad": [{
 		"puntos": "1000",
 		"nombre": "\tAlexandra Pomares Quimbaya",
 		"facultad": "Ingenieria"
+	},
+        {
+		"puntos": "998",
+		"nombre": "\tHenry Lonchas",
+		"facultad": "Comunicacion Social"
 	}],
 	"roles": [{
 		"id": "1",

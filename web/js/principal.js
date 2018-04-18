@@ -64,3 +64,7 @@ function actualizarInfo(){
 function registrarPub() {
     window.location.href='../Vista/registroPublicacion.html';
 }
+
+function verPublicaciones() {
+    window.location.href='../Vista/produccionIntelectual.html';
+}

@@ -8,3 +8,7 @@ window.onload = function(){
 function guardarInfo(){
     
 }
+
+function goHome(){
+    window.location.href='../Vista/principal.html';
+}
