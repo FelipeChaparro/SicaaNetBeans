@@ -1,0 +1,5 @@
+function mostrarPuntajeporCategoria(){
+	alert("holaa");
+
+
+}

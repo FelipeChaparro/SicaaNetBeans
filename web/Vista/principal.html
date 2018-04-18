@@ -17,9 +17,6 @@
     <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
     <!-- Plugins CSS -->
     <link rel="stylesheet" href="../assets/plugins/font-awesome/css/font-awesome.css">
-    <!-- github acitivity css -->
-    <link rel="stylesheet" href="http://cdnjs.cloudflare.com/ajax/libs/octicons/2.0.2/octicons.min.css">
-    <link rel="stylesheet" href="http://caseyscarborough.github.io/github-activity/github-activity-0.1.0.min.css">
     
     <!-- Theme CSS -->  
     <link id="theme-style" rel="stylesheet" href="../assets/css/styles.css">
@@ -40,9 +37,10 @@
                 <h1 class="name" id="nombre"></h1>
                 <h2 class="desc">Ingeniería de Sistemas</h2>   
                 <ul class="social list-inline">                
-                    <li><button type="button" class="btn btn-info" onclick="actualizarInfo()">Actualizar información</button></li>
-                    <li><button type="button" class="btn btn-info">Producción intelectal</button></li> 
-                    <li><button type="button" class="btn btn-info">Eventos cientificos</button></li> 
+                    <li><button type="button" class="btn btn-info" onclick="actualizarInfo()">Actualizar Información</button></li>
+                    <li><button type="button" class="btn btn-info" onclick="registrarPub()">Registrar Publicación</button></li>
+                    <li><button type="button" class="btn btn-info">Producción Intelectal</button></li> 
+                    <li><button type="button" class="btn btn-info">Eventos Cientificos</button></li> 
                 </ul> 
             </div><!--//profile-->
             <a class="btn btn-cta-primary pull-right" href="http://themes.3rdwavemedia.com/" target="_blank"><i class="fa fa-sign-out"></i>Logout</a>              
@@ -54,10 +52,9 @@
             <div class="primary col-md-8 col-sm-12 col-xs-12">
                 <section class="about section">
                     <div class="section-inner">
-                        <h2 class="heading">Acerca de mi</h2>
+                        <h2 class="heading">Formación Académica</h2>
                         <hr class="divider" />
                         <div class="content" id="formacionAca">
-                            
                                          
                         </div><!--//content-->
                     </div><!--//section-inner-->                 
@@ -66,8 +63,59 @@
                <section class="latest section">
                     <div class="section-inner">
                         <h2 class="heading">Ultimas Publicaciones</h2>
-                        <div class="content"  id="ultimasPublicaciones">    
-                           
+                        <center>
+                        <hr class="divider" />
+                        <div class="content" id="ultimasPublicaciones">   
+                        </div><!--//content-->  
+                        </center>
+                    </div><!--//section-inner-->                 
+                </section><!--//section-->
+
+                <section class="experience section">
+                    <div class="section-inner">
+                        <h2 class="heading">Rankings</h2>
+                        <hr class="divider" />
+                        <div class="content">
+                           <div class="item">
+                                <h3 class="title">Mejores profesores por publicaciones</h3>        
+                                    <table class="table table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th>Nombre</th>
+                                          <th>Puntos</th>
+                                          <th>Universidad</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody id="podioUniversidad">
+                                      </tbody>
+                                    </table>
+                                    <table class="table table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th>Nombre</th>
+                                          <th>Puntos</th>
+                                          <th>Facultad</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody id="podioFacultad">
+                                      </tbody>
+                                    </table>
+                                    <table class="table table-hover">
+                                      <thead>
+                                        <tr>
+                                          <th>#</th>
+                                          <th>Nombre</th>
+                                          <th>Puntos</th>
+                                          <th>Programa</th>
+                                        </tr>
+                                      </thead>
+                                      <tbody id="podioPrograma">
+                                      </tbody>
+                                    </table>
+                             </div><!--//item-->
+                            
                         </div><!--//content-->  
                     </div><!--//section-inner-->                 
                 </section><!--//section-->
@@ -95,36 +143,7 @@
                         <div class="content">
                             <p class="intro">
                             Las medallas presentadas a continuación, tienen como objetivo mostrar el avance del profesor en el sistema y dar a conocer los hitos por logros de su carrera.</p>
-                            <div class="skillset">
-                                 <div class="item">
-                                    <img class="medalla" src="../assets/images/medallas/mCientifico.png"/>
-                                    <p>Cientifico</p>
-                                </div><!--//item-->
-                                
-                                <div class="item">
-                                        <img class="medalla" src="../assets/images/medallas/mDoctor.png"/>
-                                        <p>Doctor</p>
-                                </div><!--//item-->
-
-                              <div class="item">
-                                        <img class="medalla" src="../assets/images/medallas/mInvestigador.png"/>
-                                        <p>Investigador</p>
-                                </div><!--//item-->
-                                
-                                <div class="item">
-                                        <img class="medalla" src="../assets/images/medallas/mbilingue.png"/>
-                                        <p>Bilingûe</p>
-                                </div><!--//item-->
-
-                                <div class="item">
-                                        <img class="medalla" src="../assets/images/medallas/noMedalla.png"/>
-                                        <p>Director</p>
-                                    </div><!--//item-->
-                                
-                                <div class="item">
-                                    <img class="medalla" src="../assets/images/medallas/noMedalla.png"/>
-                                    <p>Administrativo</p>
-                                </div><!--//item-->
+                            <div class="skillset" id="medallasProfesor">                          
                             </div>              
                         </div><!--//content-->  
                     </div><!--//section-inner-->                 
@@ -147,9 +166,9 @@
     <script type="text/javascript" src="../assets/plugins/jquery-migrate-1.2.1.min.js"></script>
     <script type="text/javascript" src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script>    
     <script type="text/javascript" src="../assets/plugins/jquery-rss/dist/jquery.rss.min.js"></script> 
-    <!-- github activity plugin -->
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/mustache.js/0.7.2/mustache.min.js"></script>
-    <script type="text/javascript" src="http://caseyscarborough.github.io/github-activity/github-activity-0.1.0.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
     <!-- custom js -->
     <script type="text/javascript" src="../assets/js/main.js"></script>   
      <script type="text/javascript" src="../js/principal.js"></script>
