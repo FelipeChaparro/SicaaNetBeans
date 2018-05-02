@@ -1,16 +1,16 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
 var misPublicaciones = [];
 var userToken;
+
 window.onload = function(){
      
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
-    document.getElementById("nombre").innerHTML = SESSION.nombre;
-    document.getElementById("departamento").innerHTML = SESSION.nombreDepartamento;
+    document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+    document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
     userToken = SESSION.token;
     
     var user_login_data = "token=" + userToken;
-
     $("#loaderModificacion").hide();
 	getServelet(SERVER_URL+"PublicacionesServelet", null, user_login_data, function(serveletResponse) {
         var respuesta = JSON.parse(serveletResponse);
@@ -61,22 +61,22 @@ window.onload = function(){
                 
                 myPublicacion.innerHTML += "<div style='margin-left: 15px; z-index:1000;position:absolute;top:45%;left:45%;' class='smallLoader' id='loaderPublicacion" + i + "'></div>";
                 
-                myPublicacion.innerHTML += "<h4 class='list-group-item-heading'>" + respuesta.publicaciones[i].Titulo + "</h4>";
+                myPublicacion.innerHTML += "<h4 class='list-group-item-heading' id='title-" + i + "'>" + respuesta.publicaciones[i].Titulo + "</h4>";
 
                 obj_publicacion.Tipo = respuesta.publicaciones[i].Tipo;
-                myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Tipo:</span>" + " " + ((respuesta.publicaciones[i].Tipo == null) ? "No definido" : respuesta.publicaciones[i].Tipo) + "</p>";
+                myPublicacion.innerHTML += "<p id='type-" + i + "' class='list-group-item-text'><span style='color:#000000'>Tipo:</span>" + " " + ((respuesta.publicaciones[i].Tipo == null) ? "No definido" : respuesta.publicaciones[i].Tipo) + "</p>";
 
                 obj_publicacion.codigoPublicacion = respuesta.publicaciones[i].codigoPublicacion;
-                myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>ISBN o ISSN:</span>" + " " + ((respuesta.publicaciones[i].codigoPublicacion == null) ? "No definido" : respuesta.publicaciones[i].codigoPublicacion) + "</p>";
+                myPublicacion.innerHTML += "<p id='code-" + i + "' class='list-group-item-text'><span style='color:#000000'>ISBN o ISSN:</span>" + " " + ((respuesta.publicaciones[i].codigoPublicacion == null) ? "No definido" : respuesta.publicaciones[i].codigoPublicacion) + "</p>";
 
                 obj_publicacion.Lugar = respuesta.publicaciones[i].Lugar;
-                myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Lugar:</span>" + " " + ((respuesta.publicaciones[i].Lugar == null) ? "No definido" : respuesta.publicaciones[i].Lugar) + "</p>";
+                myPublicacion.innerHTML += "<p id='place-" + i + "' class='list-group-item-text'><span style='color:#000000'>Lugar:</span>" + " " + ((respuesta.publicaciones[i].Lugar == null) ? "No definido" : respuesta.publicaciones[i].Lugar) + "</p>";
 
                 obj_publicacion.Editorial = respuesta.publicaciones[i].Editorial;
-                myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Editorial:</span>" + " " + ((respuesta.publicaciones[i].Editorial == null) ? "No definido" : respuesta.publicaciones[i].Editorial) + "</p>";
+                myPublicacion.innerHTML += "<p id='editorial-" + i + "' class='list-group-item-text'><span style='color:#000000'>Editorial:</span>" + " " + ((respuesta.publicaciones[i].Editorial == null) ? "No definido" : respuesta.publicaciones[i].Editorial) + "</p>";
 
                 obj_publicacion.FechaInicio = respuesta.publicaciones[i].FechaInicio;
-                myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Fecha:</span>" + " " + 
+                myPublicacion.innerHTML += "<p id='fecha-" + i + "' class='list-group-item-text'><span style='color:#000000'>Fecha:</span>" + " " + 
                 ((respuesta.publicaciones[i].FechaInicio == null) ? "No definido" : respuesta.publicaciones[i].FechaInicio) + "</p>";
 
                 myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Extraido:</span>" + " " + respuesta.publicaciones[i].Extraido + "</p>";
@@ -235,6 +235,7 @@ function actualizarInformacion(i) {
             document.getElementById("btn_modificar").innerHTML = "Actualizar Información";
             var respuesta = JSON.parse(serveletResponse);
             if (respuesta.code == 0) {
+                refresh_Data(i, data_publicacion);
                 document.getElementById("infoModificacion").innerHTML = "La publicación se ha actualizado correctamente!";
             }
             else {
@@ -247,6 +248,26 @@ function actualizarInformacion(i) {
         $("#loaderModificacion").hide();
         document.getElementById("btn_modificar").innerHTML = "Actualizar Información";
     }
+}
+
+function refresh_Data (i, newData) {
+    misPublicaciones[i].Titulo = newData.Titulo;
+    document.getElementById("title-" + i).innerHTML = misPublicaciones[i].Titulo;
+    
+    misPublicaciones[i].Tipo = newData.Tipo;
+    document.getElementById("type-" + i).innerHTML = "<span style='color:#000000'>Tipo: </span>" + misPublicaciones[i].Tipo;
+    
+    misPublicaciones[i].codigoPublicacion = newData.codigoPublicacion;
+    document.getElementById("code-" + i).innerHTML = "<span style='color:#000000'>ISBN o ISSN: </span>" + misPublicaciones[i].codigoPublicacion;
+    
+    misPublicaciones[i].Lugar = newData.Lugar;
+    document.getElementById("place-" + i).innerHTML = "<span style='color:#000000'>Lugar: </span>" + misPublicaciones[i].Lugar;
+    
+    misPublicaciones[i].Editorial = newData.Editorial;
+    document.getElementById("editorial-" + i).innerHTML = "<span style='color:#000000'>Editorial: </span>" + misPublicaciones[i].Editorial;
+    
+    misPublicaciones[i].FechaInicio = newData.FechaInicio;
+    document.getElementById("fecha-" + i).innerHTML = "<span style='color:#000000'>Fecha: </span>" + misPublicaciones[i].FechaInicio;
 }
 
 function goHome(){

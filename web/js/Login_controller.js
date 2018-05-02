@@ -1,5 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
 
 /**
  * Metodo para hacer login de usuario y traer los roles a los que tiene acceso
@@ -13,17 +13,23 @@ function login(){
             "user_name":user_name,
             "user_pass":user_psw
     };
-    
+    document.getElementById("loaderLogin").style.display = "block";
+    document.getElementById("login-image").style.display = "none";
+    document.getElementById("login-button").disabled = true;
     postServelet(SERVER_URL+"login_servelet",JSON.stringify(user_login_data),function(serveletResponse) {
         var respuesta = JSON.parse(serveletResponse);
+        document.getElementById("loaderLogin").style.display = "none";
+        document.getElementById("login-button").disabled = false;
+        document.getElementById("login-image").style.display = "block";
         if (respuesta.code === 0) {
             sessionStorage.setItem("principal", JSON.stringify(respuesta));
-            //alert(sessionStorage.getItem("principal"));
+            console.log(sessionStorage.getItem("principal"));
             window.location.href='Vista/principal.html';
-            //alert("Bien codigo: "+respuesta.code.toString()+" - Descripcion: "+respuesta.description + " - Token: "+respuesta.token);
         }
         else {
-            alert("Fallo codigo: "+respuesta.code.toString()+" - Descripcion: "+respuesta.description);
+            alert("Fallo c\xf3digo: " + respuesta.code.toString() + " - Descripcion: " + respuesta.description);
+            document.getElementById("user_name").value = "";
+            document.getElementById("user_pss").value = "";
         }
     })
      

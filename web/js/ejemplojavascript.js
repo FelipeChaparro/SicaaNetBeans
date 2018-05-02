@@ -2,8 +2,13 @@ var jsonCVLAC;
 var jsonReserch;
 var jsonGoogle;
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
 
+window.onload = function(){
+    var SESSION = JSON.parse(sessionStorage.getItem("principal"));
+    document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+    document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+}
 function start(){
 	var text = document.getElementById("text");
 	getServelet(SERVER_URL+'EjemploServlet', null, function(serveletResponse) {
@@ -22,14 +27,6 @@ function start1(){
             
 	    var json=JSON.parse(respuesta);
 	    jsonCVLAC=respuesta;
-            
-            var nombre = document.getElementById("nombre");
-            var categoria = document.getElementById("categoria");
-                var nacionalidad = document.getElementById("nacionalidad");
-
-                nombre.innerHTML =json.datosBasicos.nombre;
-                categoria.innerHTML =json.datosBasicos.categoria;
-                nacionalidad.innerHTML =json.datosBasicos.nacionalidad;
 
                 var formacionAcademica=json.formacionAcademica;
                 var tableFA = document.getElementById("tablaFormacionAcademica");

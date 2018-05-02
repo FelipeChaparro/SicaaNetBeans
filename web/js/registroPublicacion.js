@@ -1,42 +1,27 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
 
 var contAutor = 1;
 var global_autores = {};
+var SESSION;
+
 window.onload = function(){
-    var json = JSON.parse(sessionStorage.getItem("principal"));
-    //var nombre = document.getElementById("nombre");
-    //nombre.innerHTML =json.datosBasicos.nombre;
-    document.getElementById("nombre").innerHTML = "Alexandra Pomares Quimbaya";
-    document.getElementById("departamento").innerHTML = "Ingeniería de Sistemas";
+    SESSION = JSON.parse(sessionStorage.getItem("principal"));
+    if (SESSION != null) {
+        document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+        document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+    }
 }
 
 function guardarInfo(){
-    /*var data_publicacion = {
-        "token":"1234",
-        "publicacion": {
-            "Titulo":"A",
-            "Tipo":"libro",
-            "Editorial":"Colombie IEEE Xplore Library",
-            "Extraido":"Manual",
-            "autores": [
-                {
-                    "ID":"2",
-                    "Rol":"Profesor"
-                },
-                {
-                    "ID":"3",
-                    "Rol":"Profesor"
-                }
-            ]
-        }
-    }*/
-    var json = JSON.parse(sessionStorage.getItem("principal"));
+    document.getElementById("save-btn").disabled = true;
+    $("#main-loader").show();
     var data_publicacion = new Object();
     var infoPublicacion = new Object();
     var listaAutores = [];
     var info = document.getElementsByClassName("infoPublicacion");
     var infoAutores = document.getElementsByClassName("infoAutores");
+    var rolAutores = document.getElementsByClassName("rolAutores");
     
     infoPublicacion.Titulo = (info[0].value == "") ? null : info[0].value;
     infoPublicacion.Tipo = (info[1].value == "") ? null : info[1].value;
@@ -48,7 +33,6 @@ function guardarInfo(){
     
     for (var i = 0; i < infoAutores.length; i++) {  
         var objeto_autor = new Object();
-        objeto_autor.Rol = "Profesor";
         if (infoAutores[i].value != "Crear un nuevo usuario") {
             objeto_autor.ID = global_autores[infoAutores[i].value];
         }
@@ -56,15 +40,17 @@ function guardarInfo(){
             objeto_autor.ID = -1;
             objeto_autor.Nombre = document.getElementsByClassName("autorPublicacion").item(i).value;
         }
+        objeto_autor.Rol = rolAutores[i].value;
         listaAutores.push(objeto_autor);
     }
     
-    data_publicacion.token = json.token; 
-    //data_publicacion.token = "1234";
+    data_publicacion.token = SESSION.token; 
     if (infoAutores.length > 0) infoPublicacion.autores = listaAutores;
     data_publicacion.publicacion = infoPublicacion;
-    
+   
     postServlet(SERVER_URL + "GuardarPublicacion", JSON.stringify(data_publicacion), function(serveletResponse) {
+        $("#main-loader").hide();
+        document.getElementById("save-btn").disabled = false;
         var respuesta = JSON.parse(serveletResponse);
         if (respuesta.code == 0) {
             alert("Registro Correcto");
@@ -81,14 +67,23 @@ function addAutor() {
     var myAutores = document.getElementById("autores");
     var autor = document.createElement("div");
     autor.className = "form-group";
-    autor.innerHTML = "<label>Nuevo Coautor</label>" +
-        "<input type='text' placeholder='Escriba el nombre de la persona' class='form-control autorPublicacion'>" +
-        "<button type='button' class='btn btn-info btn-sm' onclick='buscarAutor(" + contAutor + ")'> <span class='glyphicon glyphicon-search'></span> Buscar Autor</button>"
-    + "<select class='form-control infoAutores' id='a" + contAutor + "'></select>";
+    autor.innerHTML = "<div style='display:none;' id='loader-search-autor" + contAutor + "' class='smallLoader'></div>";
+    autor.innerHTML += "<label style='display:block;'>Nuevo Coautor</label>" +
+        "<input style='width:40%; display:inline;' type='text' placeholder='Escriba el nombre de la persona' class='form-control autorPublicacion'>" +
+        "<button style='margin-left: 10px;margin-right: 10px; width:10%;display:inline;' type='button' class='btn btn-info btn-sm' onclick='buscarAutor(" + contAutor + ")'> <span class='glyphicon glyphicon-search'></span></button>"
+    + "<select style='width:40%;display:inline;' class='form-control infoAutores' id='a" + contAutor + "'></select>";
+    autor.innerHTML += "<label style='display:block; margin-top:10px;'>Selecciona el Rol</label>";
+    autor.innerHTML += "<select style='width:50%;display:inline;' class='form-control rolAutores'>"
+        + "<option>" + "Profesor" + "</option>"
+        + "<option>" + "Estudiante" + "</option>"
+        + "<option>" + "Externo" + "</option>"
+        + "</select>";
+    autor.innerHTML += "<hr class='divider'/>";
     myAutores.appendChild(autor);
 }
 
 function buscarAutor(idAutor) {
+    $("#loader-search-autor" + idAutor).show();
     var autores = document.getElementsByClassName("autorPublicacion");
     var autorName = autores[idAutor-2].value;
     var getSelect = document.getElementById("a" + idAutor);
@@ -96,9 +91,9 @@ function buscarAutor(idAutor) {
     var object_to_send = "autor=" + autorName;
     
 	getServlet(SERVER_URL + "GetAutoresSimilares", null, object_to_send, function(serveletResponse) {
+        $("#loader-search-autor" + idAutor).hide();
         var respuesta = JSON.parse(serveletResponse);
             if (respuesta.code == "0") {
-            //respuesta = {autores: [{"Nombre":"Germancho","ID":4},{"Nombre":"Lonchitas","ID":9}]}
                 getSelect.innerHTML = "";
                 console.log(respuesta);
                 for (var i = 0; i < respuesta.autores.length ; i++) {
