@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="utf-8">
     <script type="text/javascript" src="./js/Login_controller.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 <style>
@@ -46,7 +47,7 @@ button:hover {
 }
 
 img.avatar {
-    width: 30%;
+    width: 300px;
     border-radius: 50%;
 }
 
@@ -97,6 +98,14 @@ span.psw {
     color: red;
     cursor: pointer;
 }
+    
+button:disabled,
+button[disabled]{
+  background-color: #cccccc;
+  color: #666666;
+  cursor: not-allowed;
+  opacity: 1;
+}
 
 /* Add Zoom Animation */
 .animate {
@@ -124,31 +133,47 @@ span.psw {
        width: 100%;
     }
 }
+button:focus {outline: none !important;}
+.loader {
+    border: 20px solid #f3f3f3; /* Light grey */
+    border-top: 20px solid #3498db; /* Blue */
+    border-radius: 100%;
+    height: 200px;
+    width: 200px;
+    animation: spin 2s linear infinite;
+}
+/* Safari */
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 </style>
 </head>
 <body>
-
-
   <form class="modal-content animate">
+      
     <div class="imgcontainer">
-      <img src="./imagenes/logo.png" alt="Avatar" class="avatar">
+        <center>
+            <div style="display: none;" class="loader" id="loaderLogin"></div>
+            <img src="./imagenes/logo.png" alt="Avatar" class="avatar" id="login-image">
+        </center>
     </div>
-
     <div class="container">
       <label for="uname"><b>Username</b></label>
       <input type="text" placeholder="Enter Username" id="user_name" name="uname" required>
 
       <label for="psw"><b>Password</b></label>
       <input type="password" placeholder="Enter Password" id="user_pss" name="psw" required>
-        
-      <button type="reset" onclick="login()">Login</button>
+      <button id="login-button" type="button" onclick="login()">Login</button>
       <label>
         <input type="checkbox" checked="checked" name="remember"> Remember me
       </label>
     </div>
-
   </form>
-
-
 </body>
 </html>

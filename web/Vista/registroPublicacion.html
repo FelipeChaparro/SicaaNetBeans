@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
-<!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->  
+<!--[if !IE]><!--> <html lang="es"> <!--<![endif]-->  
 <head>
-    <title>Home | SICAA</title>
+    <title>Registro | SICAA</title>
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
     <meta name="author" content="SICAA">    
-    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
     <!-- Global CSS -->
     <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
     <!-- Plugins CSS -->
@@ -24,7 +24,37 @@
       <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
       <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-    
+    <style>
+        button:focus {outline: none !important;}
+        .loader {
+            border: 16px solid #f3f3f3; /* Light grey */
+            border-top: 16px solid #3498db; /* Blue */
+            border-radius: 50%;
+            width: 120px;
+            height: 120px;
+            animation: spin 2s linear infinite;
+        }
+        .smallLoader {
+          border: 5px solid #f3f3f3;
+          -webkit-animation: spin 1s linear infinite;
+          animation: spin 1s linear infinite;
+          border-top: 5px solid #555;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+          0% { -webkit-transform: rotate(0deg); }
+          100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+    </style>
 </head> 
 
 <body>
@@ -90,16 +120,17 @@
                                 <input type="text" placeholder="YYYY-MM-DD" class="form-control infoPublicacion">
                             </div>
                         </center>
+                        <hr class='divider'/>
                         <center id="autores"></center>
-                        <button type="button" class="btn btn-success btn-sm" onclick="addAutor()">
-                            <span class="glyphicon glyphicon-plus"></span> Agregar Autor
+                        <button type="button" class="btn btn-primary btn-sm" onclick="addAutor()">
+                            <span class="glyphicon glyphicon-plus"></span> Agregar Coautor
                         </button>
                         <button type="button" class="btn btn-danger btn-sm" onclick="removeAutor()">
-                            <span class="glyphicon glyphicon-minus"></span> Eliminar Autor
+                            <span class="glyphicon glyphicon-minus"></span> Eliminar Coautor
                         </button>
-                        <button type="button" class="btn btn-primary btn-block" onclick="guardarInfo()">Guardar Publicación</button>
-                        <button type="button" class="btn btn-danger btn-block" onclick="goHome()">Cancelar</button>
-                    </div><!--//section-inner-->        
+                        <button type="button" class="btn btn-success btn-block" id="save-btn" onclick="guardarInfo()">Guardar Publicación</button>
+                        <center><div style="display: none;" class="loader" id="main-loader"></div></center>
+                    </div><!--//section-inner-->
                 </section><!--//section-->            
             </div><!--//secondary-->
     </div><!--//masonry-->
