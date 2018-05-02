@@ -15,191 +15,162 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
-    <meta name="author" content="SICAA">    
-    <link rel="shortcut icon" href="favicon.ico">  
-    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
-    <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
+    <meta name="author" content="SICAA">
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
     <!-- Global CSS -->
     <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
     <!-- Plugins CSS -->
     <link rel="stylesheet" href="../assets/plugins/font-awesome/css/font-awesome.css">
-    
     <!-- Theme CSS -->  
     <link id="theme-style" rel="stylesheet" href="../assets/css/styles.css">
-
     <!-- jQuery library -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-
     <!-- Popper JS -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.min.js"></script>
 </head>
 
 <body>
-    
-      <header class="header">
-        <div class="container">                       
-            <img class="profile-image img-responsive pull-left" src="../assets/images/profile.png" alt="Alexandra Pomares" width="13%" height="13%" />
+    <!-- ******HEADER****** --> 
+    <header class="header">
+        <div class="container"> 
+            <img class="profile-image img-responsive pull-left" src="../assets/images/profile.png" alt="Alexandra Pomares" width="200px" height="200px" />
             <div class="profile-content pull-left">
-                <h1 class="name">Alexandra Pomares</h1>
-                <h2 class="desc">Ingeniería de Sistemas</h2>   
-               
+                <h1 class="name" id="nombre"></h1>
+                <h2 class="desc" id="departamento"></h2>
             </div><!--//profile-->
-            <a class="btn btn-cta-primary pull-right" href="" target="_blank"><i class="fa fa-sign-out"></i>Logout</a>              
+            <a class="btn btn-cta-primary pull-right" href="http://themes.3rdwavemedia.com/" target="_blank"><i class="fa fa-sign-out"></i>Logout</a>              
         </div><!--//container-->
     </header><!--//header-->
        
-    <center>
-        <h2> ACTUALIZAR INFORMACIÓN</h2>
-    </center>
-    <div class="container">
+<div class="container sections-wrapper">
+    <section class="latest section">
+        <div class="section-inner">
+            <h2 class="heading">Actualizar Información</h2>
+            <hr class="divider" />
+            <div class="container" style="width: 100%;">
+                <ul id="clothing-nav" class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link active" href="#cvlac" id="cvlac-tab" role="tab" data-toggle="tab" aria-controls="cvlac" aria-expanded="true">CvLAC</a>
+                    </li>
 
-        <ul id="clothing-nav" class="nav nav-tabs" role="tablist">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#researchgate" role="tab" id="researchgate-tab" data-toggle="tab" aria-controls="researchgate">ResearchGate</a>
+                    </li>
 
-            <li class="nav-item">
-                <a class="nav-link active" href="#cvlac" id="cvlac-tab" role="tab" data-toggle="tab" aria-controls="cvlac" aria-expanded="true"> CVLAC </a>
-            </li>
-
-            <li class="nav-item">
-                <a class="nav-link" href="#researchgate" role="tab" id="researchgate-tab" data-toggle="tab" aria-controls="researchgate"> RESEARCHGATE</a>
-            </li>
-            
-            <li class="nav-item">
-                <a class="nav-link" href="#google" role="tab" id="google-tab" data-toggle="tab" aria-controls="google"> GOOGLE</a>
-            </li>
-
-        </ul>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#google" role="tab" id="google-tab" data-toggle="tab" aria-controls="google">Google Scholar</a>
+                    </li>
+                </ul>
 
         <!-- Content Panel -->
-        <div id="clothing-nav-content" class="tab-content">
-
-            <div role="tabpanel" class="tab-pane fade show active" id="cvlac" aria-labelledby="cvlac-tab">
-                
-
-
-                <div class="form-group">
-                    <label for="usr"> URL CVLAC:</label>
-                    <input type="text" class="form-control" id="urlcvlac"> </input>
-                    </br>
-                    <button type="button" class="btn btn-primary" onclick="start1()"> Buscar </button>
-                </div>
-
-                <center>
-                    <h3 id="nombre"></h3>
-                </center>
-                <center>
-                    <h5 id="categoria"></h5>
-                </center>
-                <center>
-                    <h5 id="nacionalidad"></h5>
-                </center>
-               
-               <h4 style="display:none" id="tituloFormacionAcademica"> FORMACIÓN ACADEMICA</h4>
-                 <table class="table" id="tablaFormacionAcademica" >
-                    <tbody>
-                    </tbody>
-                 </table>
-               
-                                <table class="table" id="idiomas" >
-                    <tbody>
-                    </tbody>
-                 </table>
-               
-                                 <table class="table" id="areasActuacion" >
-                    <tbody>
+            <div id="clothing-nav-content" class="tab-content">
+                <div role="tabpanel" class="tab-pane fade show active" id="cvlac" aria-labelledby="cvlac-tab">
+                    <div class="form-group">
+                        <label for="usr" style="margin-top: 10px;">URL CvLAC:</label>
+                        <input type="text" class="form-control" id="urlcvlac">
+                        <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start1()"> Buscar </button>
+                    </div>
+                    <center>
+                        <h3 id="nombre"></h3>
+                    </center>
+                    <center>
+                        <h5 id="categoria"></h5>
+                    </center>
+                    <center>
+                        <h5 id="nacionalidad"></h5>
+                    </center>
+                    <h4 style="display:none" id="tituloFormacionAcademica">Formación Académica</h4>
+                     <table class="table" id="tablaFormacionAcademica" >
+                        <tbody>
                         </tbody>
-                 </table>
-                    
-                  
-
-
-                <h4 style="display:none" id="tituloArticulos"> ARTICULOS</h4>
-
-                <table class="table table-bordered" id="tablaArticulos" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Autores</th>
-                            <th> Lugar de publicación</th>
-                            <th> ISSN </th>
-                            <th> Editorial </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-
-                <h4 style="display:none" id="tituloLibros"> LIBROS</h4>
-
-                <table class="table table-bordered" id="tablaLibros" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Autores</th>
-                            <th> Lugar de publicación</th>
-                            <th> ISBN </th>
-                            <th> Editorial </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-                
-                <table class="table table-bordered" id="tablaCapitulos" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Autores</th>
-                            <th> Lugar de publicación</th>
-                            <th> ISBN </th>
-                            <th> Editorial </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-                
-                
-                
-                
-                <table class="table table-bordered" id="tablaEventos" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Nombre evento </th>
-                            <th> Tipo evento </th>
-                            <th> Ambito</th>
-                            <th> Nombre producto</th>
-                            <th> Tipo producto </th>
-                            <th> Participantes </th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-                
-                <button type="button" id="GuardarInfo" class="btn btn-success" onclick="GuardarInformacioncvlac()"> Guardar </button>
-
-
+                     </table>
+                    <table class="table" id="idiomas" >
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <table class="table" id="areasActuacion" >
+                        <tbody>
+                        </tbody>
+                    </table>
+                    <h4 style="display:none" id="tituloArticulos">Artículos</h4>
+                    <div class="table-responsive">  
+                        <table class="table table-bordered" id="tablaArticulos" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th> Titulo </th>
+                                    <th> Autores</th>
+                                    <th> Lugar de publicación</th>
+                                    <th> ISSN </th>
+                                    <th> Editorial </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h4 style="display:none" id="tituloLibros">Libros</h4>
+                    <div class="table-responsive">  
+                        <table class="table table-bordered" id="tablaLibros" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th> Titulo </th>
+                                    <th> Autores</th>
+                                    <th> Lugar de publicación</th>
+                                    <th> ISBN </th>
+                                    <th> Editorial </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h4 style="display:none" id="tituloCapitulos">Capítulos</h4>
+                    <div class="table-responsive">  
+                        <table class="table table-bordered" id="tablaCapitulos" style="display:none">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th> Titulo </th>
+                                    <th> Autores</th>
+                                    <th> Lugar de publicación</th>
+                                    <th> ISBN </th>
+                                    <th> Editorial </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div>
+                    <h4 style="display:none" id="tituloEventos">Eventos</h4>
+                      <div class="table-responsive">  
+                        <table class="table table-bordered" id="tablaEventos" style="display:none;">
+                            <thead class="thead-dark">
+                                <tr>
+                                    <th> Nombre evento </th>
+                                    <th> Tipo evento </th>
+                                    <th> Ambito</th>
+                                    <th> Nombre producto</th>
+                                    <th> Tipo producto </th>
+                                    <th> Participantes </th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                            </tbody>
+                        </table>
+                    </div> 
             </div>
-
             <div role="tabpanel" class="tab-pane fade" id="researchgate" aria-labelledby="researchgate-tab">
-                
                 <div class="form-group">
-                    <label for="usr"> URL RESEARCHGATE:</label>
-                    <input type="text" class="form-control" id="urlresearch"> </input>
-                    </br>
-                    <button type="button" class="btn btn-primary" onclick="start2()"> Buscar </button>
+                    <label style="margin-top: 10px;" for="usr"> URL ResearchGate:</label>
+                    <input type="text" class="form-control" id="urlresearch">
+                    <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start2()"> Buscar </button>
                 </div>
 
                 <h4> Articulos </h4>
@@ -261,10 +232,9 @@
               
               <div role="tabpanel" class="tab-pane fade" id="google" aria-labelledby="google-tab">
                 <div class="form-group">
-                    <label for="usr"> URL Google Schoolar:</label>
-                    <input type="text" class="form-control" id="urlschoolar"> </input>
-                    </br>
-                    <button type="button" class="btn btn-primary" onclick="start3()"> Buscar </button>
+                    <label style="margin-top: 10px;" for="usr"> URL Google Scholar:</label>
+                    <input type="text" class="form-control" id="urlschoolar">
+                    <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start3()"> Buscar </button>
                 </div>
               
                 <h4> Articulos </h4>
@@ -287,9 +257,11 @@
 
         </div>
 
-
+        <button type="button" id="GuardarInfo" class="btn btn-success" onclick="GuardarInformacion()"> Guardar </button>
     </div>
-
+    </div>
+    </section>
+</div>
 </body>
 
 </html>

@@ -7,10 +7,11 @@
  * Website: http://themes.3rdwavemedia.com/
 */
 /* ======= Base ======= */
+
 body {
   font-family: 'Lato', arial, sans-serif;
-  color: #434343;
-  background: #dae3e7;
+  color: #000;
+  background: #3498DB;
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -84,7 +85,7 @@ a.btn-cta-secondary:hover,
   color: #fff;
 }
 .text-highlight {
-  color: #32383e;
+  color: #000;
 }
 .label-theme {
   background: #3aaa64;
@@ -114,8 +115,8 @@ iframe {
 /* ======= Header ======= */
 .header {
   padding: 30px 0;
-  background: #f5f5f5;
-  border-top: 10px solid #778492;
+  background: #fff;
+  border-top: 10px solid #3498DB;
 }
 .header .btn {
   margin-top: 60px;
@@ -211,13 +212,20 @@ iframe {
 .latest .item .title a:hover {
   color: #5f6b77;
 }
+.nextRB{
+    padding: 10px;
+    font-weight: normal;
+}
+.table th {
+   text-align: left;   
+}
+.table td {
+   text-align: left;   
+}
 .latest .item .project-image:hover {
   -webkit-opacity: 0.8;
   -moz-opacity: 0.8;
   opacity: 0.8;
-}
-.latest .divider {
-  margin-bottom: 60px;
 }
 .latest .featured {
   margin-bottom: 60px;
@@ -513,6 +521,7 @@ iframe {
 .footer .fa-heart {
   color: #fb866a;
 }
+
 /* Extra small devices (phones, less than 768px) */
 @media (max-width: 767px) {
   .header {

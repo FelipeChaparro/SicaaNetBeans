@@ -29,24 +29,29 @@
 </head> 
 
 <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+          <li class="active"><a>Home</a></li>
+          <li><a href="../Vista/actualizarinformacion.html">Actualizar Información</a></li>
+          <li><a href="../Vista/registroPublicacion.html">Registrar Publicación</a></li>
+          <li><a href="../Vista/produccionIntelectual.html">Producción Intelectual</a></li>
+            <li><a href="../Vista/publicacionesDudosas.html">Publicaciones Dudosas</a></li>
+        </ul>
+      </div>
+    </nav>
     <!-- ******HEADER****** --> 
     <header class="header">
-        <div class="container">                       
-            <img class="profile-image img-responsive pull-left" src="../assets/images/profile.png" alt="Alexandra Pomares" width="13%" height="13%" />
+        <div class="container"> 
+            <img class="profile-image img-responsive pull-left" src="../assets/images/profile.png" alt="Alexandra Pomares" width="200px" height="200px" />
             <div class="profile-content pull-left">
                 <h1 class="name" id="nombre"></h1>
-                <h2 class="desc">Ingeniería de Sistemas</h2>   
-                <ul class="social list-inline">                
-                    <li><button type="button" class="btn btn-info" onclick="actualizarInfo()">Actualizar Información</button></li>
-                    <li><button type="button" class="btn btn-info" onclick="registrarPub()">Registrar Publicación</button></li>
-                    <li><button type="button" class="btn btn-info" onclick="verPublicaciones()">Producción Intelectal</button></li> 
-                    <li><button type="button" class="btn btn-info">Eventos Cientificos</button></li> 
-                </ul> 
+                <h2 class="desc" id="departamento"></h2>
             </div><!--//profile-->
             <a class="btn btn-cta-primary pull-right" href="http://themes.3rdwavemedia.com/" target="_blank"><i class="fa fa-sign-out"></i>Logout</a>              
         </div><!--//container-->
     </header><!--//header-->
-    
+
     <div class="container sections-wrapper">
         <div class="row">
             <div class="primary col-md-8 col-sm-12 col-xs-12">
@@ -108,7 +113,7 @@
                                           <th>#</th>
                                           <th>Nombre</th>
                                           <th>Puntos</th>
-                                          <th>Programa</th>
+                                          <th>Departamento</th>
                                         </tr>
                                       </thead>
                                       <tbody id="podioPrograma">
@@ -122,6 +127,7 @@
                 
             </div><!--//primary-->
             <div class="secondary col-md-4 col-sm-12 col-xs-12">
+                <!--primary col-md-8 col-sm-12 col-xs-12-->
                  <aside class="info aside section">
                     <div class="section-inner">
                         <h2 class="heading">Información Basica</h2>
@@ -141,10 +147,8 @@
                         <h2 class="heading">Medallas</h2>
                         <hr class="divider" />
                         <div class="content">
-                            <p class="intro">
-                            Las medallas presentadas a continuación, tienen como objetivo mostrar el avance del profesor en el sistema y dar a conocer los hitos por logros de su carrera.</p>
-                            <div class="skillset" id="medallasProfesor">                          
-                            </div>              
+                        <div class="skillset" id="medallasProfesor">                          
+                        </div>              
                         </div><!--//content-->  
                     </div><!--//section-inner-->                 
                 </aside><!--//section-->

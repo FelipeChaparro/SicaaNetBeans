@@ -10,6 +10,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
     <meta name="author" content="SICAA">    
+    <link rel="shortcut icon" href="favicon.ico">  
     <link href='http://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
     <!-- Global CSS -->
@@ -33,9 +34,9 @@
         <ul class="nav navbar-nav">
           <li><a href="../Vista/principal.html">Home</a></li>
           <li><a href="../Vista/actualizarinformacion.html">Actualizar Información</a></li>
-          <li class="active"><a>Registrar Publicación</a></li>
+          <li><a href="../Vista/registroPublicacion.html">Registrar Publicación</a></li>
           <li><a href="../Vista/produccionIntelectual.html">Producción Intelectual</a></li>
-            <li><a href="../Vista/publicacionesDudosas.html">Publicaciones Dudosas</a></li>
+            <li class="active"><a>Publicaciones Dudosas</a></li>
         </ul>
       </div>
     </nav>
@@ -55,50 +56,12 @@
         <div class="row">
                <section class="latest section">
                     <div class="section-inner">
-                        <h2 class="heading">Registro de Publicaciones</h2>
+                        <h2 class="heading">Revisa las siguientes publicaciones</h2>
                         <center>
                         <hr class="divider" />
-                        <div class="content">   
+                        <div class="content" id="tablasDudosas">			
                         </div><!--//content-->  
-							<div class="form-group">
-								<label >Titulo de la publicación</label>
-								<input type="text" class="form-control infoPublicacion">
-							</div>
-                            <div class="form-group">
-                            <label >Tipo  de la publicación</label>
-                                <select class="form-control infoPublicacion">
-                                    <option>libro</option>
-                                    <option>articulo</option>
-                                    <option>capitulo</option>
-                                    <option>conferencia</option>
-                                </select>
-                            </div>
-                            <div class="form-group">
-                                <label >ISBN o ISSN de la publicación</label>
-                                <input type="text" class="form-control infoPublicacion">
-                            </div>
-                            <div class="form-group">
-                                <label >Lugar de la publicación</label>
-                                <input type="text" placeholder="Colombia IEEE Xplore Digital Libray" class="form-control infoPublicacion">
-                            </div>
-                            <div class="form-group">
-                                <label >Editorial de la publicación</label>
-                                <input type="text" class="form-control infoPublicacion">
-                            </div>
-                            <div class="form-group">
-                                <label >Fecha inicio de la publicación</label>
-                                <input type="text" placeholder="YYYY-MM-DD" class="form-control infoPublicacion">
-                            </div>
                         </center>
-                        <center id="autores"></center>
-                        <button type="button" class="btn btn-success btn-sm" onclick="addAutor()">
-                            <span class="glyphicon glyphicon-plus"></span> Agregar Autor
-                        </button>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removeAutor()">
-                            <span class="glyphicon glyphicon-minus"></span> Eliminar Autor
-                        </button>
-                        <button type="button" class="btn btn-primary btn-block" onclick="guardarInfo()">Guardar Publicación</button>
-                        <button type="button" class="btn btn-danger btn-block" onclick="goHome()">Cancelar</button>
                     </div><!--//section-inner-->        
                 </section><!--//section-->            
             </div><!--//secondary-->
@@ -121,6 +84,6 @@
 
     <!-- custom js -->
     <script type="text/javascript" src="../assets/js/main.js"></script>   
-    <script type="text/javascript" src="../js/registroPublicacion.js"></script>   
+    <script type="text/javascript" src="../js/publicacionesDudosas.js"></script>   
 </body>
 </html> 

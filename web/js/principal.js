@@ -1,10 +1,15 @@
 window.onload = function(){ 
-     
+    
+    document.getElementById("nombre").innerHTML = "Alexandra Pomares Quimbaya";
+    document.getElementById("departamento").innerHTML = "Ingeniería de Sistemas";
+    
     var json= JSON.parse(sessionStorage.getItem("principal"));
     //alert(sessionStorage.getItem("principal"));
     var nombre = document.getElementById("nombre");
     var categoria = document.getElementById("categoria");
     var nombreUniversidad = document.getElementById("nombreUniversidad");
+    var departamento = document.getElementById("departamento");
+    departamento.innerHTML = json.datosBasicos.nombreDepartamento;
     var nacionalidad = document.getElementById("nacionalidad");
      nombre.innerHTML =json.datosBasicos.nombre;
      categoria.innerHTML = "Categoria : "+ json.datosBasicos.categoria;
@@ -54,17 +59,4 @@ window.onload = function(){
             myMedal.innerHTML = "<img class='medalla' src='../assets/images/medallas/noMedalla.png'></>" + "<p>" + json.medallas[i].nombreMedalla + "</p>";     
         document.getElementById("medallasProfesor").appendChild(myMedal); 
      }
-}
-
-function actualizarInfo(){
-    
-    window.location.href='../Vista/actualizarinformacion.html';
-}
-
-function registrarPub() {
-    window.location.href='../Vista/registroPublicacion.html';
-}
-
-function verPublicaciones() {
-    window.location.href='../Vista/produccionIntelectual.html';
 }
