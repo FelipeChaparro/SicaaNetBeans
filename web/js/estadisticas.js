@@ -1,5 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNB/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
 var myChart;
 
 window.onload = function(){

@@ -2,7 +2,7 @@ var jsonCVLAC;
 var jsonReserch;
 var jsonGoogle;
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNB/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
 
 function start(){
 	var text = document.getElementById("text");

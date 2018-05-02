@@ -1,5 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNB/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
 
 var contAutor = 1;
 var global_autores = {};
@@ -31,6 +31,7 @@ function guardarInfo(){
             ]
         }
     }*/
+    var json = JSON.parse(sessionStorage.getItem("principal"));
     var data_publicacion = new Object();
     var infoPublicacion = new Object();
     var listaAutores = [];

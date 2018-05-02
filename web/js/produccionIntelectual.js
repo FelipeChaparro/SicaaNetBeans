@@ -1,15 +1,16 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNB/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
 var misPublicaciones = [];
+var userToken;
 window.onload = function(){
      
-    //var json = JSON.parse(sessionStorage.getItem("principal"));
-    var nombre = document.getElementById("nombre");
-    var departamento = document.getElementById("departamento");
-    //departamento.innerHTML = json.datosBasicos.nombreDepartamento;
-    //nombre.innerHTML =json.datosBasicos.nombre;
-    //var user_login_data = "token=" + json.token;
-    var user_login_data = "token=1234";
+    var SESSION = JSON.parse(sessionStorage.getItem("principal"));
+    document.getElementById("nombre").innerHTML = SESSION.nombre;
+    document.getElementById("departamento").innerHTML = SESSION.nombreDepartamento;
+    userToken = SESSION.token;
+    
+    var user_login_data = "token=" + userToken;
+
     $("#loaderModificacion").hide();
 	getServelet(SERVER_URL+"PublicacionesServelet", null, user_login_data, function(serveletResponse) {
         var respuesta = JSON.parse(serveletResponse);
@@ -106,7 +107,7 @@ function verificarPublicacion(i) {
     var mPublicacion = document.getElementById("publicacion" + i);
     var data_to_send = new Object();
     var mBtnPublicacion, mBtnVerificar, mBtnRechazar;
-    data_to_send.token = "1234";
+    data_to_send.token = userToken;
     data_to_send.idPublicacion = misPublicaciones[i].ID;
     data_to_send.nuevoEstado = "Verificado";
 
@@ -139,7 +140,7 @@ function eliminarPublicacion(i) {
     $("#loaderPublicacion" + i).show();
     var mPublicacion = document.getElementById("publicacion" + i);
     var data_to_send = new Object();
-    data_to_send.token = "1234";
+    data_to_send.token = userToken;
     data_to_send.idPublicacion = misPublicaciones[i].ID;
 
     if (confirm("¿Desea eliminar esta publicación?")) {

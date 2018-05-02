@@ -1,5 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNB/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
 
 function buscar(){
        //var text = '{"fechaInicial":"","fechaFinal":"","nombre":"Alexandra Pomares Quimbaya","departamento":"Ingenieria de sistemas","titulo":"Mis putas tristes","tipo":"libro"}';

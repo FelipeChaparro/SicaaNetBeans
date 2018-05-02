@@ -1,5 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNB/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
 
 /**
  * Metodo para hacer login de usuario y traer los roles a los que tiene acceso
@@ -51,7 +51,7 @@ function getServelet(url,data,param,callback) {
 
 function postServelet(url,data,callback) {
     var xhr = new XMLHttpRequest();
-    xhr.open('post', url, false);
+    xhr.open('post', url, true);
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
             return callback(xhr.responseText);
