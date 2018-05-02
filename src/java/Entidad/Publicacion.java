@@ -12,10 +12,47 @@ import java.util.List;
  * @author JUANCHO
  */
 public class Publicacion {
-  private String titulo;
+   private String titulo;
    private String fecha;
    private List<String>autores;
    private String tipo;
+   private String lugar;
+   private String editorial;
+   private String ISBN;
+   private String ISSN;
+
+    public String getISBN() {
+        return ISBN;
+    }
+
+    public void setISBN(String ISBN) {
+        this.ISBN = ISBN;
+    }
+
+    public String getISSN() {
+        return ISSN;
+    }
+
+    public void setISSN(String ISSN) {
+        this.ISSN = ISSN;
+    }
+   
+    public String getEditorial() {
+        return editorial;
+    }
+
+    public void setEditorial(String editorial) {
+        this.editorial = editorial;
+    }
+   
+
+    public String getLugar() {
+        return lugar;
+    }
+
+    public void setLugar(String lugar) {
+        this.lugar = lugar;
+    }
    
 	public String getTitulo() {
 	return titulo;

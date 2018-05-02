@@ -34,10 +34,4 @@ public class Autor {
         this.id = id;
     }
 
-    
-    
-    
-    
-    
-    
 }

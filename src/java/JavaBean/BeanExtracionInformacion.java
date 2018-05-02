@@ -3,6 +3,7 @@ package JavaBean;
 import com.mysql.jdbc.Connection;
 import conexionBD.Cone;
 import java.io.IOException;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -271,15 +272,29 @@ public class BeanExtracionInformacion {
 			  String issn=parts2[0].trim();
 			  //System.out.println(ISSN);
 			  
-			  String editorial=parts2[1].trim();	  
+			  String editorial=parts2[1].trim();
+                          Date sqlDate1 = new java.sql.Date(0);
+                                 String[] edi=editorial.split("DOI");
+                                 if(edi.length >=1){
+                                     String [] fecha=edi[0].split(",");
+                               
+                                     String fechaP=fecha[fecha.length-2].trim();
+                                 
+                                 if(!fechaP.equals("")){
+                                 int fechaArt=Integer.parseInt(fechaP);
+                                 sqlDate1=new java.sql.Date(fechaArt-1900,0,1);
+                             }   
+                            }
+                           String[] editorial1=editorial.split("Palabras:");
 			  
 			  JSONObject arti = new JSONObject();
 			  arti.put("titulo", titulo);
 			  arti.put("lugarPublicacion", en);
-			  arti.put("ISSN",issn);
+			  arti.put("codigoPublicacion",issn);
 			  arti.put("tipo","articulo");
 			  arti.put("autor",autor);
-			  arti.put("editorial", editorial);
+                          arti.put("fecha",sqlDate1.toString());
+			  arti.put("editorial", editorial1[0]);
 				
 				
 			  articulos.add(arti);
@@ -339,31 +354,47 @@ public class BeanExtracionInformacion {
 		      }
 			  
 			  String titulo=parts[1].trim();
-			  System.out.println(titulo);
-			  
+			 
 			  parts = libro.split("En:");
 			  //System.out.println(parts[1]);
 			  parts1=parts[1].split("ed:");
 			  
 			  // Lugar de publicacion
 			  String en=parts1[0];
-			  System.out.println(parts1[0]);
+                          String fecha="";
+                           
+                            Date sqlDate1 = new java.sql.Date(0);
+                             
+                                 String[] lug=en.split(" ");
+                                 if(lug.length>=3){
+                                     
+                                     String fe=lug[2].substring(0,lug[2].length()-1);
+                                           
+                                       
+                                       int fechaArt=Integer.parseInt(fe.trim());
+                                       sqlDate1=new java.sql.Date(fechaArt-1900,0,1); 
+                                       fecha=sqlDate1.toString();
+                                     
+                                 }
+			  
 			  String[] parts2=parts1[1].split("ISBN:");
 			  // Codigo ISSN
 			  String editorial=parts2[0];
-			  System.out.println(editorial);
+		
 			  
 			  String [] parts4=parts2[1].split("v.");
 			  String ISBN=parts4[0].trim();
 			  
-			  System.out.println(ISBN);
+                          
+                          
 			  
 			  JSONObject lib = new JSONObject();
 			  lib.put("titulo", titulo);
 			  lib.put("lugarPublicacion", en);
-			  lib.put("ISBN",ISBN);
+			  lib.put("codigoPublicacion",ISBN);
 			  lib.put("tipo","libro");
 			  lib.put("autor",autor);
+                          lib.put("fecha",fecha);
 			  lib.put("editorial", editorial);
 				
 				
@@ -538,7 +569,7 @@ public class BeanExtracionInformacion {
 				        	String [] parts4=parts3[1].split("ed:");
 				        	//ISBN
 				        	//System.out.println(parts4[0]);
-				        	capituloLibros.put("ISBN", parts4[0].trim());
+				        	capituloLibros.put("codigoPublicacion", parts4[0].trim());
 				        	String [] parts5=parts4[1].split("Palabras:");
                                                 //ed
                                                 String ed;
@@ -552,8 +583,11 @@ public class BeanExtracionInformacion {
 				        	}
                                                 
                                                 capituloLibros.put("editorial",ed);
-				        	
-				        	
+				        	String[] obtfecha=ed.split(",");
+                                                int fechaArt=Integer.parseInt(obtfecha[obtfecha.length-1]);
+                                                Date sqlDate1=new java.sql.Date(fechaArt-1900,0,1);
+                                                capituloLibros.put("fecha", sqlDate1.toString());
+				        	  
 				        	
 				          }
 				       

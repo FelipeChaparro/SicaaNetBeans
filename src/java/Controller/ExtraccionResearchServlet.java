@@ -5,6 +5,7 @@
  */
 package Controller;
 
+
 import JavaBean.BeanExtraccionResearch;
 import java.io.IOException;
 import java.io.PrintWriter;
