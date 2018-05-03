@@ -30,9 +30,54 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+<style>
+    button:focus {outline: none !important;}
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+    }
+    .smallLoader {
+      border: 5px solid #f3f3f3;
+      -webkit-animation: spin 1s linear infinite;
+      animation: spin 1s linear infinite;
+      border-top: 5px solid #555;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+    }
+    
+    /* Safari */
+    @-webkit-keyframes spin {
+      0% { -webkit-transform: rotate(0deg); }
+      100% { -webkit-transform: rotate(360deg); }
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+</style>
 </head>
 
 <body>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <ul style="display: inline-block" class="nav navbar-nav">
+          <li><a href="../Vista/principal.html">Home</a></li>
+          <li class="active"><a>Actualizar Información</a></li>
+          <li><a href="../Vista/registroPublicacion.html">Registrar Publicación</a></li>
+          <li><a href="../Vista/produccionIntelectual.html">Producción Intelectual</a></li>
+            <li><a href="../Vista/publicacionesDudosas.html">Publicaciones Dudosas</a></li>
+             <li><a href="../Vista/buscarPublicacion.html">Buscar Publicación</a></li>
+             <li><a href="../Vista/estadisticas.html">Estadísticas</a></li>
+        </ul>
+      </div>
+    </nav>
+    
     <!-- ******HEADER****** --> 
     <header class="header">
         <div class="container"> 
@@ -44,7 +89,7 @@
             <a class="btn btn-cta-primary pull-right" href="http://themes.3rdwavemedia.com/" target="_blank"><i class="fa fa-sign-out"></i>Logout</a>              
         </div><!--//container-->
     </header><!--//header-->
-       
+    
 <div class="container sections-wrapper">
     <section class="latest section">
         <div class="section-inner">
@@ -72,6 +117,7 @@
                         <label for="usr" style="margin-top: 10px;">URL CvLAC:</label>
                         <input type="text" class="form-control" id="urlcvlac">
                         <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start1()"> Buscar </button>
+                        <center><div style="display: none" class="loader" id="mLoaderCvLAC"></div></center>
                     </div>
                     <center>
                         <h3 id="nombre"></h3>
@@ -170,6 +216,7 @@
                     <label style="margin-top: 10px;" for="usr"> URL ResearchGate:</label>
                     <input type="text" class="form-control" id="urlresearch">
                     <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start2()"> Buscar </button>
+                    <center><div style="display: none" class="loader" id="mLoaderResearch"></div></center>
                 </div>
 
                 <h4> Articulos </h4>
@@ -234,6 +281,7 @@
                     <label style="margin-top: 10px;" for="usr"> URL Google Scholar:</label>
                     <input type="text" class="form-control" id="urlschoolar">
                     <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start3()"> Buscar </button>
+                    <center><div style="display: none" class="loader" id="mLoaderGoogle"></div></center> 
                 </div>
               
                 <h4> Articulos </h4>
@@ -257,6 +305,7 @@
         </div>
 
         <button type="button" id="GuardarInfo" class="btn btn-success" onclick="GuardarInformacion()"> Guardar </button>
+                
     </div>
     </div>
     </section>
