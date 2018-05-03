@@ -12,7 +12,8 @@ function login(){
     var user_login_data = {
             "user_name":user_name,
             "user_pass":user_psw,
-            "server_url":SERVER_URL
+            "server_url":SERVER_URL,
+            "action":"LOGIN"
     };
     document.getElementById("loaderLogin").style.display = "block";
     document.getElementById("login-image").style.display = "none";
