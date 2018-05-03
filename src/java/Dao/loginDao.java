@@ -66,7 +66,7 @@ public class loginDao {
         }
     }
     
-    public JSONObject getRolesByUserMail (String user_mail) throws SQLException{
+    public JSONObject getRolesByUserMail (String user_id) throws SQLException{
         JSONObject respuesta = new JSONObject();
         respuesta.put("code", 0);
         respuesta.put("description", "Operacion exitosa");
@@ -77,8 +77,8 @@ public class loginDao {
             Statement stmt = null;
             ResultSet rs;
             stmt = conexion.createStatement();
-            System.out.println("select * from roles_usuarios where user_correo = '"+user_mail+"'");
-            rs = stmt.executeQuery("select * from roles_usuarios where user_correo = '"+user_mail+"'");
+            System.out.println("select * from roles_usuarios where user_id = '"+user_id+"'");
+            rs = stmt.executeQuery("select * from roles_usuarios where user_id = '"+user_id+"'");
             while (rs.next()) {
                 JSONObject rol = new JSONObject();
                 rol.put("id", rs.getString("rol_id").toString());
