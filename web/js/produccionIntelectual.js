@@ -113,6 +113,7 @@ function verificarPublicacion(i) {
 
     postServlet(SERVER_URL + "NuevoEstadoPublicacionServlet", JSON.stringify(data_to_send), function(servletResponse) {
         var response = JSON.parse(servletResponse);
+        document.getElementById("btnVerificar" + i).innerHTML = "<span class='glyphicon glyphicon-ok'> </span>Verificar";
         $("#loaderPublicacion" + i).hide();
         if (response.code == 0) {
             mBtnPublicacion = document.getElementById("btnPublicacion" + i);
@@ -131,7 +132,7 @@ function verificarPublicacion(i) {
 
             document.getElementById("btnRechazar" + i).innerHTML = "<span class='glyphicon glyphicon-remove'></span> Eliminar";
         }
-        else
+        else 
             alert("Fallo código: " + response.code.toString() + " - Descripción: " + response.description);
 });
 }
@@ -254,19 +255,19 @@ function refresh_Data (i, newData) {
     misPublicaciones[i].Titulo = newData.Titulo;
     document.getElementById("title-" + i).innerHTML = misPublicaciones[i].Titulo;
     
-    misPublicaciones[i].Tipo = newData.Tipo;
+    misPublicaciones[i].Tipo = ((newData.Tipo == null) ? "No definido" : newData.Tipo);
     document.getElementById("type-" + i).innerHTML = "<span style='color:#000000'>Tipo: </span>" + misPublicaciones[i].Tipo;
     
-    misPublicaciones[i].codigoPublicacion = newData.codigoPublicacion;
+    misPublicaciones[i].codigoPublicacion = ((newData.codigoPublicacion == null) ? "No definido" : newData.codigoPublicacion);
     document.getElementById("code-" + i).innerHTML = "<span style='color:#000000'>ISBN o ISSN: </span>" + misPublicaciones[i].codigoPublicacion;
     
-    misPublicaciones[i].Lugar = newData.Lugar;
+    misPublicaciones[i].Lugar = ((newData.Lugar == null) ? "No definido" : newData.Lugar);
     document.getElementById("place-" + i).innerHTML = "<span style='color:#000000'>Lugar: </span>" + misPublicaciones[i].Lugar;
     
-    misPublicaciones[i].Editorial = newData.Editorial;
+    misPublicaciones[i].Editorial = ((newData.Editorial == null) ? "No definido" : newData.Editorial);
     document.getElementById("editorial-" + i).innerHTML = "<span style='color:#000000'>Editorial: </span>" + misPublicaciones[i].Editorial;
     
-    misPublicaciones[i].FechaInicio = newData.FechaInicio;
+    misPublicaciones[i].FechaInicio = ((newData.FechaInicio == null) ? "No definido" : newData.FechaInicio);
     document.getElementById("fecha-" + i).innerHTML = "<span style='color:#000000'>Fecha: </span>" + misPublicaciones[i].FechaInicio;
 }
 

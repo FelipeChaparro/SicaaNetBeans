@@ -6,8 +6,10 @@ var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
 
 window.onload = function(){
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
-    document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
-    document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+    if (SESSION != null) {
+        document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+        document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+    }
 }
 function start(){
 	var text = document.getElementById("text");
@@ -17,14 +19,14 @@ function start(){
 }
 
 function start1(){
-       
+    $("#mLoaderCvLAC").show();
 	var respuesta;
 	var url=document.getElementById("urlcvlac").value;
 	var params = "urlcvlac="+url;
 	getServelet(SERVER_URL+'extraccionSistemasExternosServlet',null, params, function(serveletResponse) {
 	   //text.innerHTML = serveletResponse;
 	    respuesta=serveletResponse;
-            
+        $("#mLoaderCvLAC").hide();
 	    var json=JSON.parse(respuesta);
 	    jsonCVLAC=respuesta;
 
@@ -230,13 +232,14 @@ function deleteRow(r, nombreTabla) {
 
 
 function start2(){
-	
+	$("#mLoaderResearch").show();
 	var respuesta;
 	var url=document.getElementById("urlresearch").value;
 	var params = "urlresearch="+url;
 	getServelet(SERVER_URL+'ExtraccionResearchServlet', null,params,function(serveletResponse) {
             respuesta=serveletResponse;
             jsonReserch=respuesta;
+            $("#mLoaderResearch").hide();
             var json=JSON.parse(respuesta);
            // alert(jsonReserch);
            // document.getElementById("jsonR").innerHTML=jsonReserch;
@@ -370,12 +373,13 @@ function start2(){
 }
 
 function start3(){
-	
+	$("#mLoaderGoogle").show();
     var respuesta;
     var url=document.getElementById("urlschoolar").value;
     var params = "urlschoolar="+url;
     getServelet(SERVER_URL+'ExtraccionGoogleSchoolar', null,params, function(serveletResponse) {
         respuesta=serveletResponse;
+        $("#mLoaderGoogle").hide();
         var json=JSON.parse(respuesta);
         jsonGoogle= json;
         var arti=json.publicaciones;
