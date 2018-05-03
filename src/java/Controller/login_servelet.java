@@ -26,10 +26,7 @@ import org.json.simple.parser.ParseException;
  */
 @WebServlet("/login_servelet")
 public class login_servelet extends HttpServlet {
-       
-    String SERVER_URL = "https://sicaadev.mybluemix.net/";
-    //String SERVER_URL = "http://localhost:8080/SicaaNB/";
-    
+  
     /**
      * @see HttpServlet#HttpServlet()
      */
@@ -74,6 +71,9 @@ public class login_servelet extends HttpServlet {
             JSONParser parser = new JSONParser();
             JSONObject user_data = (JSONObject) parser.parse(json);
             System.out.println("Data: "+user_data.get("user_name"));
+            
+            String SERVER_URL = user_data.get("server_url").toString();
+            
             loginDao loginDao = new loginDao();
             parametrosSistemaDao parametrosDao = new parametrosSistemaDao();
             
@@ -110,7 +110,7 @@ public class login_servelet extends HttpServlet {
                          * Si se guarda token con exito se traen los roles del usuario
                          */
                         if (Integer.parseInt(respuesta_saveTokenVO.get("code").toString()) == 0) {
-                            respuesta_roles_usuariosVO = loginDao.getRolesByUserMail(user_data.get("user_name").toString());
+                            respuesta_roles_usuariosVO = loginDao.getRolesByUserMail(user_id);
                             /**
                              * Si trae roles con exito busco en tabla de roles el label y la referencia
                              */
