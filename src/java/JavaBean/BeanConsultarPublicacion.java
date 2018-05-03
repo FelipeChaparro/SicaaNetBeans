@@ -26,45 +26,70 @@ public class BeanConsultarPublicacion {
     }
     
     public JSONObject buscarPorFiltros(String json){
+       
         JSONObject respuesta = new JSONObject();
         JSONParser parser = new JSONParser();
         System.out.println(json);
         try {
+                    
             JSONObject filtros = (JSONObject) parser.parse(json);
-            
-            String fechaInicial=(String) filtros.get("fechaInicial");
-            String fechaFinal=(String) filtros.get("fechaFinal");
-            String nombre=(String) filtros.get("nombre");
-            String departamento=(String) filtros.get("departamento");
-            String titulo=(String) filtros.get("titulo");
-            String tipo=(String) filtros.get("tipo");
-            
-            
-            
-           
-            filtrosPublicacionDao dao= new filtrosPublicacionDao();
-            List<Publicacion> publicaciones=dao.buscarPublicacion(fechaInicial, fechaFinal, nombre, titulo, departamento, tipo);
-           
-            JSONArray arr = new JSONArray();
-            for(Publicacion p : publicaciones){
-                JSONObject res = new JSONObject();
+         
+            JSONObject respuesta_beanEstadisticas = new JSONObject();
                 
-                res.put("titulo", p.getTitulo());
-                res.put("fecha",p.getFecha());
-                res.put("editorial", p.getEditorial());
-                res.put("lugar",p.getLugar());
-                res.put("ISSN", p.getISSN());
-                res.put("ISBN", p.getISBN());
-                arr.add(res);
-                
-            } 
+            String FechaInicio=(String) filtros.get("FechaInicio");
+            String FechaFin=(String) filtros.get("FechaFin");
+            String Nombre=(String) filtros.get("Nombre");
+            String Departamento=(String) filtros.get("Departamento");
+            JSONArray Rol=(JSONArray) filtros.get("Rol");
+            JSONArray Tipo=(JSONArray) filtros.get("Tipo");
             
-            respuesta.put("publicaciones", arr);
+            String fechaQueryStatement = null;
+            String nombreQueryStatement = null;
+            String rolQueryStatement = null;
+            String tipoQueryStatement = null;
+
+            if (Tipo.size() > 0)
+                tipoQueryStatement = "";
+             if (Rol.size() > 0)
+                rolQueryStatement = "";
             
-            } catch (ParseException ex) {
-            Logger.getLogger(BeanConsultarPublicacion.class.getName()).log(Level.SEVERE, null, ex);
+            if (FechaInicio != null && FechaFin != null)
+                fechaQueryStatement = "(PU.FechaInicio between '" + FechaInicio + "' and '" + FechaFin +"')";
+          
+            if (Nombre != null)
+                nombreQueryStatement = "(PE.Nombre LIKE '%"+ Nombre +"%')";
+            
+            for (int i = 0; i<Rol.size(); i++) {
+                if (i == 0)
+                    rolQueryStatement += "(";
+                rolQueryStatement += "PP.rol = '"+Rol.get(i).toString()+"'";
+                if (i != Rol.size() - 1)
+                    rolQueryStatement += " or ";
+                if (i == Rol.size() - 1)
+                    rolQueryStatement += ")";
             }
+            System.out.println("rolQueryStatement: "+rolQueryStatement);
             
-         return respuesta;
+            for (int i = 0; i<Tipo.size(); i++) {
+                if (i == 0)
+                    tipoQueryStatement += "(";
+                tipoQueryStatement += "PU.tipo = '"+Tipo.get(i).toString()+"'";
+                if (i != Tipo.size() - 1)
+                    tipoQueryStatement += " or ";
+                if (i == Tipo.size() - 1)
+                    tipoQueryStatement += ")";
+            }
+            System.out.println("tipoQueryStatement: "+tipoQueryStatement);
+            filtrosPublicacionDao filtrosDao= new filtrosPublicacionDao();
+            respuesta = filtrosDao.getByFiltros(fechaQueryStatement,nombreQueryStatement,rolQueryStatement,tipoQueryStatement);
+                        
+        } catch (ParseException ex) {
+            respuesta.put("code", 9997);
+            respuesta.put("description", "Error de sistema");
+            Logger.getLogger(BeanConsultarPublicacion.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            
+        return respuesta;
+    
     }
 }
