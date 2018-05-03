@@ -131,7 +131,7 @@ public class loginDao {
                 JSONObject rolEncontrado = new JSONObject();
                 rolEncontrado.put("id", rs.getString("rol_id"));
                 rolEncontrado.put("label", rs.getString("label"));
-                rolEncontrado.put("referencia", rs.getString("referencia").toString().replace("#URL",SERVER_URL));
+                rolEncontrado.put("referencia", rs.getString("referencia").toString().replace("#URL",SERVER_URL+"/"));
                 System.out.println("Role de BD: "+rolEncontrado.toJSONString());
                 arregloRoles.add(rolEncontrado);
             }
