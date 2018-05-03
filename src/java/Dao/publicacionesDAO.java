@@ -152,7 +152,7 @@ public class publicacionesDAO {
             stmt.execute(query);
             // Insertar autores adicionales en Persona_Publicacion
             JSONArray autores = (JSONArray) newPublicacion.get("autores");
-            System.out.println(autores);
+            //System.out.println(autores);
             if (autores != null) { 
                 for (int i = 0; i < autores.size(); i++) {
                     JSONObject autor = (JSONObject) autores.get(i);
