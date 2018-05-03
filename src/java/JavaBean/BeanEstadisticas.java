@@ -69,7 +69,7 @@ public class BeanEstadisticas {
                 if (i != Rol.size() - 1)
                     rolQueryStatement += " or ";
                 if (i == Rol.size() - 1)
-                    rolQueryStatement += " or PP.rol is NULL)";
+                    rolQueryStatement += ")";
             }
             System.out.println("rolQueryStatement: "+rolQueryStatement);
             
@@ -80,7 +80,7 @@ public class BeanEstadisticas {
                 if (i != Tipo.size() - 1)
                     tipoQueryStatement += " or ";
                 if (i == Tipo.size() - 1)
-                    tipoQueryStatement += " or PU.tipo is NULL)";
+                    tipoQueryStatement += ")";
             }
             System.out.println("tipoQueryStatement: "+tipoQueryStatement);
             
