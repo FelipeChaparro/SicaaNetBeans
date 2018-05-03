@@ -1,67 +1,156 @@
 <!DOCTYPE html>
-<html lang="en">
+<!--[if IE 8]> <html lang="en" class="ie8"> <![endif]-->  
+<!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
+<!--[if !IE]><!--> <html lang="es"> <!--<![endif]-->  
 <head>
-  <title>Bootstrap Example</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script type="text/javascript" src="../js/buscarPublicacion.js"></script>
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.min.js"></script>
-  <link rel="stylesheet" href="http://code.jquery.com/ui/1.10.1/themes/base/jquery-ui.css" />
-   
-</head>
+    <title>Consulta información por filtros| SICAA</title>
+    <!-- Meta -->
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
+    <meta name="author" content="SICAA">    
+    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
+    <!-- Global CSS -->
+    <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
+    <!-- Plugins CSS -->
+    <link rel="stylesheet" href="../assets/plugins/font-awesome/css/font-awesome.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    <!-- Theme CSS -->  
+    <link id="theme-style" rel="stylesheet" href="../assets/css/styles.css">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+        button:focus {outline: none !important;}
+        .smallLoader {
+          border: 5px solid #f3f3f3;
+          -webkit-animation: spin 1s linear infinite;
+          animation: spin 1s linear infinite;
+          border-top: 5px solid #555;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+        }
+        /* Safari */
+        @-webkit-keyframes spin {
+          0% { -webkit-transform: rotate(0deg); }
+          100% { -webkit-transform: rotate(360deg); }
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+    </style>
+</head> 
+
 <body>
-
-<div class="container">
-  <h2>Buscar publicación</h2>
-  
-  <form>
+    <nav class="navbar navbar-default">
+      <div class="container-fluid">
+        <ul class="nav navbar-nav">
+          <li><a href="../Vista/principal.html">Home</a></li>
+          <li><a href="../Vista/actualizarinformacion.html">Actualizar Información</a></li>
+          <li class="active"><a>Ver Estadísticas</a></li>
+          <li><a href="../Vista/produccionIntelectual.html">Producción Intelectual</a></li>
+        </ul>
+      </div>
+    </nav>
+    <!-- ******HEADER****** --> 
+    <header class="header">
+        <div class="container"> 
+            <img class="profile-image img-responsive pull-left" src="../assets/images/profile.png" alt="Alexandra Pomares" width="200px" height="200px" />
+            <div class="profile-content pull-left">
+                <h1 class="name" id="nombre"></h1>
+                <h2 class="desc" id="departamento"></h2>
+            </div><!--//profile-->
+            <a class="btn btn-cta-primary pull-right" href="http://themes.3rdwavemedia.com/" target="_blank"><i class="fa fa-sign-out"></i>Logout</a>              
+        </div><!--//container-->
+    </header><!--//header-->
     
-    <div id="datepicker"></div>
-    <div class="form-group">
-      <label for="nombre">Nombre profesor</label>
-      <input type="text" class="form-control" id="nombre">
-    </div>
-    <div class="form-group">
-      <label for="fechaInicial">Fecha Inicial</label>
-      <input type="text" class="form-control" id="fechaInicial">
-    </div>
-     <div class="form-group">
-      <label for="fechaFinal">Fecha Final</label>
-      <input type="text" class="form-control" id="fechaFinal">
-    </div>
-    <div class="form-group">
-      <label for="titulo">Titulo</label>
-      <input type="text" class="form-control" id="titulo">
-    </div>
-    <div class="form-group">
-      <label for="tipo">Tipo</label>
-      <input type="text" class="form-control" id="tipo">
-    </div>
-  </form>
-  <button type="button" class="btn btn-primary" onclick="buscar()"> Buscar </button>
-  <table class="table table-bordered" id="tabla">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Lugar de publicación</th>
-                            <th> ISSN </th>
-                            <th> ISBN </th>
-                            <th> Fecha </th>
-                            <th> Editorial </th>
-                            <th> Tipo </th>
-                            
-                        </tr>
-                    </thead>
-                    <tbody>
+    <div class="container sections-wrapper">
+        <div class="row">
+               <section class="latest section">
+                    <div class="section-inner">
+                        <h2 class="heading">Consulta por filtros</h2>
+                        <hr class="divider" />
+                        <div class="form-group">
+                            <label >Nombre del Autor:</label>
+                            <input id="autor-name" style="width: 300px; margin-left: 10px;" type="text" class="form-control" placeholder="Ingrese el nombre y el apellido">
+                        </div>
+                        <div class="form-group" style="margin-top: 20px; width: 300px;">
+                            <label>Departamento: </label>
+                            <select style="margin-left: 10px;" class="form-control" id="dp-name">
+                                <option>Sin especificar</option>
+                                <option>Todos</option>
+                                <option>Ingeniería de Sistemas</option>
+                            </select>
+                        </div>
+                        <div style="margin-top: 20px;" class="input-group">
+                            <label style="display: block;">Rol:</label>
+                            <label style="margin-left: 10px;" class="checkbox-inline"><input class="cb-rol" type="checkbox" name="Profesor">Profesor</label>
+                            <label class="checkbox-inline" name="Estudiante"><input class="cb-rol" type="checkbox" name="Estudiante">Estudiante</label>
+                            <label class="checkbox-inline" name="Externo"><input class="cb-rol" type="checkbox" name="Externo">Externo</label>
+                        </div>
+                        <div style="margin-top: 20px;" class="input-group">
+                            <label style="display: block;">Tipo:</label>
+                            <label style="margin-left: 10px;" class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Libro">Libro</label>
+                            <label class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Capitulo">Capítulo</label>
+                            <label class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Articulo">Artículo</label>
+                            <label class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Conferencia">Conferencia</label>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label >Fecha Desde:</label>
+                            <input id="fecha-inicio" style="width: 300px; margin-left: 10px;" type="text" class="form-control" placeholder="YYYY-MM-DD">
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label >Fecha Hasta:</label>
+                            <input id="fecha-fin" style="width: 300px; margin-left: 10px;" type="text" class="form-control" placeholder="YYYY-MM-DD">
+                        </div>
+                        
+                        <button type="button" class="btn btn-primary" onclick="buscar()"> Buscar </button>
+                        <table class="table table-bordered" id="tabla">
+                                          <thead class="thead-dark">
+                                              <tr>
+                                                  <th> Titulo </th>
+                                                  <th> Editorial </th>
+                                                  <th> Fecha </th>
+                                                  <th> Lugar de publicación</th>
+                                                  <th> Codigo publicación </th>
+                                                  <th> Tipo </th>
+                                
+                                              </tr>
+                                          </thead>
+                                          <tbody id="tbodyid">
 
-                    </tbody>
-                </table>
-</div>
-    
+                                          </tbody>
+                                      </table>
+                        
+                    </div><!--//section-inner-->        
+                </section><!--//section-->            
+            </div><!--//secondary-->
+    </div><!--//masonry-->
 
+   
+    <!-- ******FOOTER****** --> 
+    <footer class="footer">
+        <div class="container text-center">
+                <small class="copyright">Designed by Sicaa Team</small>
+        </div><!--//container-->
+    </footer><!--//footer-->
+ 
+    <!-- Javascript -->          
+    <script type="text/javascript" src="../assets/plugins/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script>    
+    <script type="text/javascript" src="../assets/plugins/jquery-rss/dist/jquery.rss.min.js"></script> 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 
+    <!-- custom js -->
+    <script type="text/javascript" src="../assets/js/main.js"></script>   
+    <script type="text/javascript" src="../js/buscarPublicacion.js"></script>   
 </body>
-</html>
+</html> 
