@@ -5,14 +5,9 @@
  */
 package Controller;
 
-import JavaBean.BeanExtracionInformacion;
 import JavaBean.BeanPublicacionesDudosas;
-import JavaBean.GuardarInformacion;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -25,9 +20,34 @@ import org.json.simple.JSONObject;
  *
  * @author Administrador
  */
-@WebServlet(name = "PublicacionDudosaServlet", urlPatterns = {"/PublicacionDudosaServlet"})
-public class PublicacionDudosaServlet extends HttpServlet {
+@WebServlet(name = "PublicacionNoDudosaServlet", urlPatterns = {"/PublicacionNoDudosaServlet"})
+public class PublicacionNoDudosaServlet extends HttpServlet {
 
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
+        try (PrintWriter out = response.getWriter()) {
+            /* TODO output your page here. You may use following sample code. */
+            out.println("<!DOCTYPE html>");
+            out.println("<html>");
+            out.println("<head>");
+            out.println("<title>Servlet PublicacionNoDudosaServlet</title>");            
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet PublicacionNoDudosaServlet at " + request.getContextPath() + "</h1>");
+            out.println("</body>");
+            out.println("</html>");
+        }
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -41,16 +61,7 @@ public class PublicacionDudosaServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-                BeanPublicacionesDudosas bean=new BeanPublicacionesDudosas();
-		String url = request.getParameter("token");
-                String id="1";
-		JSONObject retorno=bean.obtenerPublicacionDudosa(id);
-		//response.setContentType("text/plain");
-		//System.out.println("retorno  :"+retorno);
-		response.setContentType("application/json");
-		response.getWriter().print(retorno);
-        
+       
     }
 
     /**
@@ -65,17 +76,15 @@ public class PublicacionDudosaServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-      
              System.out.println("Estoy en post");
              String json=request.getReader().lines().collect(Collectors.joining());
              BeanPublicacionesDudosas pubDudo = new BeanPublicacionesDudosas();
-             JSONObject obj=pubDudo.insertarPublicacion(json);
+             JSONObject obj=pubDudo.cambiarPublicacion(json);
              response.setStatus(HttpServletResponse.SC_OK);
              response.setContentType("application/json");
              PrintWriter out = response.getWriter();
              out.print(obj);
              out.flush();  
-         
        
     }
 
