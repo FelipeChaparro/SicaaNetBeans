@@ -7,13 +7,8 @@ package Controller;
 
 import JavaBean.BeanExtracionInformacion;
 import JavaBean.BeanPublicacionesDudosas;
-import JavaBean.GuardarInformacion;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.SQLException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -42,10 +37,9 @@ public class PublicacionDudosaServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-                BeanPublicacionesDudosas bean=new BeanPublicacionesDudosas();
-		String url = request.getParameter("token");
-                String id="1";
-		JSONObject retorno=bean.obtenerPublicacionDudosa(id);
+        BeanPublicacionesDudosas bean=new BeanPublicacionesDudosas();
+		
+		JSONObject retorno=bean.obtenerPublicacionDudosa("1");
 		//response.setContentType("text/plain");
 		//System.out.println("retorno  :"+retorno);
 		response.setContentType("application/json");
@@ -64,18 +58,6 @@ public class PublicacionDudosaServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
-      
-             System.out.println("Estoy en post");
-             String json=request.getReader().lines().collect(Collectors.joining());
-             BeanPublicacionesDudosas pubDudo = new BeanPublicacionesDudosas();
-             JSONObject obj=pubDudo.insertarPublicacion(json);
-             response.setStatus(HttpServletResponse.SC_OK);
-             response.setContentType("application/json");
-             PrintWriter out = response.getWriter();
-             out.print(obj);
-             out.flush();  
-         
        
     }
 

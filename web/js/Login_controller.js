@@ -1,5 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
 
 /**
  * Metodo para hacer login de usuario y traer los roles a los que tiene acceso
@@ -11,7 +11,9 @@ function login(){
     var respuesta;
     var user_login_data = {
             "user_name":user_name,
-            "user_pass":user_psw
+            "user_pass":user_psw,
+            "server_url":SERVER_URL,
+            "action":"LOGIN"
     };
     document.getElementById("loaderLogin").style.display = "block";
     document.getElementById("login-image").style.display = "none";
