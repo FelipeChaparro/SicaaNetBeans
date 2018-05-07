@@ -26,7 +26,7 @@ function login(){
         if (respuesta.code === 0) {
             sessionStorage.setItem("principal", JSON.stringify(respuesta));
             console.log(sessionStorage.getItem("principal"));
-            window.location.href='Vista/principal.html';
+            window.location.href = respuesta.roles[0].referencia;
         }
         else {
             alert("Fallo c\xf3digo: " + respuesta.code.toString() + " - Descripcion: " + respuesta.description);
