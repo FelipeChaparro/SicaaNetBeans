@@ -1,71 +1,76 @@
 window.onload = function(){ 
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
+    console.log(SESSION);
+//    if (SESSION == null) {
+//        window.location.href = "../Vista/index.html";
+//    } 
+//    else {
+        // Cargar Nav-bar
+        cargarNavBar(SESSION.roles);
 
-    // Cargar Nav-bar
-    cargarNavBar(SESSION.roles);
-    
-    // User info
-    document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
-    document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
-    document.getElementById("facultad").innerHTML += SESSION.datosBasicos.nombreFacultad;
-    
-    //Basic information
-    document.getElementById("categoria").innerHTML += SESSION.datosBasicos.categoria;
-    
-    // Areas de Actuación
-    for (var i = 0; i < SESSION.areasActuacion.length; i++) {
-        var mItem = document.createElement("li");
-        mItem.innerHTML = "<h4 style='font-weight:initial'>" + SESSION.areasActuacion[i].nombre + "</h4>"
-        document.getElementById("list-areas").appendChild(mItem);
-    }
+        // User info
+        document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+        document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+        document.getElementById("facultad").innerHTML += SESSION.datosBasicos.nombreFacultad;
 
-    //Formacion Académica
-    for (var i = 0; i < SESSION.formacionAcademica.length; i++) {                           
-        var midiv = document.createElement("div");
-        midiv.className = "item";
-        midiv.innerHTML = "<h4 class='title'><i class='fa fa-graduation-cap'></i> " + SESSION.formacionAcademica[i].titulo + "</h4>" + "<h6 style='font-weight:initial;' class='university'>" + SESSION.formacionAcademica[i].universidad + "<span class='year'> ( " + SESSION.formacionAcademica[i].fechaInicio + " - " + SESSION.formacionAcademica[i].fechaFin+ " ) </span></h6>";     
-        document.getElementById("formacionAca").appendChild(midiv); 
-     }
-    
-    //Publicaciones Recientes
-    for(var i = 0; i < SESSION.publicacionesRecientes.length; i++){  
-        var midiv = document.createElement("div");
-        midiv.className = "item row";    
-        midiv.innerHTML ="<h3 style='font-weight:initial;margin-left: 15px;' class='title'>" + SESSION.publicacionesRecientes[i].titulo + "</h3>" + ((SESSION.publicacionesRecientes[i].fechaInicio == null) ? "" : "<p>" + SESSION.publicacionesRecientes[i].fechaInicio + "</p>");
-        document.getElementById("ultimasPublicaciones").appendChild(midiv);      
-    }
-    
-    // Podio - Publicaciones universidad
-    for(var i = 0; i < SESSION.podioPublicacionUniversidad.length; i++) {
-        var miRow = document.createElement("tr");
-        miRow.innerHTML = "<td>" + (i+1) + "</td> <td> <a>" + SESSION.podioPublicacionUniversidad[i].nombre + "</a> <td>"+SESSION.podioPublicacionUniversidad[i].puntos+"</td> <td>" + SESSION.podioPublicacionUniversidad[i].facultad + "</td>";
-        document.getElementById("podioUniversidad").appendChild(miRow);  
-    }
+        //Basic information
+        document.getElementById("categoria").innerHTML += SESSION.datosBasicos.categoria;
 
-    // Podio - Publicaciones universidad
-     for(var i = 0; i < SESSION.podioPublicacionFacultad.length; i++) {
-         var miRow = document.createElement("tr");
-         miRow.innerHTML = "<td>"+ (i+1) +"</td> <td> <a>"+SESSION.podioPublicacionFacultad[i].nombre+"</a> <td>"+SESSION.podioPublicacionFacultad[i].puntos+"</td> <td>"+SESSION.podioPublicacionFacultad[i].facultad+"</td>";
-         document.getElementById("podioFacultad").appendChild(miRow);  
-     }
+        // Areas de Actuación
+        for (var i = 0; i < SESSION.areasActuacion.length; i++) {
+            var mItem = document.createElement("li");
+            mItem.innerHTML = "<h4 style='font-weight:initial;font-size: 15px;'>" + SESSION.areasActuacion[i].nombre + "</h4>"
+            document.getElementById("list-areas").appendChild(mItem);
+        }
 
-    // Podio - Publicaciones universidad
-    for(var i = 0; i < SESSION.podioPublicacionPrograma.length; i++) {
-        var miRow = document.createElement("tr");
-        miRow.innerHTML = "<td>"+ (i+1) +"</td> <td> <a>"+SESSION.podioPublicacionPrograma[i].nombre+"</a> <td>"+SESSION.podioPublicacionPrograma[i].puntos+"</td> <td>"+SESSION.podioPublicacionPrograma[i].programa+"</td>";
-        document.getElementById("podioPrograma").appendChild(miRow);  
-    }
-    
-    // Información de medallas
-    for(var i = 0; i < SESSION.medallas.length; i++) {
-        var myMedal = document.createElement("div");
-        myMedal.className = "item";
-        if (SESSION.medallas[i].acomplished == "1")
-            myMedal.innerHTML = "<img class='medalla' src='../assets/images/medallas/m" + SESSION.medallas[i].nombreMedalla +".png'></>" + "<p style='margin-left: 10px;'>" + SESSION.medallas[i].nombreMedalla + "</p>";
-        else
-            myMedal.innerHTML = "<img class='medalla' src='../assets/images/medallas/noMedalla.png'></>" + "<p style='margin-left: 10px;'>" + SESSION.medallas[i].nombreMedalla + "</p>";   
-        document.getElementById("medallasProfesor").appendChild(myMedal); 
-    }
+        //Formacion Académica
+        for (var i = 0; i < SESSION.formacionAcademica.length; i++) {                           
+            var midiv = document.createElement("div");
+            midiv.className = "item";
+            midiv.innerHTML = "<h4 class='title'><i class='fa fa-graduation-cap'></i> " + SESSION.formacionAcademica[i].titulo + "</h4>" + "<h6 style='font-weight:initial;' class='university'>" + SESSION.formacionAcademica[i].universidad + "<span class='year'> ( " + SESSION.formacionAcademica[i].fechaInicio + " - " + SESSION.formacionAcademica[i].fechaFin+ " ) </span></h6>";     
+            document.getElementById("formacionAca").appendChild(midiv); 
+         }
+
+        //Publicaciones Recientes
+        for(var i = 0; i < SESSION.publicacionesRecientes.length; i++){  
+            var midiv = document.createElement("div");
+            midiv.className = "item row";    
+            midiv.innerHTML ="<h3 style='font-weight:initial;margin-left: 15px;font-size: 15px;' class='title'>" + SESSION.publicacionesRecientes[i].titulo + "</h3>" + ((SESSION.publicacionesRecientes[i].fechaInicio == null) ? "" : "<p>" + SESSION.publicacionesRecientes[i].fechaInicio + "</p>");
+            document.getElementById("ultimasPublicaciones").appendChild(midiv);      
+        }
+
+        // Podio - Publicaciones universidad
+        for(var i = 0; i < SESSION.podioPublicacionUniversidad.length; i++) {
+            var miRow = document.createElement("tr");
+            miRow.innerHTML = "<td>" + (i+1) + "</td> <td> <a>" + SESSION.podioPublicacionUniversidad[i].nombre + "</a> <td>"+SESSION.podioPublicacionUniversidad[i].puntos+"</td> <td>" + SESSION.podioPublicacionUniversidad[i].facultad + "</td>";
+            document.getElementById("podioUniversidad").appendChild(miRow);  
+        }
+
+        // Podio - Publicaciones universidad
+         for(var i = 0; i < SESSION.podioPublicacionFacultad.length; i++) {
+             var miRow = document.createElement("tr");
+             miRow.innerHTML = "<td>"+ (i+1) +"</td> <td> <a>"+SESSION.podioPublicacionFacultad[i].nombre+"</a> <td>"+SESSION.podioPublicacionFacultad[i].puntos+"</td> <td>"+SESSION.podioPublicacionFacultad[i].facultad+"</td>";
+             document.getElementById("podioFacultad").appendChild(miRow);  
+         }
+
+        // Podio - Publicaciones universidad
+        for(var i = 0; i < SESSION.podioPublicacionPrograma.length; i++) {
+            var miRow = document.createElement("tr");
+            miRow.innerHTML = "<td>"+ (i+1) +"</td> <td> <a>"+SESSION.podioPublicacionPrograma[i].nombre+"</a> <td>"+SESSION.podioPublicacionPrograma[i].puntos+"</td> <td>"+SESSION.podioPublicacionPrograma[i].programa+"</td>";
+            document.getElementById("podioPrograma").appendChild(miRow);  
+        }
+
+        // Información de medallas
+        for(var i = 0; i < SESSION.medallas.length; i++) {
+            var myMedal = document.createElement("div");
+            myMedal.className = "item";
+            if (SESSION.medallas[i].acomplished == "1")
+                myMedal.innerHTML = "<img class='medalla' src='../assets/images/medallas/m" + SESSION.medallas[i].nombreMedalla +".png'></>" + "<p style='margin-left: 10px;'>" + SESSION.medallas[i].nombreMedalla + "</p>";
+            else
+                myMedal.innerHTML = "<img class='medalla' src='../assets/images/medallas/noMedalla.png'></>" + "<p style='margin-left: 10px;'>" + SESSION.medallas[i].nombreMedalla + "</p>";   
+            document.getElementById("medallasProfesor").appendChild(myMedal); 
+        }
+//    }
 }
 
 function cargarNavBar(obj_roles) {

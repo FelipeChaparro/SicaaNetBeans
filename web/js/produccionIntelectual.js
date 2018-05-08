@@ -1,125 +1,131 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
 var misPublicaciones = [];
 var aAutoresEliminados;
 var userToken;
 
 window.onload = function(){
-     
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
-    document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
-    document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
-    document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
-    // Cargar Nav-bar
-    cargarNavBar(SESSION.roles, "Ver Publicaciones");
+//    if (SESSION == null) {
+//        window.location.href = "../Vista/index.html";
+//    }
+//    else {
+        document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+        document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+        document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
+        // Cargar Nav-bar
+        cargarNavBar(SESSION.roles, "Ver Publicaciones");
+
+        userToken = SESSION.token;
+
+        var user_login_data = "token=" + userToken + "&"
+                            + "action=" + "VERIFICADAS";
     
-    userToken = SESSION.token;
-    
-    var user_login_data = "token=" + userToken;
-    $("#loaderModificacion").hide();
-	getServelet(SERVER_URL+"PublicacionesServelet", null, user_login_data, function(serveletResponse) {
-        var respuesta = JSON.parse(serveletResponse);
-        document.getElementById("loaderPublicaciones").style.display = "none";
-        
-        if (respuesta.code == "0") {
-            console.log(respuesta);
-            var stringAutores;
-            var label_auxiliar;
-            for (var i = 0; i < respuesta.publicaciones.length; i++) {
-                stringAutores = "";
-                label_auxiliar = "";
-                var myPublicacion = document.createElement("a");
-                myPublicacion.className = "list-group-item";
-                myPublicacion.setAttribute("id","publicacion" + i);
-                obj_publicacion = new Object();
+        $("#loaderModificacion").hide();
+        getServelet(SERVER_URL+"PublicacionesServelet", null, user_login_data, function(serveletResponse) {
+            var respuesta = JSON.parse(serveletResponse);
+            document.getElementById("loaderPublicaciones").style.display = "none";
 
-                obj_publicacion.ID = respuesta.publicaciones[i].ID;
-                myPublicacion.innerHTML = "";
-                obj_publicacion.Titulo = respuesta.publicaciones[i].Titulo;
-                
-                myPublicacion.innerHTML += "<div style='margin-left: 15px; z-index:1000;position:absolute;top:45%;left:45%;' class='smallLoader' id='loaderPublicacion" + i + "'></div>";
-                
-                myPublicacion.innerHTML += "<h4 style='margin-top: 10px;' class='list-group-item-heading' id='title-" + i + "'>" + respuesta.publicaciones[i].Titulo + "</h4>";
+            if (respuesta.code == "0") {
+                //console.log(respuesta);
+                var stringAutores;
+                var label_auxiliar;
+                for (var i = 0; i < respuesta.publicaciones.length; i++) {
+                    stringAutores = "";
+                    label_auxiliar = "";
+                    var myPublicacion = document.createElement("a");
+                    myPublicacion.className = "list-group-item";
+                    myPublicacion.setAttribute("id","publicacion" + i);
+                    obj_publicacion = new Object();
 
-                obj_publicacion.Tipo = respuesta.publicaciones[i].Tipo;
-                myPublicacion.innerHTML += "<p id='type-" + i + "' class='list-group-item-text'><span style='color:#000000'>Tipo:</span>" + " " + ((respuesta.publicaciones[i].Tipo == null) ? "No definido" : respuesta.publicaciones[i].Tipo) + "</p>";
+                    obj_publicacion.ID = respuesta.publicaciones[i].ID;
+                    myPublicacion.innerHTML = "";
+                    obj_publicacion.Titulo = respuesta.publicaciones[i].Titulo;
 
-                if (obj_publicacion.Tipo == "libro" || obj_publicacion.Tipo == "capitulo" || obj_publicacion.Tipo == "software" || obj_publicacion.Tipo == "articulo") {
-                    
-                    if (obj_publicacion.Tipo == "libro") label_auxiliar = "ISBN:";
-                    if (obj_publicacion.Tipo == "capitulo") label_auxiliar = "ISBN:";
-                    if (obj_publicacion.Tipo == "software") label_auxiliar = "Registro:";
-                    if (obj_publicacion.Tipo == "articulo") label_auxiliar = "ISSN:";
-                        
-                    obj_publicacion.codigoPublicacion = respuesta.publicaciones[i].codigoPublicacion;
-                    myPublicacion.innerHTML += "<p id='code-" + i + "' class='list-group-item-text'><span style='color:#000000'>" + label_auxiliar + "</span>" + " " + ((respuesta.publicaciones[i].codigoPublicacion == null) ? "No definido" : respuesta.publicaciones[i].codigoPublicacion) + "</p>";
+                    myPublicacion.innerHTML += "<div style='margin-left: 15px; z-index:1000;position:absolute;top:45%;left:45%;' class='smallLoader' id='loaderPublicacion" + i + "'></div>";
+
+                    myPublicacion.innerHTML += "<h4 style='margin-top: 10px;' class='list-group-item-heading' id='title-" + i + "'>" + respuesta.publicaciones[i].Titulo + "</h4>";
+
+                    obj_publicacion.Tipo = respuesta.publicaciones[i].Tipo;
+                    myPublicacion.innerHTML += "<p id='type-" + i + "' class='list-group-item-text'><span style='color:#000000'>Tipo:</span>" + " " + ((respuesta.publicaciones[i].Tipo == null) ? "No definido" : respuesta.publicaciones[i].Tipo) + "</p>";
+
+                    if (obj_publicacion.Tipo == "libro" || obj_publicacion.Tipo == "capitulo" || obj_publicacion.Tipo == "software" || obj_publicacion.Tipo == "articulo") {
+
+                        if (obj_publicacion.Tipo == "libro") label_auxiliar = "ISBN:";
+                        if (obj_publicacion.Tipo == "capitulo") label_auxiliar = "ISBN:";
+                        if (obj_publicacion.Tipo == "software") label_auxiliar = "Registro:";
+                        if (obj_publicacion.Tipo == "articulo") label_auxiliar = "ISSN:";
+
+                        obj_publicacion.codigoPublicacion = respuesta.publicaciones[i].codigoPublicacion;
+                        myPublicacion.innerHTML += "<p id='code-" + i + "' class='list-group-item-text'><span style='color:#000000'>" + label_auxiliar + "</span>" + " " + ((respuesta.publicaciones[i].codigoPublicacion == null) ? "No definido" : respuesta.publicaciones[i].codigoPublicacion) + "</p>";
+                    }
+
+                    obj_publicacion.Lugar = respuesta.publicaciones[i].Lugar;
+                    myPublicacion.innerHTML += "<p id='place-" + i + "' class='list-group-item-text'><span style='color:#000000'>Lugar:</span>" + " " + ((respuesta.publicaciones[i].Lugar == null) ? "No definido" : respuesta.publicaciones[i].Lugar) + "</p>";
+
+                    if (obj_publicacion.Tipo == "libro" || obj_publicacion.Tipo == "capitulo" || obj_publicacion.Tipo == "articulo") {
+
+                        obj_publicacion.Editorial = respuesta.publicaciones[i].Editorial;
+                        myPublicacion.innerHTML += "<p id='editorial-" + i + "' class='list-group-item-text'><span style='color:#000000'>Editorial:</span>" + " " + ((respuesta.publicaciones[i].Editorial == null) ? "No definido" : respuesta.publicaciones[i].Editorial) + "</p>";
+                    }
+
+                    obj_publicacion.FechaInicio = respuesta.publicaciones[i].FechaInicio;
+                    myPublicacion.innerHTML += "<p id='fecha-" + i + "' class='list-group-item-text'><span style='color:#000000'>Fecha:</span>" + " " + 
+                    ((respuesta.publicaciones[i].FechaInicio == null) ? "No definido" : respuesta.publicaciones[i].FechaInicio) + "</p>";
+
+                    if (obj_publicacion.Tipo == "software") {
+                        obj_publicacion.Plataforma = respuesta.publicaciones[i].Plataforma;
+                        myPublicacion.innerHTML += "<p id='plataform-" + i + "' class='list-group-item-text'><span style='color:#000000'>Plataforma:</span>" + " " + ((respuesta.publicaciones[i].Plataforma == null) ? "No definido" : respuesta.publicaciones[i].Plataforma) + "</p>";
+                    }
+
+                    if (obj_publicacion.Tipo == "trabajo dirigido") {
+                        obj_publicacion.Duracion = respuesta.publicaciones[i].Duracion;
+                        myPublicacion.innerHTML += "<p id='duration-" + i + "' class='list-group-item-text'><span style='color:#000000'>Duración:</span>" + " " + ((respuesta.publicaciones[i].Duracion == null) ? "No definido" : respuesta.publicaciones[i].Duracion) + "</p>";
+
+                        obj_publicacion.tipoEspecifico = respuesta.publicaciones[i].tipoEspecifico;
+                        myPublicacion.innerHTML += "<p id='especifico-" + i + "' class='list-group-item-text'><span style='color:#000000'>Tipo Especifico:</span>" + " " + ((respuesta.publicaciones[i].tipoEspecifico == null) ? "No definido" : respuesta.publicaciones[i].tipoEspecifico) + "</p>";
+                    }
+
+                    obj_publicacion.Autores = respuesta.publicaciones[i].Autores;
+
+                    for (var j = 0; j < respuesta.publicaciones[i].Autores.length; j++) {
+                        stringAutores += ((j == 0) ? "" : ", ") + respuesta.publicaciones[i].Autores[j].Nombre;
+                    }
+
+                    myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Autores:</span>" + " " + stringAutores + "</p>";
+
+                    myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Extraido:</span>" + " " + respuesta.publicaciones[i].Extraido + "</p>";
+
+                    myPublicacion.innerHTML += "<button type='button' class='btn btn-info' data-toggle='modal' data-target='#myModal' onclick='modificarInformacion(" + i + ")'>Modificar</button>";
+                    myPublicacion.innerHTML += "<button type='button' style='margin-left:10px' class='btn btn-danger' onclick='eliminarPublicacion("+ i +")'><span class='glyphicon glyphicon-remove'></span> Eliminar</button>";
+
+                    misPublicaciones.push(obj_publicacion);
+                    document.getElementById("lista-" + obj_publicacion.Tipo).appendChild(myPublicacion);
+                    $("#loaderPublicacion" + i).hide();
                 }
+                if (document.getElementById("lista-articulo").innerHTML == "")
+                    document.getElementById("lista-articulo").innerHTML = "No tienes artículos verificados.";
 
-                obj_publicacion.Lugar = respuesta.publicaciones[i].Lugar;
-                myPublicacion.innerHTML += "<p id='place-" + i + "' class='list-group-item-text'><span style='color:#000000'>Lugar:</span>" + " " + ((respuesta.publicaciones[i].Lugar == null) ? "No definido" : respuesta.publicaciones[i].Lugar) + "</p>";
+                if (document.getElementById("lista-libro").innerHTML == "")
+                    document.getElementById("lista-libro").innerHTML = "No tienes libros verificados.";
 
-                if (obj_publicacion.Tipo == "libro" || obj_publicacion.Tipo == "capitulo" || obj_publicacion.Tipo == "articulo") {
-                    
-                    obj_publicacion.Editorial = respuesta.publicaciones[i].Editorial;
-                    myPublicacion.innerHTML += "<p id='editorial-" + i + "' class='list-group-item-text'><span style='color:#000000'>Editorial:</span>" + " " + ((respuesta.publicaciones[i].Editorial == null) ? "No definido" : respuesta.publicaciones[i].Editorial) + "</p>";
-                }
+                if (document.getElementById("lista-conferencia").innerHTML == "")
+                    document.getElementById("lista-conferencia").innerHTML = "No tienes conferencias verificados.";
 
-                obj_publicacion.FechaInicio = respuesta.publicaciones[i].FechaInicio;
-                myPublicacion.innerHTML += "<p id='fecha-" + i + "' class='list-group-item-text'><span style='color:#000000'>Fecha:</span>" + " " + 
-                ((respuesta.publicaciones[i].FechaInicio == null) ? "No definido" : respuesta.publicaciones[i].FechaInicio) + "</p>";
-                
-                if (obj_publicacion.Tipo == "software") {
-                    obj_publicacion.Plataforma = respuesta.publicaciones[i].Plataforma;
-                    myPublicacion.innerHTML += "<p id='plataform-" + i + "' class='list-group-item-text'><span style='color:#000000'>Plataforma:</span>" + " " + ((respuesta.publicaciones[i].Plataforma == null) ? "No definido" : respuesta.publicaciones[i].Plataforma) + "</p>";
-                }
-                
-                if (obj_publicacion.Tipo == "trabajo dirigido") {
-                    obj_publicacion.Duracion = respuesta.publicaciones[i].Duracion;
-                    myPublicacion.innerHTML += "<p id='duration-" + i + "' class='list-group-item-text'><span style='color:#000000'>Duracion:</span>" + " " + ((respuesta.publicaciones[i].Duracion == null) ? "No definido" : respuesta.publicaciones[i].Duracion) + "</p>";
-                    
-                    obj_publicacion.tipoEspecifico = respuesta.publicaciones[i].tipoEspecifico;
-                    myPublicacion.innerHTML += "<p id='especifico-" + i + "' class='list-group-item-text'><span style='color:#000000'>Tipo Especifico:</span>" + " " + ((respuesta.publicaciones[i].tipoEspecifico == null) ? "No definido" : respuesta.publicaciones[i].tipoEspecifico) + "</p>";
-                }
-                
-                obj_publicacion.Autores = respuesta.publicaciones[i].Autores;
-                
-                for (var j = 0; j < respuesta.publicaciones[i].Autores.length; j++) {
-                    stringAutores += ((j == 0) ? "" : ", ") + respuesta.publicaciones[i].Autores[j].Nombre;
-                }
-                
-                myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Autores:</span>" + " " + stringAutores + "</p>";
+                if (document.getElementById("lista-capitulo").innerHTML == "")
+                    document.getElementById("lista-capitulo").innerHTML = "No tienes capítulos verificados.";
 
-                myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Extraido:</span>" + " " + respuesta.publicaciones[i].Extraido + "</p>";
-                
-                myPublicacion.innerHTML += "<button type='button' class='btn btn-info' data-toggle='modal' data-target='#myModal' onclick='modificarInformacion(" + i + ")'>Modificar</button>";
-                myPublicacion.innerHTML += "<button type='button' style='margin-left:10px' class='btn btn-danger' onclick='eliminarPublicacion("+ i +")'><span class='glyphicon glyphicon-remove'></span> Eliminar</button>";
+                if (document.getElementById("lista-trabajo dirigido").innerHTML == "")
+                    document.getElementById("lista-trabajo dirigido").innerHTML = "No tienes trabajos dirigidos verificados.";
 
-                misPublicaciones.push(obj_publicacion);
-                document.getElementById("lista-" + obj_publicacion.Tipo).appendChild(myPublicacion);
-                $("#loaderPublicacion" + i).hide();
+                if (document.getElementById("lista-software").innerHTML == "")
+                    document.getElementById("lista-software").innerHTML = "No tienes software verificados.";
             }
-            if (document.getElementById("lista-articulo").innerHTML == "")
-                document.getElementById("lista-articulo").innerHTML = "No tienes artículos verificados.";
-    
-            if (document.getElementById("lista-libro").innerHTML == "")
-                document.getElementById("lista-libro").innerHTML = "No tienes libros verificados.";
-    
-            if (document.getElementById("lista-conferencia").innerHTML == "")
-                document.getElementById("lista-conferencia").innerHTML = "No tienes conferencias verificados.";
-    
-            if (document.getElementById("lista-capitulo").innerHTML == "")
-                document.getElementById("lista-capitulo").innerHTML = "No tienes capítulos verificados.";
-    
-            if (document.getElementById("lista-trabajo dirigido").innerHTML == "")
-                document.getElementById("lista-trabajo dirigido").innerHTML = "No tienes trabajos dirigidos verificados.";
-    
-            if (document.getElementById("lista-software").innerHTML == "")
-                document.getElementById("lista-software").innerHTML = "No tienes software verificados.";
-        }
-        else {
-            alert("Fallo codigo: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description);
-       }
-    });
+           else {
+                alert("Fallo codigo: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description);
+           }
+        });
+//    }
 }
 
 function verificarPublicacion(i) {
@@ -306,7 +312,7 @@ function goHome(){
     window.location.href='../Vista/principal.html';
 }
 
-function getServelet(url,data,param,callback) {
+function getServelet(url, data, param, callback) {
     var xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
         if (xhr.readyState == 4 && xhr.status == 200) {
@@ -539,4 +545,83 @@ function HTMLAutorInfo(j, status) {
             + "</select>";
     mHTML += "<button id='button_autor_" + j + "' type='button' class='btn btn-danger' style='margin-left:10px;height:34px;' onclick='removeAutor(" + j + ")'><span class='glyphicon glyphicon-remove'></span></button>";
     return mHTML;
+}
+
+function CSVCreator(element) {
+    var eURI = "";
+    var pTipo = "";
+    var eTipo = element.getAttribute("id").split("-")[1];
+    var eID = element.getAttribute("id");
+    var content = "data:text/csv;charset=utf-8," + CSVHeader(eTipo);
+    
+    for (var i = 0; i < misPublicaciones.length; i++) {
+        pTipo = misPublicaciones[i].Tipo;
+        if (pTipo == eTipo) {
+            if (pTipo == "articulo" || pTipo == "libro" || pTipo == "capitulo") {
+                content += misPublicaciones[i].Titulo + ","
+                        + misPublicaciones[i].codigoPublicacion + ","
+                        + misPublicaciones[i].Lugar + ","
+                        + misPublicaciones[i].Editorial + ","
+                        + misPublicaciones[i].FechaInicio + ","
+                        + getAutores(misPublicaciones[i].Autores);
+            }
+            if (pTipo == "conferencia") {
+                content += misPublicaciones[i].Titulo + ","
+                        + misPublicaciones[i].Lugar + ","
+                        + misPublicaciones[i].FechaInicio + ","
+                        + getAutores(misPublicaciones[i].Autores);
+            }
+            if (pTipo == "trabajo dirigido") {
+                content += misPublicaciones[i].Titulo + ","
+                        + misPublicaciones[i].Lugar + ","
+                        + misPublicaciones[i].FechaInicio + ","
+                        + misPublicaciones[i].Duracion + ","
+                        + misPublicaciones[i].tipoEspecifico + ","
+                        + getAutores(misPublicaciones[i].Autores);
+            }
+            if (pTipo == "software") {
+                content += misPublicaciones[i].Titulo + ","
+                        + misPublicaciones[i].codigoPublicacion + ","
+                        + misPublicaciones[i].Lugar + ","
+                        + misPublicaciones[i].FechaInicio + ","
+                        + misPublicaciones[i].Plataforma + ","
+                        + getAutores(misPublicaciones[i].Autores);
+            }
+            content += "\r\n";
+        }
+    }
+    //console.log(content);
+    eURI = encodeURI(content);
+    element.setAttribute("href", eURI);
+    element.setAttribute("download", eID + ".csv");
+}
+
+function getAutores(autores) {
+    var mAutores = "";
+    
+    for (var i = 0; i < autores.length; i++) {
+        mAutores += ((i == 0) ? "" : "-") + autores[i].Nombre;
+    }
+    return mAutores;
+}
+
+function CSVHeader(tipo) {
+    var mHeader = "";
+
+    if (tipo == "libro" || tipo == "capitulo")
+        mHeader = "Titulo,ISBN,Lugar,Editorial,Fecha,Autores";
+    
+    if (tipo == "articulo")
+        mHeader = "Titulo,ISSN,Lugar,Editorial,Fecha,Autores";
+
+    if (tipo == "conferencia")
+        mHeader = "Titulo,Lugar,Fecha,Autores";
+
+    if (tipo == "trabajo dirigido")
+        mHeader = "Titulo,Lugar,Fecha,Duración,TipoEspecifico,Autores";
+
+    if (tipo == "software")
+        mHeader = "Titulo,Registro,Lugar,Fecha,Plataforma,Autores";
+    
+    return mHeader + "\r\n";
 }

@@ -1,5 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
 
 /**
  * Metodo para hacer login de usuario y traer los roles a los que tiene acceso
@@ -18,7 +18,7 @@ function login(){
     document.getElementById("loaderLogin").style.display = "block";
     document.getElementById("login-image").style.display = "none";
     document.getElementById("login-button").disabled = true;
-    postServelet(SERVER_URL+"login_servelet",JSON.stringify(user_login_data),function(serveletResponse) {
+    postServelet(SERVER_URL + "login_servelet",JSON.stringify(user_login_data),function(serveletResponse) {
         var respuesta = JSON.parse(serveletResponse);
         document.getElementById("loaderLogin").style.display = "none";
         document.getElementById("login-button").disabled = false;
@@ -33,8 +33,7 @@ function login(){
             document.getElementById("user_name").value = "";
             document.getElementById("user_pss").value = "";
         }
-    })
-     
+    });
 }
 /**
  * Funcion para consultar un servelet del backend
