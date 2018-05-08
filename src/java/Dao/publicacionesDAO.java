@@ -89,7 +89,12 @@ public class publicacionesDAO {
         JSONObject respuesta_db = new JSONObject();
         Statement stmt = null;
         Cone cone = new Cone();
+        JSONArray autores_actuales = (JSONArray) mNewData.get("Autores");
+        JSONArray autores_eliminados = (JSONArray) mNewData.get("Autores_Eliminados");
         String query;
+        String idPublicacion = mNewData.get("ID").toString();
+        int idNuevoUsuario = 0;
+        ResultSet rs;
         try {
             Connection mConexion = cone.getConnection();
             stmt = mConexion.createStatement(); 
@@ -99,10 +104,47 @@ public class publicacionesDAO {
                     + "codigoPublicacion=" + ((mNewData.get("codigoPublicacion") == null) ? null : "'" + mNewData.get("codigoPublicacion") + "'") + ","
                     + "Lugar=" + ((mNewData.get("Lugar") == null) ? null : "'" + mNewData.get("Lugar") + "'") + ","
                     + "Editorial=" + ((mNewData.get("Editorial") == null) ? null : "'" + mNewData.get("Editorial") + "'") + ","
-                    + "FechaInicio=" + ((mNewData.get("FechaInicio") == null) ? null : "'" + mNewData.get("FechaInicio") + "'")
-                    + " WHERE ID=" + mNewData.get("ID");
+                    + "FechaInicio=" + ((mNewData.get("FechaInicio") == null) ? null : "'" + mNewData.get("FechaInicio") + "'") + ","
+                    + "Duracion=" + ((mNewData.get("Duracion") == null) ? null : "'" + mNewData.get("Duracion") + "'") + ","
+                    + "Plataforma=" + ((mNewData.get("Plataforma") == null) ? null : "'" + mNewData.get("Plataforma") + "'") + ","
+                    + "tipoEspecifico=" + ((mNewData.get("tipoEspecifico") == null) ? null : "'" + mNewData.get("tipoEspecifico") + "'")
+                    + " WHERE ID=" + idPublicacion;
             System.out.println("Query: " + query);
             stmt.execute(query);
+            // Se actualizan los roles de autores
+            for (int i = 0; i < autores_actuales.size(); i++) {
+                JSONObject autor = (JSONObject) autores_actuales.get(i);
+                if (!autor.get("ID").toString().equals("-1")) {
+                    query = "UPDATE Persona_Publicacion SET "
+                            + "Rol='" + autor.get("Rol") + "'"
+                            + " WHERE IdPublicacion=" + idPublicacion + " and IdPersona=" + autor.get("ID");
+                } else {
+                    query = "INSERT INTO Persona (Nombre, Registrado, EstadoSistema) "
+                            + "VALUES (" 
+                            + "'" + StringUtils.stripAccents(autor.get("Nombre").toString()).trim().toUpperCase().replace(".","").replace("-", " ") + "',"
+                            + "'" + 0 + "',"
+                            + "'" + 1 + "')";
+                    stmt.execute(query);
+                    query = "SELECT LAST_INSERT_ID()";
+                    rs = stmt.executeQuery(query);
+                    if (rs.next()) idNuevoUsuario = rs.getInt(1); rs.close();
+                        query = "INSERT INTO Persona_Publicacion"
+                                + " VALUES ("
+                                + "'" + idNuevoUsuario + "',"
+                                + "'" + idPublicacion + "',"
+                                + "'" + autor.get("Rol") + "',"
+                                + "'" + "Pendiente de verificacion" + "',"
+                                + "'" + 1 + "')";
+                }
+                stmt.execute(query);
+            }
+            // Se desvinculan autores a la publicacion
+            for (int i = 0; i < autores_eliminados.size(); i++) {
+                query = "UPDATE Persona_Publicacion SET "
+                        + "EstadoSistema='0'"
+                        + " WHERE IdPublicacion=" + idPublicacion + " and IdPersona=" + autores_eliminados.get(i);
+                stmt.execute(query);
+            }
             respuesta_db.put("code", 0);
         } catch(SQLException e) {
             respuesta_db.put("code", 9999);
@@ -110,11 +152,11 @@ public class publicacionesDAO {
             System.out.println("Error: " + e);
         } finally {
             if (stmt != null) stmt.close();
-            cone.desconectar();
+            //cone.desconectar();
         }
         return respuesta_db;
-    }
-    
+    }  
+	
     public JSONObject insertPublicacion(String user_id, JSONObject newPublicacion) throws SQLException {
         JSONObject respuesta = new JSONObject();
         respuesta.put("code", 0);
