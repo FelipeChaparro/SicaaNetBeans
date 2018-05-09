@@ -3,7 +3,7 @@
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->  
 <!--[if !IE]><!--> <html lang="es"> <!--<![endif]-->  
 <head>
-    <title>Ver Publicaciones | SICAA</title>
+    <title>Verificar Publicaciones | SICAA</title>
     <!-- Meta -->
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -96,44 +96,18 @@
                <section class="latest section">
                     <div class="section-inner">
                         
-                        <h1 class="heading">Artículos</h1>
+                        <h1 class="heading">Pendiente</h1>
                         <hr class="divider" />
                         
                         <div class="content">
-							<div class="list-group" id="lista-articulo"></div>
+							<div class="list-group" id="lista-por-verificar"></div>
                         </div><!--//content articulos--> 
                         
-                        <h1 class="heading">Libros</h1>
+                        <h1 class="heading">Ambigüedad</h1>
                         <hr class="divider" />
                         <div class="content">
-							<div class="list-group" id="lista-libro"></div>
-                        </div><!--//content libros-->  
-                        
-                        <h1 class="heading">Eventos Científicos</h1>
-                        <hr class="divider" />
-                        <div class="content">
-							<div class="list-group" id="lista-conferencia"></div>
+							<div class="list-group" id="lista-ambigua"></div>
                         </div><!--//content libros--> 
-                        
-                        <h1 class="heading">Capítulos</h1>
-                        <hr class="divider" />
-                        <div class="content">
-							<div class="list-group" id="lista-capitulo"></div>
-                        </div><!--//content libros--> 
-                        
-                        <h1 class="heading">Trabajos Dirigidos</h1>
-                        <hr class="divider" />
-                        <div class="content">
-							<div class="list-group" id="lista-trabajo dirigido"></div>
-                        </div><!--//content libros--> 
-                        
-                        <h1 class="heading">Software</h1>
-                        <hr class="divider" />
-                        <div class="content">
-							<div class="list-group" id="lista-software"></div>
-                        </div><!--//content libros--> 
-                        <hr class="divider" />
-                        <button type="button" data-toggle='modal' data-target='#modal-descargas' class="btn btn-info">Descargar Publicaciones</button>
                     </div><!--//section-inner-->
                 </section><!--//section-->  
         </div><!--//row-->
@@ -147,70 +121,12 @@
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title">Modifica la Publicación</h4>
                 </div>
-                
                 <div class="modal-body">
                     <div style='z-index:1000;position:absolute;top:45%;left:46%;' class='smallLoader' id='loaderModificacion'></div>
                     <div id="inputs-modal">
                     </div>
                 </div>
                 <button type="button" class="btn btn-success" style="margin-left: 15px;" id="btn_modificar">Actualizar Informacíon</button>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-<!--//Modal para descargar-->
-    <div class="modal fade" id="modal-descargas" role="dialog" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    <h4 class="modal-title">Descargar Publicaciones</h4>
-                </div>
-                
-                <div class="modal-body">
-                    <center>
-                        <a id="csv-articulo" onclick="CSVCreator(this)" style="cursor: pointer; text-decoration: none;">
-                            <div style="text-align: center;display: inline-block; margin: 20px;">
-                                <img width="90px" src="../imagenes/csv-img.png">
-                                <p style="margin-top: 5px;">Artículos</p>
-                            </div>
-                        </a>
-                        <a id="csv-libro" onclick="CSVCreator(this)" style="cursor: pointer; text-decoration: none;">
-                           <div style="text-align: center;display: inline-block; margin: 20px;">
-                                <img width="90px" src="../imagenes/csv-img.png">
-                                <p style="margin-top: 5px;">Libros</p>
-                            </div>
-                        </a>
-                        <a id="csv-conferencia" onclick="CSVCreator(this)" style="cursor: pointer; text-decoration: none;">
-                            <div style="text-align: center;display: inline-block; margin: 20px;">
-                                <img width="90px" src="../imagenes/csv-img.png">
-                                <p style="margin-top: 5px;">Eventos</p>
-                            </div>
-                        </a>
-                        <a id="csv-capitulo" onclick="CSVCreator(this)" style="cursor: pointer; text-decoration: none;">
-                            <div style="text-align: center;display: inline-block; margin: 20px;">
-                                <img width="90px" src="../imagenes/csv-img.png">
-                                <p style="margin-top: 5px;">Capítulos</p>
-                            </div>
-                        </a>
-                        <a id="csv-trabajo dirigido" onclick="CSVCreator(this)" style="cursor: pointer; text-decoration: none; margin: 0;">
-                            <div style="text-align: center;display: inline-block; margin: 20px;">
-                                <img width="90px" src="../imagenes/csv-img.png">
-                                <p style="margin-top: 5px;">Trabajos</p>
-                            </div>
-                        </a>
-                        <a id="csv-software" onclick="CSVCreator(this)" style="cursor: pointer; text-decoration: none; margin: 0;">
-                            <div style="text-align: center;display: inline-block; margin: 20px;">
-                            <img width="90px" src="../imagenes/csv-img.png">
-                            <p style="margin-top: 5px;">Software</p>
-                            </div>
-                        </a>
-                    </center>
-                </div>
-                
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
                 </div>
@@ -227,6 +143,6 @@
 
     <!-- custom js -->
     <script type="text/javascript" src="../assets/js/main.js"></script>   
-    <script type="text/javascript" src="../js/produccionIntelectual.js"></script>   
+    <script type="text/javascript" src="../js/verificarPublicaciones.js"></script>   
 </body>
 </html> 

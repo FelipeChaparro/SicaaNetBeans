@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title> SICAA </title>
+    <title>Carga Externa | SICAA </title>
     <script type="text/javascript" src="../js/ejemplojavascript.js"></script>
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -13,11 +13,15 @@
     <link id="theme-style" rel="stylesheet" href="../assets/css/styles.css">
      <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="../favicon.ico">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
     <meta name="author" content="SICAA">
-    <link href='https://fonts.googleapis.com/css?family=Lato:300,400,300italic,400italic' rel='stylesheet' type='text/css'>
-    <link href='https://fonts.googleapis.com/css?family=Montserrat:400,700' rel='stylesheet' type='text/css'> 
+    
+    <!-- Fuente de Google --> 
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+    
     <!-- Global CSS -->
     <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
     <!-- Plugins CSS -->
@@ -30,6 +34,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    
+    
 <style>
     button:focus {outline: none !important;}
     .loader {
@@ -64,28 +70,25 @@
 </head>
 
 <body>
-    <nav class="navbar navbar-default">
+    <nav style="font-family: 'Lato', arial, sans-serif;" class="navbar navbar-default">
       <div class="container-fluid">
-        <ul style="display: inline-block" class="nav navbar-nav">
-          <li><a href="../Vista/principal.html">Home</a></li>
-          <li class="active"><a>Actualizar Información</a></li>
-          <li><a href="../Vista/registroPublicacion.html">Registrar Publicación</a></li>
-          <li><a href="../Vista/produccionIntelectual.html">Producción Intelectual</a></li>
-            <li><a href="../Vista/publicacionesDudosas.html">Publicaciones Dudosas</a></li>
-             <li><a href="../Vista/buscarPublicacion.html">Buscar Publicación</a></li>
-             <li><a href="../Vista/estadisticas.html">Estadísticas</a></li>
+        <ul class="nav navbar-nav" id="navbar-sicaa">
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
         </ul>
       </div>
     </nav>
     
+    <!-- ******HEADER****** --> 
     <header class="header">
         <div class="container"> 
                 <img class="profile-image img-responsive pull-left" title="Alexandra Pomares Quimbaya" alt="Alexandra Pomares Quimbaya" height="150px" width="150px" style="border-radius: 50%;" src="https://scholar.google.com/citations?view_op=medium_photo&amp;user=E43l-e0AAAAJ&amp;citpid=2">
             <div class="profile-content pull-left">
                 <h1 class="name" id="nombre"></h1>
+                <h2 style="font-weight: 700; margin-bottom: 5px;" class="desc" id="facultad"></h2>
                 <h2 class="desc" id="departamento"></h2>
-            </div><!--//profile-->
-            <a class="btn btn-cta-primary pull-right" href="http://themes.3rdwavemedia.com/" target="_blank"><i class="fa fa-sign-out"></i>Logout</a>              
+            </div><!--//profile-->            
         </div><!--//container-->
     </header><!--//header-->
     
