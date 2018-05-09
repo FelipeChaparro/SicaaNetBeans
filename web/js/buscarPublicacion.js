@@ -1,9 +1,18 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
+
+window.onload = function(){
+    var SESSION = JSON.parse(sessionStorage.getItem("principal"));
+    document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+    document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+    document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
+    // Cargar Nav-bar
+    cargarNavBar(SESSION.roles, "Filtrar Publicaciones");
+}
 
 function buscar(){
     
-     var data_to_send = new Object();
+    var data_to_send = new Object();
     var Rol = [];
     var Tipo = [];
     var fechaValida = true;
@@ -153,4 +162,51 @@ function getServelet1(url,data,callback) {
     }
     xhr.open('GET', url, true);
     xhr.send(data);
+}
+
+function cargarNavBar(obj_roles, pageName) {
+    var mNavbar = document.getElementById("navbar-sicaa");
+    var mDropDownPublicaciones = false;
+    var mDropDownConsultas = false;
+    
+    for (var i = 0; i < obj_roles.length; i++) {
+        if (obj_roles[i].id == 1) {
+            insertIntoNavbar("navbar-sicaa", obj_roles[i].label, obj_roles[i].referencia, "");
+        }
+        if (obj_roles[i].id >= 2 && obj_roles[i].id <= 5) {
+            if (mDropDownPublicaciones == false) {
+                mNavbar.appendChild(createDrowndown("Producción Intelectual", "dropmenu-publicaciones", ""));
+                mDropDownPublicaciones = true;
+            }
+            if (obj_roles[i].label == pageName)
+                insertIntoNavbar("dropmenu-publicaciones", obj_roles[i].label, obj_roles[i].referencia, "");
+            else
+                insertIntoNavbar("dropmenu-publicaciones", obj_roles[i].label, obj_roles[i].referencia, "");
+        }
+        if (obj_roles[i].id >= 6) {
+            if (mDropDownConsultas == false) {
+                mNavbar.appendChild(createDrowndown("Consultas", "dropmenu-consultas", "active"));
+                mDropDownConsultas = true;
+            }
+            if (obj_roles[i].label == pageName)
+                insertIntoNavbar("dropmenu-consultas", obj_roles[i].label, obj_roles[i].referencia, "active");
+            else
+                insertIntoNavbar("dropmenu-consultas", obj_roles[i].label, obj_roles[i].referencia, "");
+        }
+    }
+}
+
+function createDrowndown(dropdownTitle, dropdownID, isActive) {
+    var newDropdown = document.createElement("li");
+    newDropdown.className = "dropdown " + isActive;
+    newDropdown.innerHTML = "<a class='dropdown-toggle' data-toggle='dropdown' href='#'>" + dropdownTitle + "<span class='caret'></span></a>";
+    newDropdown.innerHTML += "<ul class='dropdown-menu' id='" + dropdownID + "'></ul>";
+    return newDropdown;
+}
+
+function insertIntoNavbar(elementID, label, link, isActive) {
+    var newListItem = document.createElement("li");
+    newListItem.className = isActive;
+    newListItem.innerHTML = "<a href='" + link + "'>" + label + "</a>";
+    document.getElementById(elementID).append(newListItem);
 }

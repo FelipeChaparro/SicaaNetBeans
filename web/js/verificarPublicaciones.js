@@ -14,14 +14,15 @@ window.onload = function(){
         document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
         document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
         // Cargar Nav-bar
-        cargarNavBar(SESSION.roles, "Ver Publicaciones");
-
+        cargarNavBar(SESSION.roles, "Verificar Publicaciones");
+    
         userToken = SESSION.token;
 
         var user_login_data = "token=" + userToken + "&"
-                            + "action=" + "VERIFICADAS";
+                            + "action=" + "NO_VERIFICADAS";
     
         $("#loaderModificacion").hide();
+        // Get publicaciones no verificadas
         getServelet(SERVER_URL+"PublicacionesServelet", null, user_login_data, function(serveletResponse) {
             var respuesta = JSON.parse(serveletResponse);
             document.getElementById("loaderPublicaciones").style.display = "none";
@@ -96,71 +97,54 @@ window.onload = function(){
 
                     myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Extraido:</span>" + " " + respuesta.publicaciones[i].Extraido + "</p>";
 
-                    myPublicacion.innerHTML += "<button type='button' class='btn btn-info' data-toggle='modal' data-target='#myModal' onclick='modificarInformacion(" + i + ")'>Modificar</button>";
-                    myPublicacion.innerHTML += "<button type='button' style='margin-left:10px' class='btn btn-danger' onclick='eliminarPublicacion("+ i +")'><span class='glyphicon glyphicon-remove'></span> Eliminar</button>";
+                    myPublicacion.innerHTML += "<button type='button' class='btn btn-success' onclick='verificarPublicacion(" + i + ", this)'>Verificar y Completar</button>";
+
+                    myPublicacion.innerHTML += "<button type='button' style='margin-left:10px' class='btn btn-danger' onclick='eliminarPublicacion(" + i + ")' id='btn-eliminar-" + i + "'><span class='glyphicon glyphicon-remove'></span> Rechazar</button>";
 
                     misPublicaciones.push(obj_publicacion);
-                    document.getElementById("lista-" + obj_publicacion.Tipo).appendChild(myPublicacion);
+                    document.getElementById("lista-por-verificar").appendChild(myPublicacion);
                     $("#loaderPublicacion" + i).hide();
                 }
-                if (document.getElementById("lista-articulo").innerHTML == "")
-                    document.getElementById("lista-articulo").innerHTML = "No tienes artículos verificados.";
-
-                if (document.getElementById("lista-libro").innerHTML == "")
-                    document.getElementById("lista-libro").innerHTML = "No tienes libros verificados.";
-
-                if (document.getElementById("lista-conferencia").innerHTML == "")
-                    document.getElementById("lista-conferencia").innerHTML = "No tienes conferencias verificados.";
-
-                if (document.getElementById("lista-capitulo").innerHTML == "")
-                    document.getElementById("lista-capitulo").innerHTML = "No tienes capítulos verificados.";
-
-                if (document.getElementById("lista-trabajo dirigido").innerHTML == "")
-                    document.getElementById("lista-trabajo dirigido").innerHTML = "No tienes trabajos dirigidos verificados.";
-
-                if (document.getElementById("lista-software").innerHTML == "")
-                    document.getElementById("lista-software").innerHTML = "No tienes software verificados.";
+                if (document.getElementById("lista-por-verificar").innerHTML == "")
+                    document.getElementById("lista-por-verificar").innerHTML = "No tienes publicaciones pendientes.";
             }
            else {
                 alert("Fallo codigo: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description);
            }
         });
+    
+    getServelet(SERVER_URL + 'PublicacionDudosaServlet', null, userToken, function(serveletResponse) {
+        var response = JSON.parse(serveletResponse);
+        console.log(response);
+    });
 //    }
 }
 
-function verificarPublicacion(i) {
-    $("#loaderPublicacion" + i).show();
-    document.getElementById("btnVerificar" + i).innerHTML = "Verificando...";
-    var mPublicacion = document.getElementById("publicacion" + i);
-    var data_to_send = new Object();
-    var mBtnPublicacion, mBtnVerificar, mBtnRechazar;
-    data_to_send.token = userToken;
-    data_to_send.idPublicacion = misPublicaciones[i].ID;
-    data_to_send.nuevoEstado = "Verificado";
+function verificarPublicacion(i, thisButton) {
+    if (thisButton.innerHTML == "Verificar y Completar") {   
+        $("#loaderPublicacion" + i).show();
+        var mBtn, mPublicacion = document.getElementById("publicacion" + i);
+        var data_to_send = new Object();
+        data_to_send.token = userToken;
+        data_to_send.idPublicacion = misPublicaciones[i].ID;
+        data_to_send.nuevoEstado = "Verificado";
 
-    postServlet(SERVER_URL + "NuevoEstadoPublicacionServlet", JSON.stringify(data_to_send), function(servletResponse) {
-        var response = JSON.parse(servletResponse);
-        $("#loaderPublicacion" + i).hide();
-        if (response.code == 0) {
-            mBtnPublicacion = document.getElementById("btnPublicacion" + i);
-            mBtnPublicacion.className = "btn btn-success";
-            mBtnPublicacion.innerHTML = "<i class='glyphicon glyphicon-ok-sign'></i>";
-            mBtnPublicacion.setAttribute("onclick","showMeDescription(\"Verificado\"," + i + ")");
-
-            var newBtn = document.createElement("button");
-            newBtn.type = "button";
-            newBtn.innerHTML = "Modificar";
-            newBtn.className = "btn btn-info";
-            newBtn.setAttribute("data-target", "#myModal");
-            newBtn.setAttribute("data-toggle", "modal");
-            newBtn.setAttribute("onclick", "modificarInformacion(" + i + ")");
-            $("#btnVerificar" + i).replaceWith(newBtn);
-
-            document.getElementById("btnRechazar" + i).innerHTML = "<span class='glyphicon glyphicon-remove'></span> Eliminar";
-        }
-        else
-            alert("Fallo código: " + response.code.toString() + " - Descripción: " + response.description);
-});
+        postServlet(SERVER_URL + "NuevoEstadoPublicacionServlet", JSON.stringify(data_to_send), function(servletResponse) {
+            var response = JSON.parse(servletResponse);
+            $("#loaderPublicacion" + i).hide();
+            if (response.code == 0) {
+                thisButton.setAttribute("data-target", "#myModal");
+                thisButton.setAttribute("data-toggle", "modal");
+                thisButton.setAttribute("onclick", "modificarInformacion(" + i + ")");
+                thisButton.innerHTML = "Verificado";
+                mBtn = document.getElementById("btn-eliminar-" + i);
+                mPublicacion.removeChild(mBtn);
+                thisButton.click();
+            }
+            else
+                alert("Fallo código: " + response.code.toString() + " - Descripción: " + response.description);
+        });
+    }
 }
 
 function eliminarPublicacion(i) {
@@ -175,7 +159,7 @@ function eliminarPublicacion(i) {
             var respuesta = JSON.parse(serveletResponse);
             $("#loaderPublicacion" + i).hide();
             if (respuesta.code == 0) {
-                document.getElementById("lista-" + misPublicaciones[i].Tipo).removeChild(mPublicacion);
+                document.getElementById("lista-por-verificar").removeChild(mPublicacion);
             }
             else
                alert("Fallo código: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description); 
@@ -188,35 +172,38 @@ function modificarInformacion(i){
     var tipo = misPublicaciones[i].Tipo;
     var cantidad_autores = misPublicaciones[i].Autores.length
     showTextInputs(tipo, cantidad_autores);
+    
     var mBoton = document.getElementById("btn_modificar");
     mBoton.setAttribute("onclick","actualizarInformacion(" + i + ")");
     
     document.getElementById("m_tituloPublicacion").value = misPublicaciones[i].Titulo;
     document.getElementById("m_tipoPublicacion").value = misPublicaciones[i].Tipo;
+    
+    if (tipo != null) {
+        if (tipo == "libro" || tipo == "capitulo" || tipo == "software" || tipo == "articulo") {
+            document.getElementById("m_codigoPublicacion").value = misPublicaciones[i].codigoPublicacion;
+        } 
+        document.getElementById("m_lugarPublicacion").value = misPublicaciones[i].Lugar;
 
-    if (tipo == "libro" || tipo == "capitulo" || tipo == "software" || tipo == "articulo") {
-        document.getElementById("m_codigoPublicacion").value = misPublicaciones[i].codigoPublicacion;
-    } 
-    document.getElementById("m_lugarPublicacion").value = misPublicaciones[i].Lugar;
-    
-    if (tipo == "libro" || tipo == "capitulo" || tipo == "articulo") {
-        document.getElementById("m_editorialPublicacion").value = misPublicaciones[i].Editorial;
-    }
-    
-    document.getElementById("m_fechaPublicacion").value = misPublicaciones[i].FechaInicio;
-    
-    if (tipo == "trabajo dirigido") {
-        document.getElementById("m_duracionPublicacion").value = misPublicaciones[i].Duracion;
-        document.getElementById("m_tipoEspecifico").value = misPublicaciones[i].tipoEspecifico;
-    }
-    
-    if (tipo == "software") {
-        document.getElementById("m_plataformaPublicacion").value = misPublicaciones[i].Plataforma;
-    }
-    
-    for (var j = 0; j < cantidad_autores; j++) {
-        document.getElementById("m_autor_name_" + j).value = misPublicaciones[i].Autores[j].Nombre;
-        document.getElementById("m_autor_rol_" + j).value = misPublicaciones[i].Autores[j].Rol;
+        if (tipo == "libro" || tipo == "capitulo" || tipo == "articulo") {
+            document.getElementById("m_editorialPublicacion").value = misPublicaciones[i].Editorial;
+        }
+
+        document.getElementById("m_fechaPublicacion").value = misPublicaciones[i].FechaInicio;
+
+        if (tipo == "trabajo dirigido") {
+            document.getElementById("m_duracionPublicacion").value = misPublicaciones[i].Duracion;
+            document.getElementById("m_tipoEspecifico").value = misPublicaciones[i].tipoEspecifico;
+        }
+
+        if (tipo == "software") {
+            document.getElementById("m_plataformaPublicacion").value = misPublicaciones[i].Plataforma;
+        }
+
+        for (var j = 0; j < cantidad_autores; j++) {
+            document.getElementById("m_autor_name_" + j).value = misPublicaciones[i].Autores[j].Nombre;
+            document.getElementById("m_autor_rol_" + j).value = misPublicaciones[i].Autores[j].Rol;
+        }
     }
 }
 
@@ -225,7 +212,7 @@ function actualizarInformacion(i) {
     document.getElementById("btn_modificar").innerHTML = "Actualizando...";
     document.getElementById("btn_modificar").disabled = true;
     var newTitulo;
-    var newTipo;
+    var newTipo = "";
     var newCodigo = "";
     var newLugar = "";
     var newEditorial = "";
@@ -240,58 +227,73 @@ function actualizarInformacion(i) {
     newTitulo = (document.getElementById("m_tituloPublicacion").value).trim();
     newTipo = document.getElementById("m_tipoPublicacion").value;
     
-    if (newTipo == "libro" || newTipo == "capitulo" || newTipo == "software" || newTipo == "articulo")
-        newCodigo = (document.getElementById("m_codigoPublicacion").value).trim();
-    
-    newLugar = (document.getElementById("m_lugarPublicacion").value).trim();
-    
-    if (newTipo == "libro" || newTipo == "capitulo" || newTipo == "articulo")
-        newEditorial = (document.getElementById("m_editorialPublicacion").value).trim();
-    
-    newFecha = (document.getElementById("m_fechaPublicacion").value).trim();
-    
-    if (newTipo == "trabajo dirigido") {
-        newDuracion = (document.getElementById("m_duracionPublicacion").value).trim();
-        newTipoEspecifico = (document.getElementById("m_tipoEspecifico").value).trim();
-    }
-    
-    if (newTipo == "software")
-        newPlataforma = (document.getElementById("m_plataformaPublicacion").value).trim();
+    if (misPublicaciones[i].Tipo != null) {
+        if (newTipo == "libro" || newTipo == "capitulo" || newTipo == "software" || newTipo == "articulo")
+            newCodigo = (document.getElementById("m_codigoPublicacion").value).trim();
 
-    if (newCodigo == "") newCodigo = null;
-    if (newLugar == "") newLugar = null;
-    if (newEditorial == "") newEditorial = null;
-    if (newFecha == "") newFecha = null;
-    if (newPlataforma == "") newPlataforma = null;
-    if (newDuracion == "") newDuracion = null;
-    if (newTipoEspecifico == "") newTipoEspecifico = null;
+        newLugar = (document.getElementById("m_lugarPublicacion").value).trim();
+
+        if (newTipo == "libro" || newTipo == "capitulo" || newTipo == "articulo")
+            newEditorial = (document.getElementById("m_editorialPublicacion").value).trim();
+
+        newFecha = (document.getElementById("m_fechaPublicacion").value).trim();
+
+        if (newTipo == "trabajo dirigido") {
+            newDuracion = (document.getElementById("m_duracionPublicacion").value).trim();
+            newTipoEspecifico = (document.getElementById("m_tipoEspecifico").value).trim();
+        }
+
+        if (newTipo == "software")
+            newPlataforma = (document.getElementById("m_plataformaPublicacion").value).trim();
+
+        if (newCodigo == "") newCodigo = null;
+        if (newLugar == "") newLugar = null;
+        if (newEditorial == "") newEditorial = null;
+        if (newFecha == "") newFecha = null;
+        if (newPlataforma == "") newPlataforma = null;
+        if (newDuracion == "") newDuracion = null;
+        if (newTipoEspecifico == "") newTipoEspecifico = null;
+
+        for (var j = 0; j < div_autores.childNodes.length; j++) {
+            if (div_autores.childNodes[j].tagName == "INPUT") {
+                if (div_autores.childNodes[j].value != "") {
+                    var oAutor = new Object();
+                    oAutor.Nombre = div_autores.childNodes[j].value;
+                    oAutor.Rol = ((div_autores.childNodes[j + 1].value == "") ? 
+                                  null : 
+                                  div_autores.childNodes[j + 1].value)
+                    oAutor.ID = getAutorID(div_autores.childNodes[j].value);
+                    arrayAutores.push(oAutor);
+                }
+            }
+        }
+        data_to_send.Autores_Eliminados = aAutoresEliminados;
+        data_to_send.Autores = arrayAutores
+        
+        data_to_send.codigoPublicacion = newCodigo;
+        data_to_send.Lugar = newLugar;
+        data_to_send.Editorial = newEditorial;
+        data_to_send.FechaInicio = newFecha;
+        data_to_send.Plataforma = newPlataforma;
+        data_to_send.Duracion = newDuracion;
+        data_to_send.tipoEspecifico = newTipoEspecifico;
+    }
+    else {
+        data_to_send.codigoPublicacion = misPublicaciones[i].codigoPublicacion;
+        data_to_send.Lugar = misPublicaciones[i].Lugar;
+        data_to_send.Editorial = misPublicaciones[i].Editorial;
+        data_to_send.FechaInicio = misPublicaciones[i].FechaInicio;
+        data_to_send.Plataforma = misPublicaciones[i].Plataforma;
+        data_to_send.Duracion = misPublicaciones[i].Duracion;
+        data_to_send.tipoEspecifico = misPublicaciones[i].tipoEspecifico;
+        data_to_send.Autores = misPublicaciones[i].Autores;
+        data_to_send.Autores_Eliminados = [];
+    }
     
     data_to_send.ID = misPublicaciones[i].ID;
     data_to_send.Titulo = newTitulo;
     data_to_send.Tipo = newTipo;
-    data_to_send.codigoPublicacion = newCodigo;
-    data_to_send.Lugar = newLugar;
-    data_to_send.Editorial = newEditorial;
-    data_to_send.FechaInicio = newFecha;
-    data_to_send.Plataforma = newPlataforma;
-    data_to_send.Duracion = newDuracion;
-    data_to_send.tipoEspecifico = newTipoEspecifico;
-
-    for (var i = 0; i < div_autores.childNodes.length; i++) {
-        if (div_autores.childNodes[i].tagName == "INPUT") {
-            if (div_autores.childNodes[i].value != "") {
-                var oAutor = new Object();
-                oAutor.Nombre = div_autores.childNodes[i].value;
-                oAutor.Rol = ((div_autores.childNodes[i + 1].value == "") ? null : div_autores.childNodes[i + 1].value)
-                oAutor.ID = getAutorID(div_autores.childNodes[i].value);
-                arrayAutores.push(oAutor);
-            }
-        }
-    }
-    data_to_send.Autores_Eliminados = aAutoresEliminados;
-    data_to_send.Autores = arrayAutores
-
-
+    
     postServlet(SERVER_URL + "ActualizarPublicacionServlet", JSON.stringify(data_to_send), function(serveletResponse) {
         var respuesta = JSON.parse(serveletResponse);
         $("#loaderModificacion").hide();
@@ -385,7 +387,9 @@ function insertIntoNavbar(elementID, label, link, isActive) {
 function showTextInputs(tipo, cantidad_autores) {
     var mModal = document.getElementById("inputs-modal");
     var newDiv = document.createElement("div");
-    var newBtn;
+    var newBtn, isEnabled = "";
+    
+    if (tipo != null) isEnabled = "disabled";
     
     mModal.innerHTML = "";
     newDiv.className = "form-group";
@@ -395,8 +399,8 @@ function showTextInputs(tipo, cantidad_autores) {
     
     newDiv = document.createElement("div");
     newDiv.className = "form-group";
-    newDiv.innerHTML = "<label >Tipo:</label>";
-    newDiv.innerHTML += "<div class='form-group'><select class='form-control' id='m_tipoPublicacion' disabled>"
+    newDiv.innerHTML = "<label>Tipo:</label>";
+    newDiv.innerHTML += "<div class='form-group'><select class='form-control' id='m_tipoPublicacion'" + isEnabled + ">"
                         + "<option>libro</option>"
                         + "<option>articulo</option>"
                         + "<option>capitulo</option>"
@@ -406,76 +410,78 @@ function showTextInputs(tipo, cantidad_autores) {
                         + "</select></div>";
     mModal.append(newDiv);
 
-    if (tipo == "libro" || tipo == "capitulo" || tipo == "software" || tipo == "articulo") {
-        newDiv = document.createElement("div");
-        newDiv.className = "form-group";
+    if (tipo != null) {
+        if (tipo == "libro" || tipo == "capitulo" || tipo == "software" || tipo == "articulo") {
+            newDiv = document.createElement("div");
+            newDiv.className = "form-group";
 
-        if (tipo == "libro") newDiv.innerHTML = "<label>ISBN:</label>";
-        if (tipo == "capitulo") newDiv.innerHTML = "<label>ISBN:</label>";
-        if (tipo == "software") newDiv.innerHTML = "<label>Registro:</label>";
-        if (tipo == "articulo") newDiv.innerHTML = "<label>ISSN:</label>";
+            if (tipo == "libro") newDiv.innerHTML = "<label>ISBN:</label>";
+            if (tipo == "capitulo") newDiv.innerHTML = "<label>ISBN:</label>";
+            if (tipo == "software") newDiv.innerHTML = "<label>Registro:</label>";
+            if (tipo == "articulo") newDiv.innerHTML = "<label>ISSN:</label>";
 
-        newDiv.innerHTML += "<input type='text' class='form-control' id='m_codigoPublicacion'>";
-        mModal.append(newDiv);
-    }
-    
-    newDiv = document.createElement("div");
-    newDiv.className = "form-group";
-    newDiv.innerHTML = "<label >Lugar:</label>";
-    newDiv.innerHTML += "<input type='text' class='form-control' id='m_lugarPublicacion'>";
-    mModal.append(newDiv);
-    
-    if (tipo == "libro" || tipo == "capitulo" || tipo == "articulo") {
-        newDiv = document.createElement("div");
-        newDiv.className = "form-group";
-        newDiv.innerHTML = "<label>Editorial:</label>";
-        newDiv.innerHTML += "<input type='text' class='form-control' id='m_editorialPublicacion'>";
-        mModal.append(newDiv);
-    }
+            newDiv.innerHTML += "<input type='text' class='form-control' id='m_codigoPublicacion'>";
+            mModal.append(newDiv);
+        }
 
-    newDiv = document.createElement("div");
-    newDiv.className = "form-group";
-    newDiv.innerHTML = "<label >Fecha:</label>";
-    newDiv.innerHTML += "<input type='text' placeholder='YYYY-MM-DD' class='form-control' id='m_fechaPublicacion'>";
-    mModal.append(newDiv);
-    
-    if (tipo == "trabajo dirigido") {
         newDiv = document.createElement("div");
         newDiv.className = "form-group";
-        newDiv.innerHTML = "<label>Duracion:</label>";
-        newDiv.innerHTML += "<input type='text' class='form-control' id='m_duracionPublicacion'>";
+        newDiv.innerHTML = "<label >Lugar:</label>";
+        newDiv.innerHTML += "<input type='text' class='form-control' id='m_lugarPublicacion'>";
         mModal.append(newDiv);
-        
+    
+        if (tipo == "libro" || tipo == "capitulo" || tipo == "articulo") {
+            newDiv = document.createElement("div");
+            newDiv.className = "form-group";
+            newDiv.innerHTML = "<label>Editorial:</label>";
+            newDiv.innerHTML += "<input type='text' class='form-control' id='m_editorialPublicacion'>";
+            mModal.append(newDiv);
+        }
+
         newDiv = document.createElement("div");
         newDiv.className = "form-group";
-        newDiv.innerHTML = "<label>Tipo Especifico:</label>";
-        newDiv.innerHTML += "<input type='text' class='form-control' id='m_tipoEspecifico'>"; 
+        newDiv.innerHTML = "<label >Fecha:</label>";
+        newDiv.innerHTML += "<input type='text' placeholder='YYYY-MM-DD' class='form-control' id='m_fechaPublicacion'>";
         mModal.append(newDiv);
-    }
-    
-    if (tipo == "software") {
+
+        if (tipo == "trabajo dirigido") {
+            newDiv = document.createElement("div");
+            newDiv.className = "form-group";
+            newDiv.innerHTML = "<label>Duracion:</label>";
+            newDiv.innerHTML += "<input type='text' class='form-control' id='m_duracionPublicacion'>";
+            mModal.append(newDiv);
+
+            newDiv = document.createElement("div");
+            newDiv.className = "form-group";
+            newDiv.innerHTML = "<label>Tipo Especifico:</label>";
+            newDiv.innerHTML += "<input type='text' class='form-control' id='m_tipoEspecifico'>"; 
+            mModal.append(newDiv);
+        }
+
+        if (tipo == "software") {
+            newDiv = document.createElement("div");
+            newDiv.className = "form-group";
+            newDiv.innerHTML = "<label>Plataforma:</label>";
+            newDiv.innerHTML += "<input type='text' class='form-control' id='m_plataformaPublicacion'>";
+            mModal.append(newDiv);
+        }
+
         newDiv = document.createElement("div");
         newDiv.className = "form-group";
-        newDiv.innerHTML = "<label>Plataforma:</label>";
-        newDiv.innerHTML += "<input type='text' class='form-control' id='m_plataformaPublicacion'>";
+        newDiv.setAttribute("id", "autores-publicacion");
+        newDiv.innerHTML = "<label style='display:block;'>Coautores:</label>";
+        for (var i = 0; i < cantidad_autores; i++) {
+            newDiv.innerHTML += HTMLAutorInfo(i, "disabled");
+        }
         mModal.append(newDiv);
+
+        newBtn = document.createElement("button");
+        newBtn.className = "btn btn-success";
+        newBtn.setAttribute("type", "button");
+        newBtn.setAttribute("onclick", "addAutor()");
+        newBtn.innerHTML = "<span class='glyphicon glyphicon-plus'></span>";
+        mModal.append(newBtn);
     }
-    
-    newDiv = document.createElement("div");
-    newDiv.className = "form-group";
-    newDiv.setAttribute("id", "autores-publicacion");
-    newDiv.innerHTML = "<label style='display:block;'>Coautores:</label>";
-    for (var i = 0; i < cantidad_autores; i++) {
-        newDiv.innerHTML += HTMLAutorInfo(i, "disabled");
-    }
-    mModal.append(newDiv);
-    
-    newBtn = document.createElement("button");
-    newBtn.className = "btn btn-success";
-    newBtn.setAttribute("type", "button");
-    newBtn.setAttribute("onclick", "addAutor()");
-    newBtn.innerHTML = "<span class='glyphicon glyphicon-plus'></span>";
-    mModal.append(newBtn);
 }
 
 function addAutor() {
@@ -550,7 +556,6 @@ function HTMLAutorInfo(j, status) {
 function CSVCreator(element) {
     var eURI = "";
     var pTipo = "";
-    var text = "";
     var eTipo = element.getAttribute("id").split("-")[1];
     var eID = element.getAttribute("id");
     var content = "data:text/csv;charset=utf-8," + CSVHeader(eTipo);
@@ -558,59 +563,36 @@ function CSVCreator(element) {
     for (var i = 0; i < misPublicaciones.length; i++) {
         pTipo = misPublicaciones[i].Tipo;
         if (pTipo == eTipo) {
-            content += misPublicaciones[i].Titulo.replace(/,/g, "") + ",";
-            
-            if (pTipo == "articulo" || pTipo == "libro" || pTipo == "capitulo" || pTipo == "software") {
-                text = misPublicaciones[i].codigoPublicacion;
-                if (text != null)
-                    content += text.replace(/,/g, "") + ",";
-                else
-                    content += "No definido,";
-            }
-            
-            text = misPublicaciones[i].Lugar;
-            if (text != null)
-                content += text.replace(/,/g, "") + ",";
-            else
-                content += "No definido,";
-                
             if (pTipo == "articulo" || pTipo == "libro" || pTipo == "capitulo") {
-                text = misPublicaciones[i].Editorial;
-                if (text != null)
-                    content += text.replace(/,/g, "") + ",";
-                else
-                    content += "No definido,";
+                content += misPublicaciones[i].Titulo + ","
+                        + misPublicaciones[i].codigoPublicacion + ","
+                        + misPublicaciones[i].Lugar + ","
+                        + misPublicaciones[i].Editorial + ","
+                        + misPublicaciones[i].FechaInicio + ","
+                        + getAutores(misPublicaciones[i].Autores);
             }
-            
-            text = misPublicaciones[i].FechaInicio;
-            if (text != null)
-                content += text.replace(/,/g, "") + ",";
-            else
-                content += "No definido,";
-            
+            if (pTipo == "conferencia") {
+                content += misPublicaciones[i].Titulo + ","
+                        + misPublicaciones[i].Lugar + ","
+                        + misPublicaciones[i].FechaInicio + ","
+                        + getAutores(misPublicaciones[i].Autores);
+            }
             if (pTipo == "trabajo dirigido") {
-                text = misPublicaciones[i].Duracion;
-                if (text != null)
-                    content += text.replace(/,/g, "") + ",";
-                else
-                    content += "No definido,";
-                
-                text = misPublicaciones[i].tipoEspecifico;
-                if (text != null)
-                    content += text.replace(/,/g, "") + ",";
-                else
-                    content += "No definido,";
+                content += misPublicaciones[i].Titulo + ","
+                        + misPublicaciones[i].Lugar + ","
+                        + misPublicaciones[i].FechaInicio + ","
+                        + misPublicaciones[i].Duracion + ","
+                        + misPublicaciones[i].tipoEspecifico + ","
+                        + getAutores(misPublicaciones[i].Autores);
             }
-            
             if (pTipo == "software") {
-                text = misPublicaciones[i].Plataforma;
-                if (text != null)
-                    content += text.replace(/,/g, "") + ",";
-                else
-                    content += "No definido,";
+                content += misPublicaciones[i].Titulo + ","
+                        + misPublicaciones[i].codigoPublicacion + ","
+                        + misPublicaciones[i].Lugar + ","
+                        + misPublicaciones[i].FechaInicio + ","
+                        + misPublicaciones[i].Plataforma + ","
+                        + getAutores(misPublicaciones[i].Autores);
             }
-            
-            content += getAutores(misPublicaciones[i].Autores);
             content += "\r\n";
         }
     }
@@ -624,28 +606,28 @@ function getAutores(autores) {
     var mAutores = "";
     
     for (var i = 0; i < autores.length; i++) {
-        mAutores += ((i == 0) ? "" : "-") + autores[i].Nombre.replace(/,/g, "");
+        mAutores += ((i == 0) ? "" : "-") + autores[i].Nombre;
     }
     return mAutores;
 }
 
 function CSVHeader(tipo) {
-    var mHeader = "\uFEFF";
+    var mHeader = "";
 
     if (tipo == "libro" || tipo == "capitulo")
-        mHeader += "Titulo,ISBN,Lugar,Editorial,Fecha,Autores";
+        mHeader = "Titulo,ISBN,Lugar,Editorial,Fecha,Autores";
     
     if (tipo == "articulo")
-        mHeader += "Titulo,ISSN,Lugar,Editorial,Fecha,Autores";
+        mHeader = "Titulo,ISSN,Lugar,Editorial,Fecha,Autores";
 
     if (tipo == "conferencia")
-        mHeader += "Titulo,Lugar,Fecha,Autores";
+        mHeader = "Titulo,Lugar,Fecha,Autores";
 
     if (tipo == "trabajo dirigido")
-        mHeader += "Titulo,Lugar,Fecha,Duración,TipoEspecifico,Autores";
+        mHeader = "Titulo,Lugar,Fecha,Duración,TipoEspecifico,Autores";
 
     if (tipo == "software")
-        mHeader += "Titulo,Registro,Lugar,Fecha,Plataforma,Autores";
+        mHeader = "Titulo,Registro,Lugar,Fecha,Plataforma,Autores";
     
     return mHeader + "\r\n";
 }
