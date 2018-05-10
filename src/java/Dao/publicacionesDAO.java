@@ -597,10 +597,10 @@ public class publicacionesDAO {
             Statement stmt = null;
             ResultSet rs;
             stmt = conexion.createStatement();
-            System.out.println("SELECT * FROM PublicacionDudosa WHERE Titulo = '"+nombrePublicacionNueva+"'");
+            System.out.println("SELECT * FROM PublicacionDudosa WHERE Titulo = '"+nombrePublicacionNueva.replace("'"," ")+"'");
             
             if (!nombrePublicacionNueva.isEmpty() && nombrePublicacionNueva!=null && !nombrePublicacionNueva.equals("")) {
-                rs = stmt.executeQuery("SELECT * FROM PublicacionDudosa WHERE Titulo = '"+nombrePublicacionNueva+"'");
+                rs = stmt.executeQuery("SELECT * FROM PublicacionDudosa WHERE Titulo = '"+nombrePublicacionNueva.replace("'", " ")+"'");
                 while (rs.next())
                     existeTitulo = true;
                 respuesta.put("existeTitulo", existeTitulo);
@@ -637,7 +637,7 @@ public class publicacionesDAO {
             // Insertar publicacion
             String query = "INSERT INTO Publicacion (Titulo, Tipo, CodigoPublicacion, Lugar, Editorial, FechaInicio,duracion,tipoEspecifico,plataforma, Extraido)"
                     + " VALUES ("
-                    + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ").replace("'"," ") +"'") + ","
+                    + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ").replace("'"," ").replace(":", " ") +"'") + ","
                     + ((newPublicacion.get("tipo") == null) ? null : "'" + newPublicacion.get("tipo") +"'") + ","
                     + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion") +"'") + ","
                     + ((newPublicacion.get("lugarPublicacion") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("lugarPublicacion").toString().replace("'"," ")) +"'") + ","
@@ -732,7 +732,7 @@ public class publicacionesDAO {
                 query = "INSERT INTO PublicacionDudosa (ID,Titulo, Tipo, CodigoPublicacion, Lugar, Editorial, FechaInicio,duracion,tipoEspecifico,plataforma,Extraido,EstadoSistema)"
                     + " VALUES ("
                     + publicacionIndivisualSistema.get("ID")+ ","
-                    + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ") +"'") + ","
+                    + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ") .replace("'"," ").replace(":", " ")+"'") + ","
                     + ((newPublicacion.get("tipo") == null) ? null : "'" + newPublicacion.get("tipo") +"'") + ","
                     + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion") +"'") + ","
                     + ((newPublicacion.get("lugar") == null) ? null : "'" + newPublicacion.get("lugar") +"'") + ","

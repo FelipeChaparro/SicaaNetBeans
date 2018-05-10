@@ -42,7 +42,7 @@ public class estadisticasDao {
             
             String selectStatemt = "select COUNT(*) numero";
             String fromStatement = " from Publicacion PU inner join Persona_Publicacion PP on PP.IdPublicacion = PU.ID";
-            String whereStatement = " where PP.EstadoSistema = 1";
+            String whereStatement = " where PP.EstadoSistema = 1 and PP.EstadoPublicacion='Verificado' ";
             String groupByStatement = "";
             Boolean existeGroupByAnterior = false;
             

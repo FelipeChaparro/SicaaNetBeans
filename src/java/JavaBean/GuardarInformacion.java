@@ -280,15 +280,15 @@ public class GuardarInformacion {
             JSONArray listaEventos = (JSONArray) eventos.get("eventos");
 
             
-            respuesta_existePublicacion_libros = beanPublicacionesEJB.validarPublicacionesNuevas(libro, json.get("id").toString(),"CvLac");
+            //respuesta_existePublicacion_libros = beanPublicacionesEJB.validarPublicacionesNuevas(libro, json.get("id").toString(),"CvLac");
             
-            respuesta_existePublicacion_articulos = beanPublicacionesEJB.validarPublicacionesNuevas(articulos, json.get("id").toString(),"CvLac");
+            //respuesta_existePublicacion_articulos = beanPublicacionesEJB.validarPublicacionesNuevas(articulos, json.get("id").toString(),"CvLac");
 
-            respuesta_existePublicacion_capitulos = beanPublicacionesEJB.validarPublicacionesNuevas(capitulo, json.get("id").toString(),"CvLac");
+            //respuesta_existePublicacion_capitulos = beanPublicacionesEJB.validarPublicacionesNuevas(capitulo, json.get("id").toString(),"CvLac");
             
-            respuesta_existePublicacion_software = beanPublicacionesEJB.validarPublicacionesNuevas(listaSoftware, json.get("id").toString(), "CvLac");
+            //respuesta_existePublicacion_software = beanPublicacionesEJB.validarPublicacionesNuevas(listaSoftware, json.get("id").toString(), "CvLac");
             
-            respuesta_existePublicacion_trabajosDirigidos = beanPublicacionesEJB.validarPublicacionesNuevas(listaTrbajosDirigidos, json.get("id").toString(), "CvLac");
+            //respuesta_existePublicacion_trabajosDirigidos = beanPublicacionesEJB.validarPublicacionesNuevas(listaTrbajosDirigidos, json.get("id").toString(), "CvLac");
             
             respuesta_existePublicacion_eventos = beanPublicacionesEJB.validarPublicacionesNuevas(listaEventos, json.get("id").toString(), "CvLac");
             

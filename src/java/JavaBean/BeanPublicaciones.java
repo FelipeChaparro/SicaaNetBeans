@@ -249,6 +249,9 @@ public class BeanPublicaciones {
         for (int i=0;i<tamListaPublicaciones;i++) {
             
             publicacionIndividualDeLista = (JSONObject)listaPublicaciones.get(i);
+            
+            System.out.println("Publicacion individual: "+publicacionIndividual.toJSONString());
+            System.out.println("Publciaion de lista: "+publicacionIndividualDeLista.toJSONString());
             porcentajeConfianza = beanConcordancia.getSimilarity(publicacionIndividual.get("titulo").toString(), publicacionIndividualDeLista.get("Titulo").toString(), "NOMBRE_PUBLICACION");
             
             if ((porcentajeConfianza >= 0.98 && publicacionIndividual.get("tipo") != null && publicacionIndividualDeLista.get("tipo")!= null && publicacionIndividual.get("tipo").toString().equalsIgnoreCase(publicacionIndividualDeLista.get("tipo").toString())) || porcentajeConfianza==1.0) {
