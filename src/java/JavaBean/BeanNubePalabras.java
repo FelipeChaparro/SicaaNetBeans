@@ -53,19 +53,19 @@ public class BeanNubePalabras {
             }
             else if (!usarDptoFiltro && facultadFiltro!=null && nombreAutorFiltro == null){
                 tipoConsulta = 2;
-                System.out.println("Entro a 1: ");
+                System.out.println("Entro a 2: ");
             }
-            else if (facultadFiltro == null && departamentoFiltro == null){
+            else if (facultadFiltro == null && departamentoFiltro == null && nombreAutorFiltro!=null){
                 tipoConsulta = 3;
-                System.out.println("Entro a 1: ");
+                System.out.println("Entro a 3: ");
             }
             else if (facultadFiltro == null && nombreAutorFiltro!= null && departamentoFiltro!= null){
                 tipoConsulta = 4;
-                System.out.println("Entro a 1: ");
+                System.out.println("Entro a 4: ");
             }
             else if (departamentoFiltro == null && nombreAutorFiltro!= null && facultadFiltro!= null){
                 tipoConsulta = 5;
-                System.out.println("Entro a 1: ");
+                System.out.println("Entro a 5: ");
             }
             respuesta_publicaciones_dao = publicaciones_dao.getAllTitulosByFiltros(departamentoFiltro, facultadFiltro, nombreAutorFiltro, tipoConsulta);
                         

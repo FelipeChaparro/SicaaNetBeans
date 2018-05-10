@@ -127,7 +127,7 @@ public class estadisticasDao {
             
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             estadisticas.put("labels", labels);
             estadisticas.put("data", counts);
             respuesta.put("estadisticas", estadisticas);

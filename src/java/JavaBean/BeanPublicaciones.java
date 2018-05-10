@@ -7,6 +7,7 @@ package JavaBean;
 
 import Controller.login_servelet;
 import Dao.autoresDao;
+import Dao.loginDao;
 
 import Dao.publicacionesDAO;
 import Dao.puntosDAO;
@@ -97,7 +98,7 @@ public class BeanPublicaciones {
                              * INSERTAR DUDOSA
                              */
                             System.out.println("INSERTAR DUDOSAS");
-                          //  respuesta_insertPublicacionDudosa = INEG1.insertPublicacionDudosa(publicacionIndividualNueva, (JSONArray) respuesta_comparacionPublicacionConLista.get("publicacionesDudosas"),fuenteExtraccion);
+                            respuesta_insertPublicacionDudosa = INEG1.insertPublicacionDudosa(publicacionIndividualNueva, (JSONArray) respuesta_comparacionPublicacionConLista.get("publicacionesDudosas"),fuenteExtraccion);
                         }
                         else
                             System.out.println("YA EXISTE DUDOSAS"); 
@@ -114,7 +115,7 @@ public class BeanPublicaciones {
                         for(int k=0; k < autores.size();k++){
                             JSONObject autorN = (JSONObject) autores.get(k);
                             String nombreA=(String) autorN.get("nombre");
-                            System.out.println(nombreA);
+                            System.out.println("Nombre: "+nombreA);
                             List<Autor> autores2 = bean.busquedaAutorBD(nombreA);
                            
                             int con=0;
@@ -134,17 +135,16 @@ public class BeanPublicaciones {
                             
                             if(autores2.size()==0){
                                 JSONObject obje=new JSONObject();
-                                
                                 obje.put("nombre",nombreA);
                                 obje.put("id",-1);
-                                autoresInsertar.add(obje);                               
+                                autoresInsertar.add(obje);                            
                             }                            
                         }
                         
                         int ExistePublicacion= -1;
                           
                         if(!codigos.equals("")){
-                            System.out.println(publicacionIndividualNueva.toString());
+                            System.out.println("Nueva publicaicon: "+publicacionIndividualNueva.toString());
                             String codigoReferencia="";
                             if(publicacionIndividualNueva.get("codigoPublicacion") != null){
                                 codigoReferencia=(String) publicacionIndividualNueva.get("codigoPublicacion");
@@ -161,6 +161,13 @@ public class BeanPublicaciones {
                                 }
                                 System.out.println("los autores que debe insertar son"+ autoresInsertar.toString());
                             }
+                        }
+                        else {
+                            respuesta_insertarPublicacionNueva = INEG1.insertPublicacionAutomatica(profesorId, publicacionIndividualNueva, autoresInsertar,fuenteExtraccion);
+                            if(puntosPublicacion.getId() != -1){
+                                puntos+=20;
+                            }
+                            System.out.println("los autores que debe insertar son: "+ autoresInsertar.toString());
                         }
                     }
                     
@@ -244,10 +251,11 @@ public class BeanPublicaciones {
             publicacionIndividualDeLista = (JSONObject)listaPublicaciones.get(i);
             porcentajeConfianza = beanConcordancia.getSimilarity(publicacionIndividual.get("titulo").toString(), publicacionIndividualDeLista.get("Titulo").toString(), "NOMBRE_PUBLICACION");
             
-            if (porcentajeConfianza >= 0.98) {
-                /**
+            if ((porcentajeConfianza >= 0.98 && publicacionIndividual.get("tipo") != null && publicacionIndividualDeLista.get("tipo")!= null && publicacionIndividual.get("tipo").toString().equalsIgnoreCase(publicacionIndividualDeLista.get("tipo").toString())) || porcentajeConfianza==1.0) {
+                /** 
                  * SALE - NO SE INSERTA PORQUE YA EXISTE
                  */
+                
                 respuesta.put("codigoEvaluacion", 0);
                 respuesta.put("publicacionExistente", publicacionIndividualDeLista);
                 System.out.println("comparacionPublicacionConLista() - codigoEvaluacion: "+respuesta.get("codigoEvaluacion").toString() + " - IGUAL");
@@ -294,6 +302,24 @@ public class BeanPublicaciones {
         
         System.out.println("comparacionPublicacionConLista() - codigoEvaluacion: "+respuesta.get("codigoEvaluacion").toString());
         return respuesta;
+    }
+    
+    public JSONObject getAllPublicacionesByPersonaID (String personaID,String action) {
+        JSONObject respuesta = new JSONObject();
+
+        try {
+            
+            publicacionesDAO publicacionesDAO = new publicacionesDAO();
+            
+            respuesta = publicacionesDAO.getAllPublicacionesByActionPersonaID(personaID,action);
+            
+        } catch (SQLException ex) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            Logger.getLogger(BeanPublicaciones.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return respuesta;        
     }
     
 }

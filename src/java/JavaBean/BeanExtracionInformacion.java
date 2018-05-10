@@ -1,16 +1,10 @@
 package JavaBean;
 
-import com.mysql.jdbc.Connection;
-import conexionBD.Cone;
 import java.io.IOException;
 import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import org.apache.commons.text.StringEscapeUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.jsoup.Jsoup;
@@ -29,6 +23,7 @@ public class BeanExtracionInformacion {
 		JSONObject obj = new JSONObject();
 		JSONObject combined = new JSONObject();
 		
+                
 		try {
 		   doc = Jsoup.connect(url).get(); // URL shortened!
 		   Elements ele=doc.select("div.container table");
@@ -74,29 +69,27 @@ public class BeanExtracionInformacion {
 	        obj.put("citas", citas);
 	        obj.put("sexo", sexo);
                 
-                
-		    //System.out.println(obj);
+		//System.out.println(obj);
 	        
 	        for(Element e : ele.select("td")) {
-				   for(Element elemento : e.select("a[name=formacion_acad]")) {
-					   elementoDatos=e;
-					  // System.out.println(elemento);
-						  
-				 }
-			}
+                    for(Element elemento : e.select("a[name=formacion_acad]")) {
+                        elementoDatos=e;
+			// System.out.println(elemento); 
+                    }
+		}
 	        
 	        JSONArray formacionAcademica = new JSONArray();
 	        
-	         el= elementoDatos.select("td");
-	         System.out.println("Formacion Academica");
+	        el= elementoDatos.select("td");
+	        System.out.println("Formacion Academica");
 	         
-	         for(int i=1; i < el.size(); i++) {
-	        	 if(!el.get(i).text().equals("")) {
-	        		 JSONObject objAca = new JSONObject();
-	        		//Titulo obtenido 
-	        		Elements elemnt= el.get(i).select("strong");
-	        		if(!elemnt.text().equals("")) {
-	        		objAca.put("categoria", elemnt.text().trim());
+	        for(int i=1; i < el.size(); i++) {
+                    if(!el.get(i).text().equals("")) {
+                        JSONObject objAca = new JSONObject();
+	        	//Titulo obtenido 
+	        	Elements elemnt= el.get(i).select("strong");
+	        	if(!elemnt.text().equals("")) {
+                            objAca.put("categoria", elemnt.text().trim());
 	        		//System.out.println(elemnt.text());
 	        		
 	        		 String[] textSplitResult =el.get(i).html().split("<br>");
@@ -202,23 +195,31 @@ public class BeanExtracionInformacion {
 			  
 	        
 		
-		} catch (IOException ioe) {
+		} 
+                catch (IOException ioe) {
 		   ioe.printStackTrace();
-		}  
+                }
+                
 		
         JSONObject mainObj = obtenerArticulos(url);
         JSONObject mainObj1 = obtenerLibros(url); 
-        JSONObject mainObj2 = obtenerEventos(url); 
         JSONObject mainObj3 = obtenerCapitulos(url);
+        JSONObject mainObj2 = obtenerEventos(url); 
+        JSONObject software = obtenerSoftware(url);
+        
+        JSONObject trabajosDeGrado = obtenerTrabajosDeGrado(url);       
+        
         combined.put("datosBasicos", obj);
         combined.put("publicaciones", mainObj);
         combined.put("Libros", mainObj1);
         combined.put("eventos", mainObj2);
-        combined.put("capitulos", mainObj3);
-        
-       System.out.println(combined.toString());
-		return combined;
-	}
+        combined.put("capitulos", mainObj3);     
+        combined.put("software", software);
+        combined.put("trabjosDirigidos",trabajosDeGrado);
+       //System.out.println(combined.toString());
+       System.out.println("FIN obtenerInformacion()");
+       return combined;
+    }
 	
 	
    public JSONObject obtenerArticulos(String url) {
@@ -424,7 +425,6 @@ public class BeanExtracionInformacion {
 		   doc = Jsoup.connect(url).get(); // URL shortened!
 		   Elements ele=doc.select("div.container table");
 		   Element elementoDatos=null;
-		   System.out.println(ele.size());
 		   for(Element e : ele.select("td")) {
 			   //System.out.println(e.select("a"));
 			   for(Element elemento : e.select("a[name=evento]")) {
@@ -438,11 +438,12 @@ public class BeanExtracionInformacion {
 			   JSONObject eve = new JSONObject();
 			   String evento=el.text();
 			   String[] parts=evento.split("Nombre del evento:");
+                            eve.put("tipo","conferencia");
 			   if(parts.length>=2) {
 				   String[] parts1=parts[1].split("Tipo de evento:");
 				   if(parts1.length>=2) {
 					   //nombre del evento
-					   eve.put("nombreEvento",parts1[0].trim());
+					   eve.put("lugarPublicacion",parts1[0].trim());
 					  // System.out.println(parts1[0].trim());
 				   }
 			   }
@@ -452,7 +453,7 @@ public class BeanExtracionInformacion {
 				   if(parts1.length>=2) {
 					   //Tipo de evento
 					  // System.out.println(parts1[0].trim());
-					   eve.put("tipoEvento",parts1[0].trim());
+					   eve.put("tipoEspecifico",parts1[0].trim());
 				   }
 			   }
 			   
@@ -462,7 +463,7 @@ public class BeanExtracionInformacion {
 				   if(parts1.length>=2) {
 					   //Ambito
 					   //System.out.println(parts1[0].trim());
-					   eve.put("ambito",parts1[0].trim());
+					   eve.put("duracion",parts1[0].trim());
 				   }
 			   }
 			   
@@ -473,7 +474,7 @@ public class BeanExtracionInformacion {
 				   if(parts1.length>=2) {
 					   //Tipo de producto
 					   //System.out.println(parts1[0].trim());
-					   eve.put("nombreProducto",parts1[0].trim());
+					   eve.put("titulo",parts1[0].trim());
 				   }
 			   }
 			   
@@ -483,7 +484,7 @@ public class BeanExtracionInformacion {
 				   if(parts1.length>=2) {
 					   //Tipo de producto
 					   //System.out.println(parts1[0].trim());
-					   eve.put("tipoProducto",parts1[0].trim());
+					   eve.put("editorial",parts1[0].trim());
 				   }
 			   }
 			   JSONArray participantes = new JSONArray();
@@ -498,13 +499,13 @@ public class BeanExtracionInformacion {
 						  // System.out.println(parts2[0]);
 						   partici.put("nombre", parts2[0].trim());
 						   //rol evento
-						   partici.put("rolEvento", parts2[1].trim());
+						   partici.put("rol", parts2[1].trim());
 						   
 						   participantes.add(partici);
 					   }
 				   }
 			   }
-			   eve.put("participantes",participantes);
+			   eve.put("autor",participantes);
 			   
 			   eventos.add(eve);
 		   }
@@ -608,4 +609,249 @@ public class BeanExtracionInformacion {
 		        mainObj.put("capitulos", capitulos);
                 return mainObj;
    }
+       
+    public JSONObject obtenerSoftware (String url) {
+        Document doc = null; 
+        JSONArray listaSoftware = new JSONArray();
+        JSONObject respuesta = new JSONObject();
+        
+        try {
+            doc = Jsoup.connect(url).get(); // URL shortened!
+            Elements ele=doc.select("div.container table");
+            Element elementoDatos=null;
+            System.out.println(ele.size());
+            for(Element e : ele.select("td"))
+                for(Element elemento : e.select("a[name=software]"))
+                    elementoDatos=e;
+
+            for(Element el: elementoDatos.select("blockquote")) {
+             
+                JSONObject productoSoftware = new JSONObject();
+                String [] parts=el.text().split(", ");
+                System.out.println("---------------------------------");
+                
+                JSONArray autores = new JSONArray();
+                String nombre = "";
+                String lugar = "";
+                String fecha = "";
+                String plataforma = "";
+                String plataformaIngresar = "";
+                String segunda_plataforma = "";
+                String registro = "";
+                int indiceNombreComercial = 0;
+                
+                for (int i=0;i<parts.length;i++){
+                    if (parts[i].toString().contains("Nombre comercial")) {
+                        indiceNombreComercial = i;
+                        nombre = parts[i-1].toString();
+                    }
+                    if (parts[i].toString().contains(". En:")) {
+                        String [] lugarSplit = parts[i].split(". En:");
+                        lugar = lugarSplit[1];
+                        
+                        String [] fechaSplit = parts[i+1].split(",");
+                        fecha = fechaSplit[1];
+                    }
+                    if (parts[i].toString().contains(".plataforma:")) {
+                        String [] plataformaSplit = parts[i].split(".plataforma:");
+                        plataforma = plataformaSplit[1].toString();
+                    }
+                    if (parts[i].toString().contains(".ambiente:")) {
+                        String [] segunda_plataformaSplit = parts[i].split(".ambiente:");
+                        segunda_plataforma = segunda_plataformaSplit[1].toString();
+                    }
+                    if (parts[i].toString().contains("contrato/registro:")) {
+                        String [] registroSplit = parts[i].split("contrato/registro:");
+                        registro = registroSplit[1].toString();
+                    }
+                }
+                
+                //Co autores
+                if (indiceNombreComercial > 0) {
+                    for (int i=0; i<indiceNombreComercial-1;i++) {
+                        JSONObject autor = new JSONObject();
+                        autor.put("nombre", parts[i].toString().trim());
+                        autores.add(autor);
+                    }
+                }
+                System.out.println("Publicaicon: "+nombre+" -- "+lugar+" -- "+fecha+" -- "+plataforma+" -- "+segunda_plataforma +" -- "+registro);
+                System.out.println("Autores: "+autores.toJSONString());
+                                
+                productoSoftware.put("titulo", nombre.trim());
+                productoSoftware.put("tipo", "software");
+                productoSoftware.put("codigoPublicacion", registro.equals(" ")?null:registro.trim());
+                productoSoftware.put("lugarPublicacion", lugar.equals("")?null:lugar.trim());
+                productoSoftware.put("editorial", null);
+                productoSoftware.put("fecha", fecha.equals("")?null:fecha.trim()+"-01-01");
+                productoSoftware.put("extraido", "CvLac");
+                productoSoftware.put("duracion", null);
+                productoSoftware.put("tipoEspecifico", " Computacional");
+                productoSoftware.put("plataforma", plataforma.equalsIgnoreCase("")?(segunda_plataforma.equals("")?null:segunda_plataforma.trim()):(segunda_plataforma.equalsIgnoreCase("")?plataforma:plataforma+" - "+segunda_plataforma));
+                productoSoftware.put("autor", autores);    
+                
+                listaSoftware.add(productoSoftware);
+            }
+        }
+        catch (IOException ioe) {
+           ioe.printStackTrace();
+        }
+        respuesta.put("software", listaSoftware);
+        return respuesta;
+    }
+    
+     public JSONObject obtenerTrabajosDeGrado (String url) {
+        Document doc = null; 
+        JSONArray listaTrabajosDirigidos = new JSONArray();
+        JSONObject respuesta = new JSONObject();
+        
+        try {
+            doc = Jsoup.connect(url).get(); // URL shortened!
+            Elements ele=doc.select("div.container table");
+            Element elementoDatos=null;
+            JSONArray listaTiposEpecificos = new JSONArray();
+            JSONArray listaUniversidadesEliminar = new JSONArray();
+            int indiceElementosDatos = 0;
+            
+            for(Element e : ele.select("td"))
+                for(Element elemento : e.select("a[name=trabajos_dirigi]"))
+                    elementoDatos=e;
+            
+            
+            for(Element el: elementoDatos.select("strong")) {
+                String [] tiposEspecificos_split=el.html().split("&nbsp");
+                for (int i=0;i<tiposEspecificos_split.length;i++){
+                    if (tiposEspecificos_split[i].contains("Trabajos dirigidos/Tutorías - ")) {
+                        listaTiposEpecificos.add(tiposEspecificos_split[0].split("Trabajos dirigidos/Tutorías - ")[1]);            
+                    }
+                }
+            }
+            
+            for(Element el: elementoDatos.select("blockquote")) {
+                String [] tiposEspecificos_split=el.html().split("&nbsp");
+                for (int i=0;i<tiposEspecificos_split.length;i++){
+                    //System.out.println("Elemtno: "+tiposEspecificos_split[i]);
+                    if (i == 1)
+                        listaUniversidadesEliminar.add(tiposEspecificos_split[1].split(";")[1].replace("  ","").trim());   
+                }
+            }
+            
+            for(Element el: elementoDatos.select("blockquote")) {
+             
+                JSONObject productoTrabajoDirigido = new JSONObject();
+                String [] parts=el.text().split(", ");
+                                              
+                JSONArray autores = new JSONArray();
+                String titulo = "";
+                String fecha = "";
+                String duracion = "";
+                String tipoEspecifico = listaTiposEpecificos.get(indiceElementosDatos).toString();
+                
+                if (parts[2].contains("Persona orientada")) {
+                    String [] titulo_Split = parts[1].split("Estado:");
+                    titulo = titulo_Split[0];
+                    titulo_Split = titulo.split(listaUniversidadesEliminar.get(indiceElementosDatos).toString());
+                    titulo = titulo_Split[0];
+                    
+                    String [] fecha_split = parts[1].split("Estado:");
+                    String [] fecah_Split_sin_comas = fecha_split[1].split(" ,");
+                    fecha = fecah_Split_sin_comas[1]; 
+                }
+                else {
+                    int indiceComienzoTitulo = 1;
+                    int indicePersonasOrientadas = 2;
+                    for (int i=0;i<parts.length;i++) {
+                        if (parts[i].contains("Persona orientada:")) {
+                            indicePersonasOrientadas = i;
+                            //System.out.println("indicePersonasOrientadas: "+indicePersonasOrientadas);
+                        }
+                    }
+                    
+                    for (int i=1;i<indicePersonasOrientadas;i++) {
+                        if (parts[indicePersonasOrientadas].toUpperCase().trim().contains(parts[i].toUpperCase().trim()))
+                            indiceComienzoTitulo++;
+                    }
+                    
+                    for (int i=indiceComienzoTitulo;i<indicePersonasOrientadas-1;i++)
+                        titulo += parts[i].trim();
+                    
+                    String [] ultimaParteTitulo_split = parts[indicePersonasOrientadas-1].split(" Estado:");
+                    titulo += ultimaParteTitulo_split[0]+" ";
+                }
+                               
+                for (int i=0;i<parts.length;i++){ 
+                    if (parts[i].toString().contains("meses")) {
+                        if (parts[i].toString().contains("Areas")) {
+                            String [] duracion_Split = parts[i].split("Areas");
+                            duracion = duracion_Split[0].trim();
+                        }
+                        else
+                            duracion = parts[i].toString();
+                    }
+                    
+                    if (parts[i].toString().contains("Persona orientada")) {
+                        String [] autores_Split_personas = parts[i].split("Persona orientada:");
+                        String [] autores_split = {};
+                        //SEPARAR POR: Y
+                        if (autores_Split_personas[1].contains(" y ")) {
+                            autores_split = autores_Split_personas[1].split(" y ");
+                        }
+                        if (autores_Split_personas[1].contains(" Y ")) {
+                            autores_split = autores_Split_personas[1].split(" Y ");
+                        }
+                        //SEPARAR POR: .
+                        if (autores_Split_personas[1].contains(". ")) {
+                            autores_split = autores_Split_personas[1].split("[.] ");
+                        }
+                        //SEPARARA POR: ,
+                        if (autores_Split_personas[1].contains(", ")) {
+                            autores_split = autores_Split_personas[1].split(", ");
+                        }
+                        //SEPARAR POR: - 
+                        if (autores_Split_personas[1].contains(" - ")) {
+                            autores_split = autores_Split_personas[1].split(" - ");
+                        }
+                            
+                        if (autores_split.length== 0){
+                            JSONObject autor = new JSONObject();
+                            autor.put("nombre", autores_Split_personas[1].toString().trim());
+                            autores.add(autor);
+                        }
+                        else {
+                            int tamanoAutores = autores_split.length;
+                            for (int j=0; j<tamanoAutores;j++) {
+                                JSONObject autor = new JSONObject();
+                                autor.put("nombre", autores_split[j].toString().trim());
+                                autores.add(autor);
+                            }
+                        }
+                        
+                    }
+                }
+                
+                System.out.println("Trabajo de grado: "+titulo+" -- "+fecha+" -- "+duracion+" -- "+tipoEspecifico);
+                System.out.println("Autores: "+autores.toJSONString());
+
+                productoTrabajoDirigido.put("titulo", titulo.trim());
+                productoTrabajoDirigido.put("tipo", "trabajo dirigido");
+                productoTrabajoDirigido.put("codigoPublicacion", null);
+                productoTrabajoDirigido.put("lugarPublicacion", null);
+                productoTrabajoDirigido.put("editorial", null);
+                productoTrabajoDirigido.put("fecha", fecha.equals("")?null:fecha.trim()+"-01-01");
+                productoTrabajoDirigido.put("extraido", "CvLac");
+                productoTrabajoDirigido.put("duracion", duracion);
+                productoTrabajoDirigido.put("tipoEspecifico", tipoEspecifico);
+                productoTrabajoDirigido.put("plataforma", null);
+                productoTrabajoDirigido.put("autor", autores);    
+
+                listaTrabajosDirigidos.add(productoTrabajoDirigido);
+                indiceElementosDatos++;
+            }
+        }
+        catch (IOException ioe) {
+           ioe.printStackTrace();
+        }
+        respuesta.put("trabjosDirigidos", listaTrabajosDirigidos);
+        return respuesta;
+    }
 }
+

@@ -62,7 +62,7 @@ public class autoresDao {
             }
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
         } catch (SQLException ex) {
             Logger.getLogger(autoresDao.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -95,7 +95,7 @@ public class autoresDao {
             }
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
         } catch (SQLException ex) {
             Logger.getLogger(autoresDao.class.getName()).log(Level.SEVERE, null, ex);
         }

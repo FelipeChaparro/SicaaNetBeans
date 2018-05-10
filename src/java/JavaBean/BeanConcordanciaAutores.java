@@ -75,7 +75,7 @@ public class BeanConcordanciaAutores {
            JSONObject pub1=(JSONObject) publicacion1.get(j);
            
            double porcentaje=bean.getSimilarity((String)pub2.get("nombre"),(String)pub1.get("Nombre"),"NOMBRE");
-             System.out.println(porcentaje);
+             //System.out.println(porcentaje);
              double valor=0.90;
                double valorMax=1.0;
                if(valorMax==porcentaje){

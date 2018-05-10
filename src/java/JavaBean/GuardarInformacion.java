@@ -47,7 +47,8 @@ public class GuardarInformacion {
              JSONObject libros=(JSONObject) json.get("Libros");
              JSONObject eventos=(JSONObject) json.get("eventos");
              JSONObject capitulos=(JSONObject) json.get("capitulos");
-             
+             JSONObject software = (JSONObject) json.get("software");
+             JSONObject trabajosDirigidos = (JSONObject) json.get("trabjosDirigidos");
            
              
               Statement stmt1 = conexion.createStatement();
@@ -245,10 +246,9 @@ public class GuardarInformacion {
                       dao.actualizarMedallas(Integer.parseInt((String) json.get("id")),Bilingue,Cientifico,Director,Doctor,Investigador,Jefe,Administrarivo);
                   }
                 
+                cvlacGuardarPublicaciones(publicaciones,libros, capitulos, eventos, json,software,trabajosDirigidos);
                 
-                
-                cvlacGuardarPublicaciones(publicaciones,libros, capitulos, eventos, json);
-                      return true;
+                return true;
 
       }catch (ParseException ex) { 
             Logger.getLogger(GuardarInformacion.class.getName()).log(Level.SEVERE, null, ex);
@@ -258,7 +258,7 @@ public class GuardarInformacion {
         }
     }
     
-    private void cvlacGuardarPublicaciones(JSONObject publicaciones,JSONObject libros, JSONObject capitulos, JSONObject eventos, JSONObject json){
+    private void cvlacGuardarPublicaciones(JSONObject publicaciones,JSONObject libros, JSONObject capitulos, JSONObject eventos, JSONObject json, JSONObject software, JSONObject trabjosDirigidos){
        
         try {
 
@@ -267,17 +267,30 @@ public class GuardarInformacion {
             JSONObject respuesta_existePublicacion_libros = new JSONObject();
             JSONObject respuesta_existePublicacion_articulos = new JSONObject();
             JSONObject respuesta_existePublicacion_capitulos = new JSONObject();
+            JSONObject respuesta_existePublicacion_software = new JSONObject();
+            JSONObject respuesta_existePublicacion_trabajosDirigidos = new JSONObject();
+            JSONObject respuesta_existePublicacion_eventos = new JSONObject();
 
             
             JSONArray capitulo=(JSONArray) capitulos.get("capitulos");
             JSONArray libro=(JSONArray) libros.get("libros");
             JSONArray articulos=(JSONArray) publicaciones.get("articulos");
+            JSONArray listaSoftware=(JSONArray) software.get("software");
+            JSONArray listaTrbajosDirigidos = (JSONArray) trabjosDirigidos.get("trabjosDirigidos");
+            JSONArray listaEventos = (JSONArray) eventos.get("eventos");
+
             
             respuesta_existePublicacion_libros = beanPublicacionesEJB.validarPublicacionesNuevas(libro, json.get("id").toString(),"CvLac");
             
             respuesta_existePublicacion_articulos = beanPublicacionesEJB.validarPublicacionesNuevas(articulos, json.get("id").toString(),"CvLac");
 
             respuesta_existePublicacion_capitulos = beanPublicacionesEJB.validarPublicacionesNuevas(capitulo, json.get("id").toString(),"CvLac");
+            
+            respuesta_existePublicacion_software = beanPublicacionesEJB.validarPublicacionesNuevas(listaSoftware, json.get("id").toString(), "CvLac");
+            
+            respuesta_existePublicacion_trabajosDirigidos = beanPublicacionesEJB.validarPublicacionesNuevas(listaTrbajosDirigidos, json.get("id").toString(), "CvLac");
+            
+            respuesta_existePublicacion_eventos = beanPublicacionesEJB.validarPublicacionesNuevas(listaEventos, json.get("id").toString(), "CvLac");
             
             System.out.println("FIN cvlacGuardarPublicaciones");
         } catch (Exception ex) {

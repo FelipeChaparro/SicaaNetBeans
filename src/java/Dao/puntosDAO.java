@@ -36,7 +36,7 @@ public class puntosDAO {
         } catch (SQLException ex) {
             Logger.getLogger(puntosDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            conex.desconectar();
+            //conex.desconectar();
         }
          
             
@@ -55,7 +55,7 @@ public class puntosDAO {
         } catch (SQLException ex) {
             Logger.getLogger(puntosDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            conex.desconectar();
+            //conex.desconectar();
         }
     }
     
@@ -73,7 +73,7 @@ public class puntosDAO {
         } catch (SQLException ex) {
             Logger.getLogger(puntosDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            conex.desconectar();
+            //conex.desconectar();
         }
          
             
@@ -91,7 +91,7 @@ public class puntosDAO {
         } catch (SQLException ex) {
             Logger.getLogger(puntosDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-            conex.desconectar();
+            //conex.desconectar();
         }
          
             

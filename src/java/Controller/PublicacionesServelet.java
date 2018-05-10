@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 import JavaBean.BeanConcordancia;
+import JavaBean.BeanPublicaciones;
 import JavaBean.BeasSesionesUsuarios;
 import java.sql.SQLException;
 import java.util.stream.Collectors;
@@ -49,34 +50,45 @@ public class PublicacionesServelet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        JSONObject respuesta_publicacionesVO = new JSONObject();
+        JSONObject respuesta_validarTokenVO = new JSONObject();
+        //JSONObject respuesta_publicacionesVO = new JSONObject();
+        JSONObject respuesta = new JSONObject();
+
 
         try {
-            respuesta_publicacionesVO.put("code", 0);
-            respuesta_publicacionesVO.put("description", "Operacion exitosa");
+            
+            BeasSesionesUsuarios bean_user_session = new BeasSesionesUsuarios();
+            BeanPublicaciones bean_publicaciones = new BeanPublicaciones();
+            
+            respuesta.put("code", 0);
+            respuesta.put("description", "Operacion exitosa");
             
             System.out.println("User_token: "+request.getParameter("token"));
             String user_token = request.getParameter("token");
+            String action = request.getParameter("action") ;
+                        
             
-            BeasSesionesUsuarios bean_user_session = new BeasSesionesUsuarios();
+            respuesta_validarTokenVO = bean_user_session.validar_token(user_token);
             
-            respuesta_publicacionesVO = bean_user_session.validar_token(user_token);
+            if ((int) respuesta_validarTokenVO.get("code") == 0)
+                respuesta = bean_publicaciones.getAllPublicacionesByPersonaID(respuesta_validarTokenVO.get("id").toString(),action);
+            else
+                respuesta = respuesta_validarTokenVO;
             
-            System.out.println("Respuesta bean_user_session: "+respuesta_publicacionesVO);
+            System.out.println("Respuesta bean_user_session: "+respuesta);
             response.setStatus(HttpServletResponse.SC_OK);
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
-            out.print(respuesta_publicacionesVO);
+            out.print(respuesta);
             out.flush(); 
             
         }catch (SQLException ex) {
             response.setContentType("application/json");
-            respuesta_publicacionesVO.put("code", 9998);
-            respuesta_publicacionesVO.put("description", "Error en base de datos");
-
-            System.out.println("retorno: "+respuesta_publicacionesVO);
+            respuesta.put("code", 9998);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("retorno: "+respuesta);
             response.setStatus(HttpServletResponse.SC_OK);
-            response.getWriter().print(respuesta_publicacionesVO);        
+            response.getWriter().print(respuesta);        
             Logger.getLogger(PublicacionesServelet.class.getName()).log(Level.SEVERE, null, ex);
         }
     }

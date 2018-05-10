@@ -31,11 +31,8 @@ public class BeasSesionesUsuarios {
         JSONObject respuesta = new JSONObject();
         JSONObject respuesta_validarTokenVO = new JSONObject();
         JSONObject respuesta_getUserIDByTokenVO = new JSONObject();
-        JSONObject respuesta_getPublicacionesIDVO = new JSONObject();
-        JSONObject respuesta_getPublicacionesDescripcionesVO = new JSONObject();
         
         loginDao loginDao = new loginDao();
-        publicacionesDAO publicacionesDAO = new publicacionesDAO();
         
         respuesta_validarTokenVO = loginDao.validar_user_tokenDAO(token);
         
@@ -44,10 +41,9 @@ public class BeasSesionesUsuarios {
             respuesta_getUserIDByTokenVO = loginDao.getUserIDByToken(token);
             if (Integer.parseInt(respuesta_getUserIDByTokenVO.get("code").toString()) == 0) {
             
-                respuesta_getPublicacionesIDVO = publicacionesDAO.getAllPublicacionesByPersonaID(respuesta_getUserIDByTokenVO.get("id").toString());
-                
-                respuesta = respuesta_getPublicacionesIDVO;
-                respuesta.put("token", token);
+                respuesta.put("code", 0);
+                respuesta.put("description", "Operacion exitosa");
+                respuesta.put("id", respuesta_getUserIDByTokenVO.get("id").toString());
             
             }
             else

@@ -5,17 +5,11 @@
  */
 package Dao;
 
-import Entidad.Publicacion;
 import com.mysql.jdbc.Connection;
-import com.sun.xml.ws.security.opt.impl.util.SOAPUtil;
 import conexionBD.Cone;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.json.simple.JSONArray;
@@ -113,7 +107,7 @@ public class filtrosPublicacionDao {
             System.out.println("getParametrosSistema(): "+respuesta.toString());
             Logger.getLogger(filtrosPublicacionDao.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-             conex.desconectar();
+             //conex.desconectar();
          }
         
         return respuesta;

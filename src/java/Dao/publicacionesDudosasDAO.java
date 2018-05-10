@@ -5,8 +5,6 @@
  */
 package Dao;
 
-import Entidad.Publicacion;
-import Entidad.Puntos;
 import com.mysql.jdbc.Connection;
 import conexionBD.Cone;
 import java.sql.ResultSet;
@@ -214,7 +212,7 @@ public class publicacionesDudosasDAO {
            
         } finally {
        
-            conex.desconectar();
+            //conex.desconectar();
      
         }
        
@@ -244,7 +242,7 @@ public class publicacionesDudosasDAO {
            
         } finally {
        
-            conex.desconectar();
+            //conex.desconectar();
      
         }
         

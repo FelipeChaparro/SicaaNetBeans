@@ -23,18 +23,27 @@ public class Cone {
     private static final String url = "jdbc:mysql://sql10.freesqldatabase.com:3306/sql10231472";
     
     public Cone() {
-        conn = null;
         try {
-            Class.forName(driver);
-            conn = (Connection) DriverManager.getConnection(url, user, password);
-            if (conn != null) 
-                System.out.println("Conexion Establecida");
+            if (conn == null) {
+                Class.forName(driver);
+                conn = (Connection) DriverManager.getConnection(url, user, password);
+            }
         } catch(Exception e) {
             System.out.println("Error al conectar: " + e);
         }
     }
     
     public Connection getConnection() {
+        try {
+            if (conn == null) {
+                Class.forName(driver);
+                conn = (Connection) DriverManager.getConnection(url, user, password);
+            }    
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(Cone.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SQLException ex) {
+            Logger.getLogger(Cone.class.getName()).log(Level.SEVERE, null, ex);
+        }
         return conn;
     }
     
@@ -45,6 +54,7 @@ public class Cone {
             }
             else {
                 this.conn.close();
+                conn = null;
                 System.out.println("Conexion Terminada");
             }
         } catch (SQLException ex) {

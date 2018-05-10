@@ -54,7 +54,7 @@ public class publicacionesDAO {
             response_db.put("description", "Error en DataBase");
         } finally {
             if (stmt != null) stmt.close();
-            cone.desconectar();
+            //cone.desconectar();
         }
         return response_db;
     }
@@ -80,7 +80,7 @@ public class publicacionesDAO {
             respuesta_db.put("description", "Error en DataBase");
         } finally {
             if (stmt != null) stmt.close();
-            cone.desconectar();
+            //cone.desconectar();
         }
         return respuesta_db;
     }
@@ -95,6 +95,7 @@ public class publicacionesDAO {
         String idPublicacion = mNewData.get("ID").toString();
         int idNuevoUsuario = 0;
         ResultSet rs;
+        
         try {
             Connection mConexion = cone.getConnection();
             stmt = mConexion.createStatement(); 
@@ -111,6 +112,7 @@ public class publicacionesDAO {
                     + " WHERE ID=" + idPublicacion;
             System.out.println("Query: " + query);
             stmt.execute(query);
+            
             // Se actualizan los roles de autores
             for (int i = 0; i < autores_actuales.size(); i++) {
                 JSONObject autor = (JSONObject) autores_actuales.get(i);
@@ -155,8 +157,8 @@ public class publicacionesDAO {
             //cone.desconectar();
         }
         return respuesta_db;
-    }  
-	
+    }	
+    
     public JSONObject insertPublicacion(String user_id, JSONObject newPublicacion) throws SQLException {
         JSONObject respuesta = new JSONObject();
         respuesta.put("code", 0);
@@ -169,7 +171,7 @@ public class publicacionesDAO {
             Connection conexion= conex.getConnection();
             stmt = conexion.createStatement();
             // Insertar publicacion
-            String query = "INSERT INTO Publicacion (Titulo, Tipo, CodigoPublicacion, Lugar, Editorial, FechaInicio, Extraido)"
+            String query = "INSERT INTO Publicacion (Titulo, Tipo, CodigoPublicacion, Lugar, Editorial, FechaInicio, Extraido, duracion, tipoEspecifico, plataforma)"
                     + " VALUES ("
                     + ((newPublicacion.get("Titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("Titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ") +"'") + ","
                     + ((newPublicacion.get("Tipo") == null) ? null : "'" + newPublicacion.get("Tipo") +"'") + ","
@@ -177,7 +179,10 @@ public class publicacionesDAO {
                     + ((newPublicacion.get("Lugar") == null) ? null : "'" + newPublicacion.get("Lugar") +"'") + ","
                     + ((newPublicacion.get("Editorial") == null) ? null : "'" + newPublicacion.get("Editorial") +"'") + ","
                     + ((newPublicacion.get("FechaInicio") == null) ? null : "'" + newPublicacion.get("FechaInicio") +"'")+ ","
-                    + ((newPublicacion.get("Extraido") == null) ? null : "'" + newPublicacion.get("Extraido") +"'") + ")";
+                    + ((newPublicacion.get("Extraido") == null) ? null : "'" + newPublicacion.get("Extraido") +"'") + ","
+                    + ((newPublicacion.get("Duracion") == null) ? null : "'" + newPublicacion.get("Duracion") +"'") + ","
+                    + ((newPublicacion.get("tipoEspecifico") == null) ? null : "'" + newPublicacion.get("tipoEspecifico") +"'")+ ","
+                    + ((newPublicacion.get("Plataforma") == null) ? null : "'" + newPublicacion.get("Plataforma") +"'") + ")";
             System.out.println("Query insertar publicacion: " + query);
             stmt.execute(query);
             query = "SELECT LAST_INSERT_ID()";
@@ -194,8 +199,8 @@ public class publicacionesDAO {
             stmt.execute(query);
             // Insertar autores adicionales en Persona_Publicacion
             JSONArray autores = (JSONArray) newPublicacion.get("autores");
-            System.out.println(autores);
             if (autores != null) { 
+                System.out.println(autores.toJSONString());
                 for (int i = 0; i < autores.size(); i++) {
                     JSONObject autor = (JSONObject) autores.get(i);
                     if (!autor.get("ID").toString().equals(user_id)) {
@@ -231,7 +236,7 @@ public class publicacionesDAO {
                 }   
             }
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             return respuesta;
         } catch (SQLException e) {
             respuesta.put("code", 9999);
@@ -263,7 +268,7 @@ public class publicacionesDAO {
             respuesta.put("publicacionesID", arregloPublicacionesID);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("Retorno: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -309,13 +314,17 @@ public class publicacionesDAO {
                 publicacionEncontrada.put("lugar", rs.getString("Lugar"));
                 publicacionEncontrada.put("editorial", rs.getString("Editorial"));
                 publicacionEncontrada.put("fInicio", rs.getString("FechaInicio"));
+                publicacionEncontrada.put("Duracion", rs.getString("duracion"));
+                publicacionEncontrada.put("tipoEspecifico", rs.getString("tipoEspecifico"));
+                publicacionEncontrada.put("Plataforma", rs.getString("plataforma"));
+
                 System.out.println("Publicacion en DB: "+publicacionEncontrada.toJSONString());
                 arregloPublicacionesDescriprion.add(publicacionEncontrada);
             }
             respuesta.put("publicaciones", arregloPublicacionesDescriprion);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getPublicacionesDecriptionByID: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -351,12 +360,15 @@ public class publicacionesDAO {
                 publicacion.put("Lugar", rs.getString("Lugar"));
                 publicacion.put("Editorial", rs.getString("Editorial"));
                 publicacion.put("FechaInicio", rs.getString("FechaInicio"));
+                publicacion.put("Duracion", rs.getString("duracion"));
+                publicacion.put("tipoEspecifico", rs.getString("tipoEspecifico"));
+                publicacion.put("Plataforma", rs.getString("plataforma"));
                 arregloPublicaciones.add(publicacion);
             }
             respuesta.put("publicaciones", arregloPublicaciones);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getAllPublicacionesDecription: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -390,7 +402,7 @@ public class publicacionesDAO {
             respuesta.put("idPublicaciones", arregloIdPersonas);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getAutoresByPublicacionID: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -434,7 +446,7 @@ public class publicacionesDAO {
                 }
                 rs.close();
                 stmt.close();
-                conex.desconectar();
+                //conex.desconectar();
             }
             
             respuesta.put("autoresPublicacionSistema", arregloNombreAutores);
@@ -470,7 +482,7 @@ public class publicacionesDAO {
             respuesta.put("publicacionExiste", publicacionYaReferenciada);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("Retorno: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -494,8 +506,8 @@ public class publicacionesDAO {
             Statement stmt = null;
             ResultSet rs;
             stmt = conexion.createStatement();
-            System.out.println("select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.Extraido, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 && PP.IdPersona ="+personaID);
-            rs = stmt.executeQuery("select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.Extraido, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 && PP.IdPersona ="+personaID);
+            System.out.println("select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.tipoEspecifico, P.duracion, P.plataforma, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 && PP.IdPersona ="+personaID);
+            rs = stmt.executeQuery("select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.tipoEspecifico, P.duracion, P.plataforma, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 && PP.IdPersona ="+personaID);
             while (rs.next()) {
                 JSONObject publicacion = new JSONObject();
                 publicacion.put("ID", rs.getString("ID"));
@@ -507,12 +519,15 @@ public class publicacionesDAO {
                 publicacion.put("FechaInicio", rs.getString("FechaInicio"));
                 publicacion.put("Extraido", rs.getString("Extraido"));
                 publicacion.put("EstadoPublicacion", rs.getString("EstadoPublicacion"));
+                publicacion.put("Duracion", rs.getString("duracion"));
+                publicacion.put("tipoEspecifico", rs.getString("tipoEspecifico"));
+                publicacion.put("Plataforma", rs.getString("plataforma"));
                 arregloPublicaciones.add(publicacion);
             }
             respuesta.put("publicaciones", arregloPublicaciones);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getAllPublicacionesByPersonaID: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -549,12 +564,15 @@ public class publicacionesDAO {
                 publicacion.put("Editorial", rs.getString("Editorial"));
                 publicacion.put("FechaInicio", rs.getString("FechaInicio"));
                 publicacion.put("Extraido", rs.getString("Extraido"));
+                publicacion.put("Duracion", rs.getString("duracion"));
+                publicacion.put("tipoEspecifico", rs.getString("tipoEspecifico"));
+                publicacion.put("Plataforma", rs.getString("plataforma"));
                 arregloPublicaciones.add(publicacion);
             }
             respuesta.put("publicaciones", arregloPublicaciones);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getAlldudosas: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -580,13 +598,20 @@ public class publicacionesDAO {
             ResultSet rs;
             stmt = conexion.createStatement();
             System.out.println("SELECT * FROM PublicacionDudosa WHERE Titulo = '"+nombrePublicacionNueva+"'");
-            rs = stmt.executeQuery("SELECT * FROM PublicacionDudosa WHERE Titulo = '"+nombrePublicacionNueva+"'");
-            while (rs.next())
-                existeTitulo = true;
-            respuesta.put("existeTitulo", existeTitulo);
-            rs.close();
-            stmt.close();
-            conex.desconectar();
+            
+            if (!nombrePublicacionNueva.isEmpty() && nombrePublicacionNueva!=null && !nombrePublicacionNueva.equals("")) {
+                rs = stmt.executeQuery("SELECT * FROM PublicacionDudosa WHERE Titulo = '"+nombrePublicacionNueva+"'");
+                while (rs.next())
+                    existeTitulo = true;
+                respuesta.put("existeTitulo", existeTitulo);
+                rs.close();
+                stmt.close();
+
+            }
+            else
+                respuesta.put("existeTitulo", existeTitulo);
+            
+            //conex.desconectar();
             System.out.println("findPublicacionDudosaByTitulo: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -598,7 +623,7 @@ public class publicacionesDAO {
         }
     }
     
-    public JSONObject insertPublicacionAutomatica (String user_id, JSONObject newPublicacion,JSONArray listaCoautores,String fuenteExtraccion) throws SQLException {
+ public JSONObject insertPublicacionAutomatica (String user_id, JSONObject newPublicacion,JSONArray listaCoautores,String fuenteExtraccion) throws SQLException {
         JSONObject respuesta = new JSONObject();
         respuesta.put("code", 0);
         respuesta.put("description", "Operacion exitosa");
@@ -610,14 +635,17 @@ public class publicacionesDAO {
             Connection conexion= conex.getConnection();
             stmt = conexion.createStatement();
             // Insertar publicacion
-            String query = "INSERT INTO Publicacion (Titulo, Tipo, CodigoPublicacion, Lugar, Editorial, FechaInicio, Extraido)"
+            String query = "INSERT INTO Publicacion (Titulo, Tipo, CodigoPublicacion, Lugar, Editorial, FechaInicio,duracion,tipoEspecifico,plataforma, Extraido)"
                     + " VALUES ("
-                    + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ") +"'") + ","
+                    + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ").replace("'"," ") +"'") + ","
                     + ((newPublicacion.get("tipo") == null) ? null : "'" + newPublicacion.get("tipo") +"'") + ","
                     + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion") +"'") + ","
-                    + ((newPublicacion.get("lugarPublicacion") == null) ? null : "'" + newPublicacion.get("lugarPublicacion") +"'") + ","
+                    + ((newPublicacion.get("lugarPublicacion") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("lugarPublicacion").toString().replace("'"," ")) +"'") + ","
                     + ((newPublicacion.get("editorial") == null) ? null : "'" + newPublicacion.get("editorial") +"'") + ","
-                    + ((newPublicacion.get("fecha") == null) ? null : "'" + newPublicacion.get("fecha") +"'")+ ","
+                    + (((newPublicacion.get("fecha") == null) || newPublicacion.get("fecha").equals("")) ? null : "'" + newPublicacion.get("fecha") +"'")+ ","
+                    + (((newPublicacion.get("Duracion") == null) || newPublicacion.get("Duracion").equals("")) ? null : "'" + newPublicacion.get("Duracion") +"'")+ ","
+                    + (((newPublicacion.get("tipoEspecifico") == null) || newPublicacion.get("tipoEspecifico").equals("")) ? null : "'" + newPublicacion.get("tipoEspecifico") +"'")+ ","
+                    + (((newPublicacion.get("Plataforma") == null) || newPublicacion.get("Plataforma").equals("")) ? null : "'" + newPublicacion.get("Plataforma") +"'")+ ","
                     +  "'" + fuenteExtraccion +"'" + ")";
             System.out.println("Query insertar publicacion: " + query);
             stmt.execute(query);
@@ -673,7 +701,7 @@ public class publicacionesDAO {
                 }
             }
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             return respuesta;
         } catch (SQLException e) {
             respuesta.put("code", 9999);
@@ -683,6 +711,7 @@ public class publicacionesDAO {
             return respuesta;
         }
     }
+  
     
     public JSONObject insertPublicacionDudosa (JSONObject newPublicacion, JSONArray publicacionesSistema, String fuenteExtraccion) throws SQLException {
         JSONObject respuesta = new JSONObject();
@@ -700,7 +729,7 @@ public class publicacionesDAO {
             for (int i=0;i<tamanoListaPublicacionesSistema;i++) {
                 publicacionIndivisualSistema = (JSONObject) publicacionesSistema.get(i);
                 System.out.println("Publicacion nueva: "+newPublicacion.toJSONString());
-                query = "INSERT INTO PublicacionDudosa (ID,Titulo, Tipo, CodigoPublicacion, Lugar, Editorial, FechaInicio, Extraido,EstadoSistema)"
+                query = "INSERT INTO PublicacionDudosa (ID,Titulo, Tipo, CodigoPublicacion, Lugar, Editorial, FechaInicio,duracion,tipoEspecifico,plataforma,Extraido,EstadoSistema)"
                     + " VALUES ("
                     + publicacionIndivisualSistema.get("ID")+ ","
                     + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ") +"'") + ","
@@ -708,7 +737,10 @@ public class publicacionesDAO {
                     + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion") +"'") + ","
                     + ((newPublicacion.get("lugar") == null) ? null : "'" + newPublicacion.get("lugar") +"'") + ","
                     + ((newPublicacion.get("editorial") == null) ? null : "'" + newPublicacion.get("editorial") +"'") + ","
-                    + ((newPublicacion.get("fechaInicio") == null) ? null : "'" + newPublicacion.get("fechaInicio") +"'")+ ","
+                    + ((newPublicacion.get("fechaInicio") == null) ? null : "'" + newPublicacion.get("fechaInicio") +"'")+ ","  
+                    + ((newPublicacion.get("duracion") == null) ? null : "'" + newPublicacion.get("duracion") +"'") + ","
+                    + ((newPublicacion.get("tipoEspecifico") == null) ? null : "'" + newPublicacion.get("tipoEspecifico") +"'") + ","
+                    + ((newPublicacion.get("plataforma") == null) ? null : "'" + newPublicacion.get("plataforma") +"'")+ ","    
                     + "'" + fuenteExtraccion +"'" + ","
                     + "'" + 1 + "')";
                 System.out.println("Query insertPublicacionDudosa() " + query);
@@ -716,7 +748,7 @@ public class publicacionesDAO {
                 
             }
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             return respuesta;
         } catch (SQLException e) {
             respuesta.put("code", 9999);
@@ -767,7 +799,7 @@ public class publicacionesDAO {
         } catch (SQLException ex) {
             Logger.getLogger(publicacionesDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-             conex.desconectar();
+             //conex.desconectar();
         }     
 
         return idPublicacion;
@@ -802,7 +834,7 @@ public class publicacionesDAO {
             Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
             return respuesta;
         }finally{
-            conex.desconectar();
+            //conex.desconectar();
         }
     }
 	
@@ -829,14 +861,248 @@ public class publicacionesDAO {
         } catch (SQLException ex) {
             Logger.getLogger(publicacionesDAO.class.getName()).log(Level.SEVERE, null, ex);
         }finally{
-             conex.desconectar();
+            //conex.desconectar();
         }
 
           
 
         return puntos;
     }
+    
+    public JSONObject getAllPublicacionesByActionPersonaID (String personaID, String action) throws SQLException{
+        JSONObject respuesta = new JSONObject();
+        
+        respuesta.put("code", 0);
+        respuesta.put("description", "Operacion exitosa");
+        try {
+            JSONObject respuesta_agregarAutores = new JSONObject();
+            JSONArray arregloPublicaciones = new JSONArray();
+            String idPublicaciones = "(";
+            Boolean hayPublciaciones = false;
+            
+            Cone conex = new Cone();
+            Connection conexion= conex.getConnection();
+            Statement stmt = null;
+            ResultSet rs;
+            stmt = conexion.createStatement();
+            String query = "";
+            
+            if (action.equalsIgnoreCase("VERIFICADAS")) {
+                query = "select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.tipoEspecifico, P.duracion, P.plataforma, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado' and PP.IdPersona ="+personaID+" ORDER BY PP.IdPublicacion";
+                System.out.println("Query getAllPublicacionesByActionPersonaID - VERIFICADAS: "+query);
+            }
+            else {
+                query = "select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.tipoEspecifico, P.duracion, P.plataforma, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Pendiente de verificacion' and  PP.IdPersona ="+personaID+" ORDER BY PP.IdPublicacion";
+                System.out.println("Query getAllPublicacionesByActionPersonaID - NO_VERIFICADAS: "+query);
+            }
+            rs = stmt.executeQuery(query);
+            
+            String idPublciacionAnterior = "";
+            while (rs.next()) {
+                if (!idPublciacionAnterior.equalsIgnoreCase(rs.getString("ID"))) {
+                    hayPublciaciones = true;
+                    JSONObject publicacion = new JSONObject();
+                    publicacion.put("ID", rs.getString("ID"));
+                    publicacion.put("Titulo", rs.getString("Titulo"));
+                    publicacion.put("Tipo", rs.getString("Tipo"));
+                    publicacion.put("codigoPublicacion", rs.getString("codigoPublicacion"));
+                    publicacion.put("Lugar", rs.getString("Lugar"));
+                    publicacion.put("Editorial", rs.getString("Editorial"));
+                    publicacion.put("FechaInicio", rs.getString("FechaInicio"));
+                    publicacion.put("Extraido", rs.getString("Extraido"));
+                    publicacion.put("EstadoPublicacion", rs.getString("EstadoPublicacion"));
+                    publicacion.put("tipoEspecifico", rs.getString("tipoEspecifico"));
+                    publicacion.put("Duracion", rs.getString("duracion"));
+                    publicacion.put("Plataforma", rs.getString("plataforma"));
+
+                    idPublicaciones += rs.getString("ID").toString()+",";
+
+                    arregloPublicaciones.add(publicacion);
+                    // POR ALGUNA RAZON SE REPITIO UNA PUBLICACION, ENTONCES SE ASEGURA QUE NO SE INGRESE DOS VECES EN LA TABLA
+                    idPublciacionAnterior = rs.getString("ID");
+                }
+            }
+            
+            if(idPublicaciones.endsWith(",")) {
+                idPublicaciones = idPublicaciones.substring(0,idPublicaciones.length() - 1);
+                idPublicaciones += ")";
+            }
+            else
+                idPublicaciones += ")";
+            
+            System.out.println("IDS: "+idPublicaciones);
+            
+            respuesta.put("publicaciones", arregloPublicaciones);
+            rs.close();
+            stmt.close();
+            
+            if (hayPublciaciones)
+                respuesta_agregarAutores = agregarAutoresAPublicaciones(arregloPublicaciones, idPublicaciones);
+            else {
+                respuesta_agregarAutores.put("code", 1);
+                respuesta_agregarAutores.put("description", "No hay resultados en la busqueda");
+            }      
+            
+            if ((int)respuesta_agregarAutores.get("code") == 0) {
+                respuesta.put("publicaciones", respuesta_agregarAutores.get("publicaciones"));
+            }
+            else 
+                respuesta.put("publicaciones", arregloPublicaciones);
+              
+            //conex.desconectar();
+            System.out.println("getAllPublicacionesByPersonaID: "+respuesta.toString());
+            return respuesta;
+        } catch (SQLException e) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("getAllPublicacionesByPersonaID: "+respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+            return respuesta;
+        }
+    }
 	
+    private JSONObject agregarAutoresAPublicaciones (JSONArray arregloPublicaciones,String idPublicaciones) {
+        JSONObject respuesta = new JSONObject();
+        respuesta.put("code", 0);
+        respuesta.put("description", "Operacion exitosa");
+        
+        try {
+            
+            Cone conex = new Cone();
+            Connection conexion= conex.getConnection();
+            Statement stmt = null;
+            ResultSet rs;
+            stmt = conexion.createStatement();
+            
+            System.out.println("Query getAutoresByPubliacacion(): select PP.IdPersona as Id, PP.IdPublicacion as IdPublicacion, PP.Rol AS Rol, PP.EstadoPublicacion AS Estado, P.Nombre \n" +
+                "from Persona_Publicacion PP INNER JOIN Persona P on PP.IdPersona = P.ID\n" +
+                "WHERE IdPublicacion in "+idPublicaciones+" AND PP.EstadoSistema = 1 AND P.EstadoSistema = 1\n" +
+                "ORDER by PP.IdPublicacion");
+            rs = stmt.executeQuery("select PP.IdPersona as Id, PP.IdPublicacion as IdPublicacion, PP.Rol AS Rol, PP.EstadoPublicacion AS Estado, P.Nombre \n" +
+                "from Persona_Publicacion PP INNER JOIN Persona P on PP.IdPersona = P.ID\n" +
+                "WHERE IdPublicacion in "+idPublicaciones+" AND PP.EstadoSistema = 1 AND P.EstadoSistema = 1\n" +
+                "ORDER by PP.IdPublicacion");
+
+            int tamanoArregloPublicaciones = arregloPublicaciones.size();
+            String idPublicacionDeArrelgo = "";
+            String idPublicaiconPersonas = "";
+            if  (rs.next()) {
+                idPublicaiconPersonas = rs.getString("IdPublicacion");
+                for (int i=0;i<tamanoArregloPublicaciones;i++) {
+                    idPublicacionDeArrelgo = ((JSONObject) arregloPublicaciones.get(i)).get("ID").toString();
+                    JSONArray autoresXPublicacion = new JSONArray();
+                    while (idPublicacionDeArrelgo.equalsIgnoreCase(idPublicaiconPersonas)) {
+                        JSONObject autor = new JSONObject();
+                        autor.put("ID", rs.getString("Id"));
+                        autor.put("Rol", rs.getString("Rol"));
+                        autor.put("Nombre", rs.getString("Nombre"));
+                        autoresXPublicacion.add(autor);
+                        if (rs.next())
+                            idPublicaiconPersonas = rs.getString("IdPublicacion");
+                        else 
+                            idPublicaiconPersonas = "";
+                    }
+                    ((JSONObject) arregloPublicaciones.get(i)).put("Autores", autoresXPublicacion);
+                    System.out.println("Autores: "+autoresXPublicacion.toJSONString());
+                }
+            }
+           
+            respuesta.put("publicaciones", arregloPublicaciones);
+            rs.close();
+            stmt.close();
+            
+        } catch (SQLException ex) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("agregarAutoresAPublicaciones: "+respuesta.toString());
+            Logger.getLogger(publicacionesDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return respuesta;
+    }
+  public JSONObject getAllTitulosByFiltros (String departamento, String facultad, String nombreProfesor,int tipoConsulta) throws SQLException{
+        JSONObject respuesta = new JSONObject();
+        respuesta.put("code", 0);
+        respuesta.put("description", "Operacion exitosa");
+        try {
+            JSONArray listaNombrePublicaciones = new JSONArray();
+      
+            Cone conex = new Cone();
+            Connection conexion= conex.getConnection();
+            Statement stmt = null;
+            ResultSet rs;
+            stmt = conexion.createStatement();
+            
+            String query = "select P.Titulo from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion\n" +
+                "INNER join Profesor PR on PR.IdPersona = PP.IdPersona\n" +
+                "where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado'\n" +
+                "ORDER BY PP.IdPublicacion";
+            
+            switch (tipoConsulta) {
+                //Solo por departamento
+                case 1:
+                    query = "select P.Titulo from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion\n" +
+                        "INNER join Profesor PR on PR.IdPersona = PP.IdPersona\n" +
+                        "INNER JOIN Departamento D on D.ID = PR.IdDepartamento\n" +
+                        "where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado' and D.Nombre LIKE '%"+departamento+"%'\n" +
+                        "ORDER BY PP.IdPublicacion";
+                break;
+                //Solo por Facultad
+                case 2:
+                    query = "select P.Titulo from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion\n" +
+                        "INNER join Profesor PR on PR.IdPersona = PP.IdPersona\n" +
+                        "INNER JOIN Departamento D on D.ID = PR.IdDepartamento\n" +
+                        "INNER JOIN Facultad F on F.ID = D.IdFacultad\n" +
+                        "where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado' and F.Nombre LIKE '%"+facultad+"%'\n" +
+                        "ORDER BY PP.IdPublicacion";
+                break;
+                //Solo por nombre profesor
+                case 3:
+                    query = "select P.Titulo from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion\n" +
+                        "INNER JOIN Persona PE on PE.ID = PP.IdPersona\n" +
+                        "INNER join Profesor PR on PR.IdPersona = PP.IdPersona\n" +
+                        "where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado' and PE.Nombre LIKE '%"+nombreProfesor+"%'\n" +
+                        "ORDER BY PP.IdPublicacion";
+                break;
+                //Profesor y departamento
+                case 4:
+                    query = "select P.Titulo from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion\n" +
+                        "INNER JOIN Persona PE on PE.ID = PP.IdPersona\n" +
+                        "INNER join Profesor PR on PR.IdPersona = PP.IdPersona\n" +
+                        "INNER JOIN Departamento D on D.ID = PR.IdDepartamento\n" +
+                        "where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado' and D.Nombre LIKE '%"+departamento+"%' AND PE.Nombre LIKE '%"+nombreProfesor+"%'\n" +
+                        "ORDER BY PP.IdPublicacion";
+                break;
+                //Profesor y facultad
+                case 5:
+                    query = "select P.Titulo from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion\n" +
+                        "INNER JOIN Persona PE on PE.ID = PP.IdPersona\n" +
+                        "INNER join Profesor PR on PR.IdPersona = PP.IdPersona\n" +
+                        "INNER JOIN Departamento D on D.ID = PR.IdDepartamento\n" +
+                        "INNER JOIN Facultad F on F.ID = D.IdFacultad\n" +
+                        "where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado' and F.Nombre LIKE '%"+facultad+"%' AND PE.Nombre LIKE '%"+nombreProfesor+"%'\n" +
+                        "ORDER BY PP.IdPublicacion";
+                break;
+            }
+            System.out.println("Query: "+query);
+            rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                listaNombrePublicaciones.add(rs.getString("Titulo"));
+            }
+            respuesta.put("titulos", listaNombrePublicaciones);
+            rs.close();
+            stmt.close();
+            //conex.desconectar();
+            System.out.println("getAllTitulosByFiltros(): "+respuesta.toString());
+        } catch (SQLException e) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("getAllTitulosByFiltros(): "+respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+        }
+        return respuesta;
+    }
+   
     
 }
 

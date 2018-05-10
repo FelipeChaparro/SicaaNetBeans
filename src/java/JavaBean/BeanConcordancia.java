@@ -36,7 +36,7 @@ public class BeanConcordancia {
                 nombreDos = nombreDosTokenizado[1].trim()+" "+nombreDosTokenizado[0].trim();
             
             porcentageConfianza = jaroWinklerDistance.apply(nombreUno, nombreDos);
-            System.out.println(nombreUno + " - " +nombreDos + ": "+porcentageConfianza);          
+            //System.out.println(nombreUno + " - " +nombreDos + ": "+porcentageConfianza);          
                 
         }
         else if (tipo.equals("NOMBRE_PUBLICACION")) {
@@ -44,7 +44,7 @@ public class BeanConcordancia {
             String tituloDos = StringUtils.stripAccents(palabraDos).toUpperCase();
             
             porcentageConfianza = jaroWinklerDistance.apply(tituloUno, tituloDos);
-            System.out.println(tituloUno + " - " +tituloDos + ": "+porcentageConfianza);
+            //System.out.println(tituloUno + " - " +tituloDos + ": "+porcentageConfianza);
         }
         
         return porcentageConfianza;
