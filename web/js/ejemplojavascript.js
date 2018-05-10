@@ -160,15 +160,15 @@ function start1(){
                 var cell5 = row.insertCell(4);
                 var cell6 = row.insertCell(5);
                 var cell7 = row.insertCell(6);
-                cell1.innerHTML = eventos[i].nombreEvento;
-                cell2.innerHTML = eventos[i].tipoEvento;
-                cell3.innerHTML = eventos[i].ambito;
-                cell4.innerHTML =eventos[i].nombreProducto;
-                cell5.innerHTML =eventos[i].tipoProducto;
+                cell1.innerHTML = eventos[i].lugarPublicacion;
+                cell2.innerHTML = eventos[i].tipo;
+                cell3.innerHTML = eventos[i].duracion;
+                cell4.innerHTML = eventos[i].titulo;
+                cell5.innerHTML = eventos[i].tipoEspecifico;
                 var autores=" ";
-                for(var j=0; j<eventos[i].participantes.length; j++){
-                   autores+=eventos[i].participantes[j].nombre+" rol:"+eventos[i].participantes[j].rolEvento;
-                   if(j!==eventos[i].participantes.length-1){
+                for(var j=0; j<eventos[i].autor.length; j++){
+                   autores+=eventos[i].autor[j].nombre+" rol:"+eventos[i].autor[j].rolEvento;
+                   if(j!==eventos[i].autor.length-1){
                         autores+=",";
                    }
                 }
@@ -414,8 +414,8 @@ function start3(){
 }
 
 function GuardarInformacion(){
-     alert(sessionStorage.getItem("principal"));
-     var jsonPrincipal= JSON.parse(sessionStorage.getItem("principal"));
+    
+    var jsonPrincipal= JSON.parse(sessionStorage.getItem("principal"));
     if(jsonCVLAC){ 
     var jsoncvla=JSON.parse(jsonCVLAC);
      jsoncvla.id=jsonPrincipal.datosBasicos.id;

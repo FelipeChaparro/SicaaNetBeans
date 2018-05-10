@@ -119,7 +119,7 @@ window.onload = function(){
         if (response.code == 0) {
             var tipo_auxiliar = "";
             var label_auxiliar = "";
-            response_dudosas = response.publicaciones;
+            response_dudosas = response;
             var stringAutores;
             for (var i = 0; i < response.publicaciones.length; i++) {
                 for (var j = 0; j < response.publicaciones[i].publicacion.length; j++) {
@@ -140,7 +140,7 @@ window.onload = function(){
                     anchor_publicacion.setAttribute("id", "row-" + i + "-" + j);
 
                     // Loader Publicacion
-                    myPublicacion.innerHTML = "<div style='margin-left: 15px; z-index:1000;position:absolute;top:45%;left:45%;' class='smallLoader' id='loader-" + i + "-" + j + "'></div>";
+                    anchor_publicacion.innerHTML = "<div style='margin-left: 15px; z-index:1000;position:absolute;top:45%;left:45%;display:none;' class='smallLoader' id='loader-" + i + "-" + j + "'></div>";
                     
                     // Titulo Publicacion
                     anchor_publicacion.innerHTML += "<h4 style='margin-top: 10px;' class='list-group-item-heading'>" 
@@ -215,6 +215,7 @@ window.onload = function(){
     });
 //    }
 }
+
 function reemplazarPublicacion(i, j) {
     
 }
