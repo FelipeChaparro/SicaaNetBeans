@@ -3,6 +3,7 @@ var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
 var misPublicaciones = [];
 var aAutoresEliminados;
 var userToken;
+var response_dudosas = [];
 
 window.onload = function(){
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
@@ -109,15 +110,130 @@ window.onload = function(){
                     document.getElementById("lista-por-verificar").innerHTML = "No tienes publicaciones pendientes.";
             }
            else {
-                alert("Fallo codigo: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description);
+                alert("Fallo Código: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description);
            }
         });
     
     getServelet(SERVER_URL + 'PublicacionDudosaServlet', null, userToken, function(serveletResponse) {
         var response = JSON.parse(serveletResponse);
-        console.log(response);
+        if (response.code == 0) {
+            var tipo_auxiliar = "";
+            var label_auxiliar = "";
+            response_dudosas = response.publicaciones;
+            var stringAutores;
+            for (var i = 0; i < response.publicaciones.length; i++) {
+                for (var j = 0; j < response.publicaciones[i].publicacion.length; j++) {
+                    stringAutores = "";
+                    if (j == 0) {
+                        var title_original = document.createElement("h1");
+                        title_original.className = "heading";
+                        title_original.setAttribute("style", "font-size:20px;margin-top:20px;");
+                        title_original.innerHTML = (i + 1) + ". Publicación Original";
+                        var breakHTML = document.createElement("hr");    
+                        title_original.setAttribute("style", "margin-top: 20px;");
+                        breakHTML.className = "divider";
+                    }
+                    
+                    // Element Anchor Publicación
+                    var anchor_publicacion = document.createElement("a");
+                    anchor_publicacion.className = "list-group-item";
+                    anchor_publicacion.setAttribute("id", "row-" + i + "-" + j);
+
+                    // Loader Publicacion
+                    myPublicacion.innerHTML = "<div style='margin-left: 15px; z-index:1000;position:absolute;top:45%;left:45%;' class='smallLoader' id='loader-" + i + "-" + j + "'></div>";
+                    
+                    // Titulo Publicacion
+                    anchor_publicacion.innerHTML += "<h4 style='margin-top: 10px;' class='list-group-item-heading'>" 
+                        + response.publicaciones[i].publicacion[j].Titulo + "</h4>";
+
+                    //Tipo de Publicacion
+                    anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Tipo:</span>" + " " + ((response.publicaciones[i].publicacion[j].Tipo == null) ? "No definido" : response.publicaciones[i].publicacion[j].Tipo) + "</p>";
+
+                    tipo_auxiliar = response.publicaciones[i].publicacion[j].Tipo;
+
+                    // Código Publicación
+                    if (tipo_auxiliar == "libro" || tipo_auxiliar == "capitulo" || tipo_auxiliar == "software" || tipo_auxiliar == "articulo") {
+
+                        if (tipo_auxiliar == "libro") label_auxiliar = "ISBN:";
+                        if (tipo_auxiliar == "capitulo") label_auxiliar = "ISBN:";
+                        if (tipo_auxiliar == "software") label_auxiliar = "Registro:";
+                        if (tipo_auxiliar == "articulo") label_auxiliar = "ISSN:";
+
+                        anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>" + label_auxiliar + "</span>" + " " + ((response.publicaciones[i].publicacion[j].codigoPublicacion == null) ? "No definido" : response.publicaciones[i].publicacion[j].codigoPublicacion) + "</p>";
+                    }
+
+                    // Lugar Publicación
+                    anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Lugar:</span>" + " " + ((response.publicaciones[i].publicacion[j].Lugar == null) ? "No definido" : response.publicaciones[i].publicacion[j].Lugar) + "</p>";
+
+                    // Editorial Publicación
+                    if (tipo_auxiliar == "libro" || tipo_auxiliar == "capitulo" || tipo_auxiliar == "articulo") {
+
+                        anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Editorial:</span>" + " " + ((response.publicaciones[i].publicacion[j].Editorial == null) ? "No definido" : response.publicaciones[i].publicacion[j].Editorial) + "</p>";
+                    }
+
+                    // Fecha de Publicación
+                    anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Fecha:</span>" + " " + 
+                    ((response.publicaciones[i].publicacion[j].FechaInicio == null) ? "No definido" : response.publicaciones[i].publicacion[j].FechaInicio) + "</p>";
+
+                    if (tipo_auxiliar == "software") {
+
+                        anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Plataforma:</span>" + " " + ((response.publicaciones[i].publicacion[j].Palataforma == null) ? "No definido" : response.publicaciones[i].publicacion[j].Plataforma) + "</p>";
+                    }
+
+                    if (tipo_auxiliar == "trabajo dirigido") {
+
+                        anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Duración:</span>" + " " + ((response.publicaciones[i].publicacion[j].Duracion == null) ? "No definido" : response.publicaciones[i].publicacion[j].Duracion) + "</p>";
+
+                        anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Tipo Especifico:</span>" + " " + ((response.publicaciones[i].publicacion[j].tipoEspecifico == null) ? "No definido" : response.publicaciones[i].publicacion[j].tipoEspecifico) + "</p>";
+                    }
+
+                    anchor_publicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Extraido:</span>" + " " + response.publicaciones[i].publicacion[j].Extraido + "</p>";
+
+                    // Btn
+                    if (j != 0) {
+                        anchor_publicacion.innerHTML += "<button type='button' class='btn btn-warning' onclick='reemplazarPublicacion(" + i + ", " + j + ")'>Reemplazar</button>";
+
+                        anchor_publicacion.innerHTML += "<button type='button' style='margin-left:10px' class='btn btn-info' onclick='notDudosa(" + i + ", " + j + ")'>Es diferente</button>";
+                    }
+
+                    // Header Original
+                    if (j == 0)
+                        document.getElementById("lista-ambigua").appendChild(title_original);
+
+                    document.getElementById("lista-ambigua").appendChild(anchor_publicacion);
+
+                    if (j == 0)
+                        document.getElementById("lista-ambigua").appendChild(breakHTML);
+                }
+            }
+            if (document.getElementById("lista-ambigua").innerHTML == "")
+                    document.getElementById("lista-ambigua").innerHTML = "No hay cargas ambiguas.";
+        }
+        else {
+            alert("Fallo Código: " + response.code + " - Descripción: Error mostrando publicaciones ambigüas.");
+        }
     });
 //    }
+}
+function reemplazarPublicacion(i, j) {
+    
+}
+
+function notDudosa(i, j) {
+    $("#loader-" + i + "-" + j).show();
+    var data_to_send = response_dudosas.publicaciones[i].publicacion[j];
+    
+    postServlet(SERVER_URL + "PublicacionNoDudosaServlet", JSON.stringify(data_to_send), function(servletReponse) {
+        $("#loader-" + i + "-" + j).hide();
+        var respuesta = JSON.parse(servletReponse);
+        if (respuesta.code == 0) {
+            $("#row-" + i + "-" + j).remove();
+            alert("La publicación se encuntra en estado no verificado!");
+        }
+        else {
+            alert("Error: " + respuesta.code + " - Descripción: " + respuesta.description);
+        }
+    });
 }
 
 function verificarPublicacion(i, thisButton) {
@@ -143,26 +259,6 @@ function verificarPublicacion(i, thisButton) {
             }
             else
                 alert("Fallo código: " + response.code.toString() + " - Descripción: " + response.description);
-        });
-    }
-}
-
-function eliminarPublicacion(i) {
-    $("#loaderPublicacion" + i).show();
-    var mPublicacion = document.getElementById("publicacion" + i);
-    var data_to_send = new Object();
-    data_to_send.token = userToken;
-    data_to_send.idPublicacion = misPublicaciones[i].ID;
-
-    if (confirm("¿Desea eliminar esta publicación?")) {
-        postServlet(SERVER_URL + "DesactivarPublicacionServlet", JSON.stringify(data_to_send), function(serveletResponse) {
-            var respuesta = JSON.parse(serveletResponse);
-            $("#loaderPublicacion" + i).hide();
-            if (respuesta.code == 0) {
-                document.getElementById("lista-por-verificar").removeChild(mPublicacion);
-            }
-            else
-               alert("Fallo código: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description); 
         });
     }
 }
@@ -205,6 +301,26 @@ function modificarInformacion(i){
             document.getElementById("m_autor_rol_" + j).value = misPublicaciones[i].Autores[j].Rol;
         }
     }
+}
+
+function eliminarPublicacion(i, j) {
+    $("#loaderPublicacion" + i).show();
+    var mPublicacion = document.getElementById("publicacion" + i);
+    var data_to_send = new Object();
+    data_to_send.token = userToken;
+    data_to_send.idPublicacion = misPublicaciones[i].ID;
+
+    
+    postServlet(SERVER_URL + "DesactivarPublicacionServlet", JSON.stringify(data_to_send), function(serveletResponse) {
+        var respuesta = JSON.parse(serveletResponse);
+        $("#loaderPublicacion" + i).hide();
+        if (respuesta.code == 0) {
+            document.getElementById("lista-" + misPublicaciones[i].Tipo).removeChild(mPublicacion);
+        }
+        else
+           alert("Fallo código: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description); 
+    });
+    
 }
 
 function actualizarInformacion(i) {

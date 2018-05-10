@@ -110,7 +110,7 @@ window.onload = function(){
                     document.getElementById("lista-libro").innerHTML = "No tienes libros verificados.";
 
                 if (document.getElementById("lista-conferencia").innerHTML == "")
-                    document.getElementById("lista-conferencia").innerHTML = "No tienes conferencias verificados.";
+                    document.getElementById("lista-conferencia").innerHTML = "No tienes conferencias verificadaes.";
 
                 if (document.getElementById("lista-capitulo").innerHTML == "")
                     document.getElementById("lista-capitulo").innerHTML = "No tienes capítulos verificados.";
