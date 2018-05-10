@@ -54,7 +54,7 @@ public class loginDao {
             }
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("Retorno: "+respuesta.toString());
             return respuesta;
         } catch (Exception e) {
@@ -89,7 +89,7 @@ public class loginDao {
             respuesta.put("roles", arregloRoles);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("Retorno: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -131,14 +131,14 @@ public class loginDao {
                 JSONObject rolEncontrado = new JSONObject();
                 rolEncontrado.put("id", rs.getString("rol_id"));
                 rolEncontrado.put("label", rs.getString("label"));
-                rolEncontrado.put("referencia", rs.getString("referencia").toString().replace("#URL",SERVER_URL+"/"));
+                rolEncontrado.put("referencia", rs.getString("referencia").toString().replace("#URL",SERVER_URL));
                 System.out.println("Role de BD: "+rolEncontrado.toJSONString());
                 arregloRoles.add(rolEncontrado);
             }
             respuesta.put("roles", arregloRoles);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getRoleDescriptionByID: "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -163,7 +163,7 @@ public class loginDao {
             System.out.println("Query: "+query);
             stmt.executeUpdate(query);
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             return respuesta;
         } catch (SQLException e) {
             System.out.println("Errror DB: "+e.toString());
@@ -192,22 +192,23 @@ public class loginDao {
             Statement stmt = null;
             ResultSet rs;
             stmt = conexion.createStatement();
-            System.out.println("select P.IdPersona as IdPersona,PE.Nombre as Nombre, P.Nacionalidad as Nacionalidad, P.Categoria as Categoria, P.IdDepartamento as IdDepartamento from Profesor P\n" +
+            System.out.println("select P.IdPersona as IdPersona,PE.Nombre as Nombre, P.Nacionalidad as Nacionalidad, P.Categoria as Categoria, P.IdDepartamento as IdDepartamento,PE.URLImagen AS Imagen from Profesor P\n" +
                 "inner join Persona PE on PE.ID=P.IdPersona\n" +
                 "where IdPersona="+user_id);
-            rs = stmt.executeQuery("select P.IdPersona as IdPersona,PE.Nombre as Nombre, P.Nacionalidad as Nacionalidad, P.Categoria as Categoria, P.IdDepartamento as IdDepartamento from Profesor P\n" +
+            rs = stmt.executeQuery("select P.IdPersona as IdPersona,PE.Nombre as Nombre, P.Nacionalidad as Nacionalidad, P.Categoria as Categoria, P.IdDepartamento as IdDepartamento,PE.URLImagen AS Imagen from Profesor P\n" +
                 "inner join Persona PE on PE.ID=P.IdPersona\n" +
                 "where IdPersona="+user_id);
             while (rs.next()) {
                 datosBasicos.put("id", rs.getString("IdPersona"));
                 datosBasicos.put("nombre", rs.getString("Nombre"));
                 datosBasicos.put("nacionalidad", rs.getString("Nacionalidad"));
-                datosBasicos.put("categoria", rs.getString("Categoria"));
+                datosBasicos.put("categoria", rs.getString("Categoria")==null?"":rs.getString("Categoria"));
+                datosBasicos.put("urlImagen", rs.getString("Imagen")==null?null:rs.getString("Imagen"));
                 idDepartamento = Integer.parseInt(rs.getString("IdDepartamento"));
             }
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             
             Cone conex2 = new Cone();
             Connection conexion2= conex2.getConnection();
@@ -222,7 +223,7 @@ public class loginDao {
             }
             rs2.close();
             stmt2.close();
-            conex2.desconectar();
+            //conex2.desconectar();
             
             respuesta.put("IdDepartamento", idDepartamento);
             respuesta.put("datosBasicos", datosBasicos);
@@ -249,42 +250,91 @@ public class loginDao {
         JSONArray medallas = new JSONArray();
         respuesta.put("code", 0);
         respuesta.put("description", "Operacion exitosa");
+        
+        int numeroFilasPorUsuario = 0;
+        
         try {
             Cone conex = new Cone();
             Connection conexion= conex.getConnection();
             Statement stmt = null;
             ResultSet rs;
             stmt = conexion.createStatement();
-            System.out.println("select * from Medallas where IdPersona ="+user_id);
-            rs = stmt.executeQuery("select * from Medallas where IdPersona ="+user_id);
-            while (rs.next()) {
+            
+            String query = "select count(*) as cuenta from Medallas where IdPersona ="+user_id;
+            rs = stmt.executeQuery(query);
+            
+            while (rs.next())
+                numeroFilasPorUsuario = rs.getInt("cuenta");                
+            
+            if (numeroFilasPorUsuario == 1) {
+                System.out.println("select * from Medallas where IdPersona ="+user_id);
+                rs = stmt.executeQuery("select * from Medallas where IdPersona ="+user_id);
+                while (rs.next()) {
+                    JSONObject medalla1 = new JSONObject();
+                    medalla1.put("nombreMedalla", "Bilingue");
+                    medalla1.put("acomplished", rs.getString("Bilingue").isEmpty()?null:rs.getString("Bilingue"));
+
+                    JSONObject medalla2 = new JSONObject();
+                    medalla2.put("nombreMedalla", "Cientifico");
+                    medalla2.put("acomplished", rs.getString("Cientifico").isEmpty()?null:rs.getString("Cientifico"));
+
+                    JSONObject medalla3 = new JSONObject();
+                    medalla3.put("nombreMedalla", "Director");
+                    medalla3.put("acomplished",rs.getString("Director").isEmpty()?null:rs.getString("Director"));
+
+                    JSONObject medalla4 = new JSONObject();
+                    medalla4.put("nombreMedalla", "Doctor");
+                    medalla4.put("acomplished", rs.getString("Doctor").isEmpty()?null:rs.getString("Doctor"));
+
+                    JSONObject medalla5 = new JSONObject();
+                    medalla5.put("nombreMedalla", "Investigador");
+                    medalla5.put("acomplished", rs.getString("Investigador").isEmpty()?null:rs.getString("Investigador"));
+
+                    JSONObject medalla6 = new JSONObject();
+                    medalla6.put("nombreMedalla", "Administrativo");
+                    medalla6.put("acomplished", rs.getString("Administrativo").isEmpty()?null:rs.getString("Administrativo"));
+
+                    JSONObject medalla7 = new JSONObject();
+                    medalla7.put("nombreMedalla", "Jefe");
+                    medalla7.put("acomplished", rs.getString("Jefe").isEmpty()?null:rs.getString("Jefe"));
+
+                    medallas.add(medalla1);
+                    medallas.add(medalla2);
+                    medallas.add(medalla3);
+                    medallas.add(medalla4);
+                    medallas.add(medalla5);
+                    medallas.add(medalla6);
+                    medallas.add(medalla7);
+                }
+            }
+            else {
                 JSONObject medalla1 = new JSONObject();
                 medalla1.put("nombreMedalla", "Bilingue");
-                medalla1.put("acomplished", rs.getString("Bilingue"));
-                
+                medalla1.put("acomplished", null);
+
                 JSONObject medalla2 = new JSONObject();
                 medalla2.put("nombreMedalla", "Cientifico");
-                medalla2.put("acomplished", rs.getString("Cientifico"));
-                
+                medalla2.put("acomplished", null);
+
                 JSONObject medalla3 = new JSONObject();
                 medalla3.put("nombreMedalla", "Director");
-                medalla3.put("acomplished", rs.getString("Director"));
-                
+                medalla3.put("acomplished",null);
+
                 JSONObject medalla4 = new JSONObject();
                 medalla4.put("nombreMedalla", "Doctor");
-                medalla4.put("acomplished", rs.getString("Doctor"));
-                
+                medalla4.put("acomplished", null);
+
                 JSONObject medalla5 = new JSONObject();
                 medalla5.put("nombreMedalla", "Investigador");
-                medalla5.put("acomplished", rs.getString("Investigador"));
-                
+                medalla5.put("acomplished", null);
+
                 JSONObject medalla6 = new JSONObject();
                 medalla6.put("nombreMedalla", "Administrativo");
-                medalla6.put("acomplished", rs.getString("Administrativo"));
-                
+                medalla6.put("acomplished", null);
+
                 JSONObject medalla7 = new JSONObject();
                 medalla7.put("nombreMedalla", "Jefe");
-                medalla7.put("acomplished", rs.getString("Jefe"));
+                medalla7.put("acomplished", null);
 
                 medallas.add(medalla1);
                 medallas.add(medalla2);
@@ -294,10 +344,11 @@ public class loginDao {
                 medallas.add(medalla6);
                 medallas.add(medalla7);
             }
+                    
             respuesta.put("medallas", medallas);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getMedallas(): "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -341,7 +392,7 @@ public class loginDao {
             respuesta.put("formacionAcademica", formacionAcademica);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getFormacionAcademica(): "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -385,7 +436,7 @@ public class loginDao {
             }
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             
             /**
              * Obtengo las publicaciones de un profesor
@@ -405,7 +456,7 @@ public class loginDao {
             }
             rs2.close();
             stmt2.close();
-            conex2.desconectar();
+            //conex2.desconectar();
             
             /**
              * Obtengo el detalle de las publicaciones
@@ -428,7 +479,7 @@ public class loginDao {
                 }
                 rs3.close();
                 stmt3.close();
-                conex3.desconectar();
+                //conex3.desconectar();
             }
             respuesta.put("publicacionesRecientes", publicacionesRecientes);
             
@@ -475,7 +526,7 @@ public class loginDao {
             }
             rs.close();
             stmt.close();  
-            conex.desconectar();
+            //conex.desconectar();
             
             /**
              * PODIO PROGRAMA
@@ -510,7 +561,7 @@ public class loginDao {
             }
             rs2.close();
             stmt2.close(); 
-            conex2.desconectar();
+            //conex2.desconectar();
             
             /**
              * PODIO FACULTAD
@@ -541,7 +592,7 @@ public class loginDao {
             }
             rs3.close();
             stmt3.close();
-            conex3.desconectar();
+            //conex3.desconectar();
             
             /**
              * PODIO UNIVERSIDAD
@@ -574,7 +625,7 @@ public class loginDao {
             }
             rs4.close();
             stmt4.close(); 
-            conex4.desconectar();
+            //conex4.desconectar();
             
             
             respuesta.put("podioPublicacionPrograma", podioPrograma);
@@ -621,7 +672,7 @@ public class loginDao {
             respuesta.put("areasActuacion", areasActuacion);
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("getAreasActuacion(): "+respuesta.toString());
             return respuesta;
         } catch (SQLException e) {
@@ -639,6 +690,12 @@ public class loginDao {
         }
     }
     
+    /**
+     * METODO INCOMPLETO -> DEBE REVISAR EN LA DB QUE EL TOKEN NO HAYA EXPIRADO
+     * @param token
+     * @return
+     * @throws SQLException 
+     */
     public JSONObject validar_user_tokenDAO (String token) throws SQLException{
         JSONObject respuesta = new JSONObject();
         respuesta.put("code", 0);
@@ -682,7 +739,7 @@ public class loginDao {
             }
             rs.close();
             stmt.close();
-            conex.desconectar();
+            //conex.desconectar();
             System.out.println("Retorno: "+respuesta.toString());
             return respuesta;
         } catch (Exception e) {
