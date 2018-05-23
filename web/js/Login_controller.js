@@ -1,5 +1,12 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+
+window.onload = function(){
+    var SESSION = JSON.parse(sessionStorage.getItem("principal"));
+    if (SESSION != null) {
+        window.location.href = "Vista/principal.html";
+    }
+}
 
 /**
  * Metodo para hacer login de usuario y traer los roles a los que tiene acceso
@@ -24,17 +31,18 @@ function login(){
         document.getElementById("login-button").disabled = false;
         document.getElementById("login-image").style.display = "block";
         if (respuesta.code === 0) {
+            respuesta.firstTime = true;
             sessionStorage.setItem("principal", JSON.stringify(respuesta));
-            console.log(sessionStorage.getItem("principal"));
             window.location.href = respuesta.roles[0].referencia;
         }
         else {
-            alert("Fallo c\xf3digo: " + respuesta.code.toString() + " - Descripcion: " + respuesta.description);
+            alert("Error c\xf3digo: " + respuesta.code.toString() + " - Descripci\xf3n: " + respuesta.description);
             document.getElementById("user_name").value = "";
             document.getElementById("user_pss").value = "";
         }
     });
 }
+
 /**
  * Funcion para consultar un servelet del backend
  * @param url URL del servelet

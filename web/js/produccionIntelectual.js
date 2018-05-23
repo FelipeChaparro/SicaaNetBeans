@@ -1,20 +1,24 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+
 var misPublicaciones = [];
 var aAutoresEliminados;
 var userToken;
 
 window.onload = function(){
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
-//    if (SESSION == null) {
-//        window.location.href = "../Vista/index.html";
-//    }
-//    else {
+    if (SESSION == null) {
+        window.location.href = SERVER_URL;
+    }
+    else {
         document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
         document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
         document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
         // Cargar Nav-bar
         cargarNavBar(SESSION.roles, "Ver Publicaciones");
+    
+        // Cargar Imagen
+        cargarImagen(SESSION.datosBasicos);
 
         userToken = SESSION.token;
 
@@ -125,7 +129,25 @@ window.onload = function(){
                 alert("Fallo codigo: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description);
            }
         });
-//    }
+    }
+}
+
+function dateValidation(newDate) {
+    let validator = /^\d\d\d\d-\d\d-\d\d$/;
+    if (validator.test(newDate)) {
+        let mArray = newDate.split("-");
+        let isValid = true;
+        if (mArray[0] < 1900) isValid = false;
+        if (mArray[1] < 1 || mArray[1] > 12) isValid = false; 
+        if (mArray[2] < 1 || mArray[2] > 31) isValid = false; 
+        return isValid;
+    }
+    return false
+}
+
+function cerrarSesion() {
+    sessionStorage.clear();
+    window.location.href = SERVER_URL;
 }
 
 function verificarPublicacion(i) {
@@ -160,17 +182,33 @@ function verificarPublicacion(i) {
         }
         else
             alert("Fallo código: " + response.code.toString() + " - Descripción: " + response.description);
-});
+    });
+    
+    //Tooltip
+    $('[data-toggle="tooltip"]').tooltip(); 
+}
+
+function cargarImagen(oDatosBasicos) {
+    var iSource = "../imagenes/default_avatar_img.png";
+    mImage = document.getElementById("my-profile-img");
+    mImage.setAttribute("title", oDatosBasicos.nombre);
+    mImage.setAttribute("alt", oDatosBasicos.nombre);
+    
+    if (oDatosBasicos.urlImagen != null) {
+        iSource = oDatosBasicos.urlImagen;
+    }
+
+    mImage.setAttribute("src", iSource);
 }
 
 function eliminarPublicacion(i) {
-    $("#loaderPublicacion" + i).show();
     var mPublicacion = document.getElementById("publicacion" + i);
     var data_to_send = new Object();
     data_to_send.token = userToken;
     data_to_send.idPublicacion = misPublicaciones[i].ID;
 
     if (confirm("¿Desea eliminar esta publicación?")) {
+        $("#loaderPublicacion" + i).show();
         postServlet(SERVER_URL + "DesactivarPublicacionServlet", JSON.stringify(data_to_send), function(serveletResponse) {
             var respuesta = JSON.parse(serveletResponse);
             $("#loaderPublicacion" + i).hide();
@@ -291,21 +329,31 @@ function actualizarInformacion(i) {
     data_to_send.Autores_Eliminados = aAutoresEliminados;
     data_to_send.Autores = arrayAutores
 
+    let isValid = true;
+    if (data_to_send.FechaInicio != null) isValid = data_to_send.FechaInicio();
+    
+    if (isValid) {
+        postServlet(SERVER_URL + "ActualizarPublicacionServlet", JSON.stringify(data_to_send), function(serveletResponse) {
+            var respuesta = JSON.parse(serveletResponse);
+            $("#loaderModificacion").hide();
+            document.getElementById("btn_modificar").innerHTML = "Actualizar Información";
+            document.getElementById("btn_modificar").disabled = false;
 
-    postServlet(SERVER_URL + "ActualizarPublicacionServlet", JSON.stringify(data_to_send), function(serveletResponse) {
-        var respuesta = JSON.parse(serveletResponse);
+            if (respuesta.code == 0) {
+                alert("Actualización Correcta!");
+                location.reload(true);
+            }
+            else {
+                alert("Error: " + respuesta.code + " - Descripción: " + respuesta.description);
+            }
+        });
+    }
+    else {
+        alert("Error en fecha");
         $("#loaderModificacion").hide();
         document.getElementById("btn_modificar").innerHTML = "Actualizar Información";
         document.getElementById("btn_modificar").disabled = false;
-        
-        if (respuesta.code == 0) {
-            alert("Actualización Correcta!");
-            location.reload(true);
-        }
-        else {
-            alert("Error: " + respuesta.code + " - Descripción: " + respuesta.description);
-        }
-    });
+    }
 }
 
 function goHome(){

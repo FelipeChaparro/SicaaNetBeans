@@ -62,7 +62,7 @@
             <ul class="nav navbar-nav" id="navbar-sicaa">
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+                <li style="cursor: pointer"><a onclick="cerrarSesion()"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
             </ul>
           </div>
         </nav>
@@ -70,14 +70,14 @@
         <!-- ******HEADER****** --> 
         <header class="header">
             <div class="container"> 
-                    <img class="profile-image img-responsive pull-left" title="Alexandra Pomares Quimbaya" alt="Alexandra Pomares Quimbaya" height="150px" width="150px" style="border-radius: 50%;" src="https://scholar.google.com/citations?view_op=medium_photo&amp;user=E43l-e0AAAAJ&amp;citpid=2">
+                <img class="profile-image img-responsive pull-left" height="150px" width="150px" style="border-radius: 50%;" id="my-profile-img">
                 <div class="profile-content pull-left">
                     <h1 class="name" id="nombre"></h1>
                     <h2 style="font-weight: 700; margin-bottom: 5px;" class="desc" id="facultad"></h2>
                     <h2 class="desc" id="departamento"></h2>
                 </div><!--//profile-->            
             </div><!--//container-->
-        </header><!--//header--> 
+        </header><!--//header-->
 
        <div class="container sections-wrapper">
             <div class="row">
@@ -94,15 +94,14 @@
                                 <input style="margin-right: 5px;" type="radio" name="s-nube" value="departamento" onclick="handlerInputs(this)">
                                 <label>Departamento: </label>
                                 <select style="margin-left: 10px;" class="form-control" id="dp-name" disabled>
-                                    <option>Ingeniería de Sistemas</option>
+                                    <option>Ingenieria de Sistemas</option>
                                 </select>
                             </div>
                             <div class="form-group" style="margin-top: 20px; width: 300px;">
                                 <input style="margin-right: 5px;" type="radio" name="s-nube" value="facultad" onclick="handlerInputs(this)">
                                 <label>Facultad: </label>
                                 <select style="margin-left: 10px;" class="form-control" id="f-name" disabled>
-                                    <option>Todos</option>
-                                    <option>Ingeniería</option>
+                                    <option>Ingenieria</option>
                                 </select>
                             </div>
                             

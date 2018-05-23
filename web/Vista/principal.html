@@ -10,6 +10,22 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
     <meta name="author" content="SICAA">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+    <!-- Javascript -->          
+    <script type="text/javascript" src="../assets/plugins/jquery-1.11.1.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/jquery-migrate-1.2.1.min.js"></script>
+    <script type="text/javascript" src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script> 
+    
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    
+    <!-- Chart -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
+    
+    
     <link rel="icon" href="../favicon.ico">
     <!-- Global CSS -->
     <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
@@ -21,18 +37,33 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
     <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
     
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
- 
-    <!-- Javascript -->          
-    <script type="text/javascript" src="../assets/plugins/jquery-1.11.1.min.js"></script>
-    <script type="text/javascript" src="../assets/plugins/jquery-migrate-1.2.1.min.js"></script>
-    <script type="text/javascript" src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script> 
-    <script type="text/javascript" src="../assets/plugins/jquery-rss/dist/jquery.rss.min.js"></script> 
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     
+
+    
+    <style>
+        button:focus {outline: none !important;}
+        .loader {
+          border: 16px solid #f3f3f3; /* Light grey */
+          border-top: 16px solid #2fa4e7; /* Blue */
+          border-radius: 50%;
+          width: 120px;
+          height: 120px;
+          animation: spin 2s linear infinite;
+        }
+        /* Safari */
+        @-webkit-keyframes spin {
+          0% { -webkit-transform: rotate(0deg); }
+          100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+    </style>
+
 </head> 
+    
 
 <body>
     <nav style="font-family: 'Lato', arial, sans-serif;" class="navbar navbar-default">
@@ -40,7 +71,7 @@
         <ul class="nav navbar-nav" id="navbar-sicaa">
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+          <li style="cursor: pointer"><a onclick="cerrarSesion()"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
         </ul>
       </div>
     </nav>
@@ -48,15 +79,16 @@
     <!-- ******HEADER****** --> 
     <header class="header">
         <div class="container"> 
-                <img class="profile-image img-responsive pull-left" title="Alexandra Pomares Quimbaya" alt="Alexandra Pomares Quimbaya" height="150px" width="150px" style="border-radius: 50%;" src="https://scholar.google.com/citations?view_op=medium_photo&amp;user=E43l-e0AAAAJ&amp;citpid=2">
+            <img class="profile-image img-responsive pull-left" height="150px" width="150px" style="border-radius: 50%;" id="my-profile-img">
             <div class="profile-content pull-left">
                 <h1 class="name" id="nombre"></h1>
                 <h2 style="font-weight: 700; margin-bottom: 5px;" class="desc" id="facultad"></h2>
-                <h2 class="desc" id="departamento"></h2>
+                <h2 style="margin-bottom: 10px;" class="desc" id="departamento"></h2>
+                <button style="margin: 0; padding: 3px 15px 3px 15px;" class="btn btn-info">Javepoints <span class="badge" id="puntaje-profesor"></span></button>
             </div><!--//profile-->            
         </div><!--//container-->
     </header><!--//header-->
-
+        <center><div style="margin-top: 20px;display: none;" id="loader-home" class="loader"></div></center>
     <div class="container sections-wrapper">
         <div class="row">
             <div class="primary col-md-8 col-sm-12 col-xs-12">
@@ -73,56 +105,21 @@
                     <div class="section-inner">
                         <h2 class="heading">Últimas Publicaciones</h2>
                         <hr class="divider" />
-                        <div class="content" id="ultimasPublicaciones">   
-                        </div><!--//content-->  
+                        <div class="content" id="ultimasPublicaciones"></div>
                     </div><!--//section-inner-->                 
                 </section><!--//section-->
 
                 <section class="experience section">
                     <div class="section-inner">
-                        <h2 class="heading">Rankings</h2>
+                        <h2 class="heading">Medallas</h2>
                         <hr class="divider" />
                         <div class="content">
                            <div class="item">
-                                <h3 class="title">Mejores profesores por publicaciones</h3>        
-                                    <table class="table table-hover">
-                                      <thead>
-                                        <tr>
-                                          <th>#</th>
-                                          <th>Nombre</th>
-                                          <th>Puntos</th>
-                                          <th>Universidad</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody id="podioUniversidad">
-                                      </tbody>
-                                    </table>
-                                    <table class="table table-hover">
-                                      <thead>
-                                        <tr>
-                                          <th>#</th>
-                                          <th>Nombre</th>
-                                          <th>Puntos</th>
-                                          <th>Facultad</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody id="podioFacultad">
-                                      </tbody>
-                                    </table>
-                                    <table class="table table-hover">
-                                      <thead>
-                                        <tr>
-                                          <th>#</th>
-                                          <th>Nombre</th>
-                                          <th>Puntos</th>
-                                          <th>Departamento</th>
-                                        </tr>
-                                      </thead>
-                                      <tbody id="podioPrograma">
-                                      </tbody>
-                                    </table>
-                             </div><!--//item-->
-                            
+                               <center>
+                                    <div class="skillset" id="medallasProfesor">
+                                    </div>  
+                                </center>
+                           </div><!--//item-->
                         </div><!--//content-->  
                     </div><!--//section-inner-->                 
                 </section><!--//section-->
@@ -144,7 +141,7 @@
                 
                  <aside class="info aside section">
                     <div class="section-inner">
-                        <h2 class="heading">Areas de Actuación</h2>
+                        <h2 class="heading">Áreas de Actuación</h2>
                         <hr class="divider" />
                         <div class="content">
                             <ul class="list-unstyled" id="list-areas">
@@ -153,18 +150,35 @@
                     </div><!--//section-inner-->                 
                 </aside><!--//aside-->
                 
-                
-                <aside class="skills aside section">
+                <aside class="info aside section">
                     <div class="section-inner">
-                        <h2 class="heading">Medallas</h2>
+                        <h2 class="heading">Ranking Universidad</h2>
                         <hr class="divider" />
                         <div class="content">
-                        <div class="skillset" id="medallasProfesor">                          
-                        </div>              
+                            <canvas id="myChart-universidad" width="100%"></canvas>
                         </div><!--//content-->  
                     </div><!--//section-inner-->                 
-                </aside><!--//section-->
+                </aside><!--//aside-->
                 
+                <aside class="info aside section">
+                    <div class="section-inner">
+                        <h2 class="heading">Ranking Facultad</h2>
+                        <hr class="divider" />
+                        <div class="content">
+                            <canvas id="myChart-facultad" width="100%"></canvas>
+                        </div><!--//content-->  
+                    </div><!--//section-inner-->                 
+                </aside><!--//aside-->
+                
+                <aside class="info aside section">
+                    <div class="section-inner">
+                        <h2 class="heading">Ranking Departamento</h2>
+                        <hr class="divider" />
+                        <div class="content">
+                            <canvas id="myChart-departamento" width="100%"></canvas>
+                        </div><!--//content-->  
+                    </div><!--//section-inner-->                 
+                </aside><!--//aside-->    
                
             </div><!--//secondary-->    
         </div><!--//row-->

@@ -1,16 +1,41 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+
 var radio_selection = null;
 var last_words = [];
 
 window.onload = function(){
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
-    document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
-    document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
-    document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
-    // Cargar Nav-bar
-    cargarNavBar(SESSION.roles, "Nube de palabras");
-        
+    if (SESSION != null) {
+        document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+        document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+        document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
+        // Cargar Nav-bar
+        cargarNavBar(SESSION.roles, "Nube de palabras");
+
+        // Cargar Imagen
+        cargarImagen(SESSION.datosBasicos);
+    }  
+    else
+        window.location.href = SERVER_URL;
+}
+
+function cerrarSesion() {
+    sessionStorage.clear();
+    window.location.href = SERVER_URL;
+}
+
+function cargarImagen(oDatosBasicos) {
+    var iSource = "../imagenes/default_avatar_img.png";
+    mImage = document.getElementById("my-profile-img");
+    mImage.setAttribute("title", oDatosBasicos.nombre);
+    mImage.setAttribute("alt", oDatosBasicos.nombre);
+    
+    if (oDatosBasicos.urlImagen != null) {
+        iSource = oDatosBasicos.urlImagen;
+    }
+
+    mImage.setAttribute("src", iSource);
 }
 
 function insertTargetDiv(id) {
@@ -26,10 +51,26 @@ function refrescarNube() {
         var params;
         insertTargetDiv("parent-cloud");
         
-        params = "Nombre=" + document.getElementById(radio_selection).value
-                + "&Facultad=" + ""
-                + "&Departamento=" + ""
-                + "&UsarDpto=";
+        if (radio_selection == "autor-name") {
+            params = "Nombre=" + document.getElementById(radio_selection).value
+                    + "&Facultad=" + ""
+                    + "&Departamento=" + ""
+                    + "&UsarDpto=";
+        }
+
+        if (radio_selection == "f-name") {
+            params = "Nombre=" + ""
+                    + "&Facultad=" + document.getElementById(radio_selection).value
+                    + "&Departamento=" + ""
+                    + "&UsarDpto=";
+        }
+   
+        if (radio_selection == "dp-name") {
+            params = "Nombre=" + ""
+                    + "&Facultad=" + ""
+                    + "&Departamento=" + document.getElementById(radio_selection).value
+                    + "&UsarDpto=true";
+        }
         
         console.log(params);
         

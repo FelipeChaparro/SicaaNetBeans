@@ -1,317 +1,165 @@
-<!DOCTYPE html>
 <html>
+    <head>
+        <title>Carga Externa | SICAA</title>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
+        <meta name="author" content="SICAA">
+        <link rel="icon" href="../favicon.ico">
+        <!-- Global CSS -->
+        <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
+        <!-- Plugins CSS -->
+        <link rel="stylesheet" href="../assets/plugins/font-awesome/css/font-awesome.css">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Carga Externa | SICAA </title>
-    <script type="text/javascript" src="../js/ejemplojavascript.js"></script>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link id="theme-style" rel="stylesheet" href="../assets/css/styles.css">
+        <!-- Fuente de Google --> 
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+        <!-- Javascript -->          
+        <script type="text/javascript" src="../assets/plugins/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../assets/plugins/jquery-migrate-1.2.1.min.js"></script>
+        <script type="text/javascript" src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
+        <!-- JCloud-->
+        <script src="../assets/jqcloud2/dist/jqcloud.min.js"></script>
+        <link rel="stylesheet" href="../assets/jqcloud2/dist/jqcloud.min.css">
+        
+    <style>
+        button:focus {outline: none !important;}
+        .smallLoader {
+          border: 5px solid #f3f3f3;
+          -webkit-animation: spin 1s linear infinite;
+          animation: spin 1s linear infinite;
+          border-top: 5px solid #555;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+        }
+        .loader {
+          border: 16px solid #f3f3f3; /* Light grey */
+          border-top: 16px solid #2fa4e7; /* Blue */
+          border-radius: 50%;
+          width: 120px;
+          height: 120px;
+          animation: spin 2s linear infinite;
+        }
+        /* Safari */
+        @-webkit-keyframes spin {
+          0% { -webkit-transform: rotate(0deg); }
+          100% { -webkit-transform: rotate(360deg); }
+        }
 
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link id="theme-style" rel="stylesheet" href="../assets/css/styles.css">
-     <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <link rel="icon" href="../favicon.ico">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
-    <meta name="author" content="SICAA">
-    
-    <!-- Fuente de Google --> 
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-    <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
-    
-    <!-- Global CSS -->
-    <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
-    <!-- Plugins CSS -->
-    <link rel="stylesheet" href="../assets/plugins/font-awesome/css/font-awesome.css">
-    <!-- Theme CSS -->  
-    <link id="theme-style" rel="stylesheet" href="../assets/css/styles.css">
-    <!-- jQuery library -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <!-- Popper JS -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
-    <!-- Latest compiled JavaScript -->
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
-    
-    
-<style>
-    button:focus {outline: none !important;}
-    .loader {
-        border: 16px solid #f3f3f3; /* Light grey */
-        border-top: 16px solid #3498db; /* Blue */
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        animation: spin 2s linear infinite;
-    }
-    .smallLoader {
-      border: 5px solid #f3f3f3;
-      -webkit-animation: spin 1s linear infinite;
-      animation: spin 1s linear infinite;
-      border-top: 5px solid #555;
-      border-radius: 50%;
-      width: 50px;
-      height: 50px;
-    }
-    
-    /* Safari */
-    @-webkit-keyframes spin {
-      0% { -webkit-transform: rotate(0deg); }
-      100% { -webkit-transform: rotate(360deg); }
-    }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+    </style>
+</head> 
+    <body>
+        <nav style="font-family: 'Lato', arial, sans-serif;" class="navbar navbar-default">
+          <div class="container-fluid">
+            <ul class="nav navbar-nav" id="navbar-sicaa">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li style="cursor: pointer"><a onclick="cerrarSesion()"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+            </ul>
+          </div>
+        </nav>
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-</style>
-</head>
+        <!-- ******HEADER****** --> 
+        <header class="header">
+            <div class="container"> 
+                <img class="profile-image img-responsive pull-left" height="150px" width="150px" style="border-radius: 50%;" id="my-profile-img">
+                <div class="profile-content pull-left">
+                    <h1 class="name" id="nombre"></h1>
+                    <h2 style="font-weight: 700; margin-bottom: 5px;" class="desc" id="facultad"></h2>
+                    <h2 class="desc" id="departamento"></h2>
+                </div><!--//profile-->            
+            </div><!--//container-->
+        </header><!--//header-->
 
-<body>
-    <nav style="font-family: 'Lato', arial, sans-serif;" class="navbar navbar-default">
-      <div class="container-fluid">
-        <ul class="nav navbar-nav" id="navbar-sicaa">
-        </ul>
-        <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
-        </ul>
-      </div>
-    </nav>
-    
-    <!-- ******HEADER****** --> 
-    <header class="header">
-        <div class="container"> 
-                <img class="profile-image img-responsive pull-left" title="Alexandra Pomares Quimbaya" alt="Alexandra Pomares Quimbaya" height="150px" width="150px" style="border-radius: 50%;" src="https://scholar.google.com/citations?view_op=medium_photo&amp;user=E43l-e0AAAAJ&amp;citpid=2">
-            <div class="profile-content pull-left">
-                <h1 class="name" id="nombre"></h1>
-                <h2 style="font-weight: 700; margin-bottom: 5px;" class="desc" id="facultad"></h2>
-                <h2 class="desc" id="departamento"></h2>
-            </div><!--//profile-->            
+       <div class="container sections-wrapper">
+            <div class="row">
+                   <section class="latest section">
+                        <div class="section-inner">
+                            <h2 class="heading">Sistemas Externos</h2>
+                            <hr class="divider" />
+                            
+                            <!--Tabs definition-->
+                              <ul class="nav nav-tabs">
+                                <li class="active"><a data-toggle="tab" href="#cvlac">CvLAC</a></li>
+                                <li><a data-toggle="tab" href="#researchgate">ResearchGate</a></li>
+                                <li><a data-toggle="tab" href="#google">Google Scholar</a></li>
+                              </ul>
+                            <!--end tabs definition-->
+                            
+                            <!--Tab content-->
+                                <div class="tab-content">
+                                    <!--CvLAC-->
+                                    <div id="cvlac" class="tab-pane fade in active">
+                                        <div style="margin-top: 20px;" class="form-group">
+                                            <label>URL CvLAC:</label>
+                                            <input type="text" class="form-control" id="url-cvlac" placeholder="http://scienti.colciencias.gov.co:8081/cvlac/visualizador/generarCurriculoCv.do?cod_rh=0000123456">
+                                            <button style="margin-top: 20px;" type="button" class="btn btn-primary" onclick="getCvlac(this)">Extraer</button>
+                                            <hr class="divider" />
+                                        </div>
+                                        <center><div id="loader-cvlac" class="loader" style="display: none;"></div></center>
+                                        <div id="cvlac-info"></div>
+                                    </div>
+                                    <!--End CvLAC-->
+                                    
+                                    <!--Research-->
+                                    <div id="researchgate" class="tab-pane fade">
+                                        <div style="margin-top: 20px;" class="form-group">
+                                            <label>URL ResearchGate:</label>
+                                            <input type="text" class="form-control" id="url-researchgate" placeholder="https://www.researchgate.net/profile/Alexandra_Pomares_Quimbaya">
+                                            <button style="margin-top: 20px;" type="button" class="btn btn-primary" onclick="getResearchGate(this)">Extraer</button>
+                                            <hr class="divider" />
+                                        </div>
+                                        <center><div id="loader-researchgate" class="loader" style="display: none;"></div></center>
+                                        <div id="researchgate-info">
+                                        </div>
+                                    </div>
+                                    <!--End Research-->
+                                    
+                                    <!--Google Scholar-->
+                                    <div id="google" class="tab-pane fade">
+                                        <div style="margin-top: 20px;" class="form-group">
+                                            <label>URL Google Scholar:</label>
+                                            <input type="text" class="form-control" id="url-google" placeholder="https://scholar.google.com/citations?user=E43l-e0AAAAJ&hl">
+                                            <button style="margin-top: 20px;" type="button" class="btn btn-primary" onclick="getGoogleScholar(this)">Extraer</button>
+                                            <hr class="divider" />
+                                        </div>
+                                        <center><div id="loader-google" class="loader" style="display: none;"></div></center>
+                                        <div id="google-info">
+                                        </div>
+                                    </div>
+                                    <!--End Google Scholar-->
+                                  </div>
+                            <!--End tab content-->
+                        </div><!--//section-inner-->        
+                    </section><!--//section-->            
+                </div><!--//secondary-->
+        </div><!--//masonry-->
+    <!-- ******FOOTER****** --> 
+    <footer class="footer">
+        <div class="container text-center">
+                <small class="copyright">Designed by Sicaa Team</small>
         </div><!--//container-->
-    </header><!--//header-->
-    
-<div class="container sections-wrapper">
-    <section class="latest section">
-        <div class="section-inner">
-            <h2 class="heading">Actualizar Información</h2>
-            <hr class="divider" />
-            <div class="container" style="width: 100%;">
-                <ul id="clothing-nav" class="nav nav-tabs" role="tablist">
-                    <li class="nav-item">
-                        <a class="nav-link active" href="#cvlac" id="cvlac-tab" role="tab" data-toggle="tab" aria-controls="cvlac" aria-expanded="true">CvLAC</a>
-                    </li>
+    </footer><!--//footer-->
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#researchgate" role="tab" id="researchgate-tab" data-toggle="tab" aria-controls="researchgate">ResearchGate</a>
-                    </li>
+    <!-- custom js -->
+        
+    <script type="text/javascript" src="../assets/js/main.js"></script>   
+    <script type="text/javascript" src="../js/actualizarinformacion.js"></script>
 
-                    <li class="nav-item">
-                        <a class="nav-link" href="#google" role="tab" id="google-tab" data-toggle="tab" aria-controls="google">Google Scholar</a>
-                    </li>
-                </ul>
-
-        <!-- Content Panel -->
-            <div id="clothing-nav-content" class="tab-content">
-                <div role="tabpanel" class="tab-pane fade show active" id="cvlac" aria-labelledby="cvlac-tab">
-                    <div class="form-group">
-                        <label for="usr" style="margin-top: 10px;">URL CvLAC:</label>
-                        <input type="text" class="form-control" id="urlcvlac">
-                        <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start1()"> Buscar </button>
-                        <center><div style="display: none" class="loader" id="mLoaderCvLAC"></div></center>
-                    </div>
-                    <center>
-                        <h3 id="nombre"></h3>
-                    </center>
-                    <center>
-                        <h5 id="categoria"></h5>
-                    </center>
-                    <center>
-                        <h5 id="nacionalidad"></h5>
-                    </center>
-                    <h4 style="display:none" id="tituloFormacionAcademica">Formación Académica</h4>
-                     <table class="table" id="tablaFormacionAcademica" >
-                        <tbody>
-                        </tbody>
-                     </table>
-                    <table class="table" id="idiomas" >
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <table class="table" id="areasActuacion" >
-                        <tbody>
-                        </tbody>
-                    </table>
-                    <h4 style="display:none" id="tituloArticulos">Artículos</h4>
-                    <div class="table-responsive">  
-                        <table class="table table-bordered" id="tablaArticulos" style="display:none">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th> Titulo </th>
-                                    <th> Autores</th>
-                                    <th> Lugar de publicación</th>
-                                    <th> ISSN </th>
-                                    <th> Editorial </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <h4 style="display:none" id="tituloLibros">Libros</h4>
-                    <div class="table-responsive">  
-                        <table class="table table-bordered" id="tablaLibros" style="display:none">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th> Titulo </th>
-                                    <th> Autores</th>
-                                    <th> Lugar de publicación</th>
-                                    <th> ISBN </th>
-                                    <th> Editorial </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <h4 style="display:none" id="tituloCapitulos">Capítulos</h4>
-                    <div class="table-responsive">  
-                        <table class="table table-bordered" id="tablaCapitulos" style="display:none">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th> Titulo </th>
-                                    <th> Autores</th>
-                                    <th> Lugar de publicación</th>
-                                    <th> ISBN </th>
-                                    <th> Editorial </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div>
-                    <h4 style="display:none" id="tituloEventos">Eventos</h4>
-                      <div class="table-responsive">  
-                        <table class="table table-bordered" id="tablaEventos" style="display:none;">
-                            <thead class="thead-dark">
-                                <tr>
-                                    <th> Nombre evento </th>
-                                    <th> Tipo evento </th>
-                                    <th> Ambito</th>
-                                    <th> Nombre producto</th>
-                                    <th> Tipo producto </th>
-                                    <th> Participantes </th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                            </tbody>
-                        </table>
-                    </div> 
-            </div>
-            <div role="tabpanel" class="tab-pane fade" id="researchgate" aria-labelledby="researchgate-tab">
-                <div class="form-group">
-                    <label style="margin-top: 10px;" for="usr"> URL ResearchGate:</label>
-                    <input type="text" class="form-control" id="urlresearch">
-                    <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start2()"> Buscar </button>
-                    <center><div style="display: none" class="loader" id="mLoaderResearch"></div></center>
-                </div>
-
-                <h4> Articulos </h4>
-                <table class="table table-bordered" id="tablaResearchArticulos" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Autores</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-
-                <h4> Libros </h4>
-                <table class="table table-bordered" id="tablaResearchLibros" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Autores</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-
-                <h4> Capitulos </h4>
-                <table class="table table-bordered" id="tablaResearchCapitulos" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Autores</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-
-                <h4> Conferencia </h4>
-                <table class="table table-bordered" id="tablaResearchConferencia" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Autores</th>
-                            <th></th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-              </div>
-              
-              <div role="tabpanel" class="tab-pane fade" id="google" aria-labelledby="google-tab">
-                <div class="form-group">
-                    <label style="margin-top: 10px;" for="usr"> URL Google Scholar:</label>
-                    <input type="text" class="form-control" id="urlschoolar">
-                    <button style="margin-top: 10px;" type="button" class="btn btn-primary" onclick="start3()"> Buscar </button>
-                    <center><div style="display: none" class="loader" id="mLoaderGoogle"></div></center> 
-                </div>
-              
-                <h4> Articulos </h4>
-                <table class="table table-bordered" id="tablaGoogleArticulos" style="display:none">
-                    <thead class="thead-dark">
-                        <tr>
-                            <th> Titulo </th>
-                            <th> Autores</th>
-                            <th></th>
-                            <th> Tipo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-
-                    </tbody>
-                </table>
-
-
-            </div>
-
-        </div>
-
-        <button type="button" id="GuardarInfo" class="btn btn-success" onclick="GuardarInformacion()"> Guardar </button>
-                
-    </div>
-    </div>
-    </section>
-</div>
-</body>
-
+    </body>
 </html>

@@ -1,5 +1,6 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+
 var misPublicaciones = [];
 var aAutoresEliminados;
 var userToken;
@@ -7,15 +8,18 @@ var response_dudosas = [];
 
 window.onload = function(){
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
-//    if (SESSION == null) {
-//        window.location.href = "../Vista/index.html";
-//    }
-//    else {
+    if (SESSION == null) {
+        window.location.href = SERVER_URL;
+    }
+    else {
         document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
         document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
         document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
         // Cargar Nav-bar
         cargarNavBar(SESSION.roles, "Verificar Publicaciones");
+    
+        //Cargar Imagen
+        cargarImagen(SESSION.datosBasicos);
     
         userToken = SESSION.token;
 
@@ -98,7 +102,7 @@ window.onload = function(){
 
                     myPublicacion.innerHTML += "<p class='list-group-item-text'><span style='color:#000000'>Extraido:</span>" + " " + respuesta.publicaciones[i].Extraido + "</p>";
 
-                    myPublicacion.innerHTML += "<button type='button' class='btn btn-success' onclick='verificarPublicacion(" + i + ", this)'>Verificar y Completar</button>";
+                    myPublicacion.innerHTML += "<button type='button' class='btn btn-success' onclick='modificarInformacion(" + i + ")' data-target='#myModal' data-toggle='modal' >Verificar y Completar</button>";
 
                     myPublicacion.innerHTML += "<button type='button' style='margin-left:10px' class='btn btn-danger' onclick='eliminarPublicacion(" + i + ")' id='btn-eliminar-" + i + "'><span class='glyphicon glyphicon-remove'></span> Rechazar</button>";
 
@@ -114,7 +118,7 @@ window.onload = function(){
            }
         });
     
-    getServelet(SERVER_URL + 'PublicacionDudosaServlet', null, userToken, function(serveletResponse) {
+    getServelet(SERVER_URL + 'PublicacionDudosaServlet', null, "token=" + userToken, function(serveletResponse) {
         var response = JSON.parse(serveletResponse);
         if (response.code == 0) {
             var tipo_auxiliar = "";
@@ -130,7 +134,7 @@ window.onload = function(){
                         title_original.setAttribute("style", "font-size:20px;margin-top:20px;");
                         title_original.innerHTML = (i + 1) + ". Publicación Original";
                         var breakHTML = document.createElement("hr");    
-                        title_original.setAttribute("style", "margin-top: 20px;");
+                        breakHTML.setAttribute("style", "margin-top: 20px;");
                         breakHTML.className = "divider";
                     }
                     
@@ -213,11 +217,54 @@ window.onload = function(){
             alert("Fallo Código: " + response.code + " - Descripción: Error mostrando publicaciones ambigüas.");
         }
     });
-//    }
+    }
+}
+
+function dateValidation(newDate) {
+    let validator = /^\d\d\d\d-\d\d-\d\d$/;
+    if (validator.test(newDate)) {
+        let mArray = newDate.split("-");
+        let isValid = true;
+        if (mArray[0] < 1900) isValid = false;
+        if (mArray[1] < 1 || mArray[1] > 12) isValid = false; 
+        if (mArray[2] < 1 || mArray[2] > 31) isValid = false; 
+        return isValid;
+    }
+    return false
 }
 
 function reemplazarPublicacion(i, j) {
+    var data_to_send = new Object();
+    data_to_send = response_dudosas.publicaciones[i].publicacion[j];
+    $("#loader-" + i + "-" + j).show();
+    postServlet(SERVER_URL + "PublicacionDudosaServlet", JSON.stringify(data_to_send), function(serveletResponse) {
+        $("#loader-" + i + "-" + j).hide();
+        var respuesta = JSON.parse(serveletResponse);
+        if (respuesta.code == 0) {
+            alert("La publicación se ha actualizado correctamente!");
+        }
+        else {
+            alert("Error: " + respuesta.code + " - Descripción: " + respuesta.description);
+        }
+    });
+}
+
+function cerrarSesion() {
+    sessionStorage.clear();
+    window.location.href = SERVER_URL;
+}
+
+function cargarImagen(oDatosBasicos) {
+    var iSource = "../imagenes/default_avatar_img.png";
+    mImage = document.getElementById("my-profile-img");
+    mImage.setAttribute("title", oDatosBasicos.nombre);
+    mImage.setAttribute("alt", oDatosBasicos.nombre);
     
+    if (oDatosBasicos.urlImagen != null) {
+        iSource = oDatosBasicos.urlImagen;
+    }
+
+    mImage.setAttribute("src", iSource);
 }
 
 function notDudosa(i, j) {
@@ -229,7 +276,7 @@ function notDudosa(i, j) {
         var respuesta = JSON.parse(servletReponse);
         if (respuesta.code == 0) {
             $("#row-" + i + "-" + j).remove();
-            alert("La publicación se encuntra en estado no verificado!");
+            alert("La publicación se encuentra pendiente por verificar!");
         }
         else {
             alert("Error: " + respuesta.code + " - Descripción: " + respuesta.description);
@@ -237,10 +284,11 @@ function notDudosa(i, j) {
     });
 }
 
-function verificarPublicacion(i, thisButton) {
-    if (thisButton.innerHTML == "Verificar y Completar") {   
-        $("#loaderPublicacion" + i).show();
-        var mBtn, mPublicacion = document.getElementById("publicacion" + i);
+function verificarPublicacion(i) {
+    if (document.getElementById("m_tipoPublicacion").value != "") {
+        document.getElementById("btn_modificar").innerHTML = "Actualizando...";
+        document.getElementById("btn_modificar").disabled = true;
+        $("#loaderModificacion").show();
         var data_to_send = new Object();
         data_to_send.token = userToken;
         data_to_send.idPublicacion = misPublicaciones[i].ID;
@@ -248,20 +296,19 @@ function verificarPublicacion(i, thisButton) {
 
         postServlet(SERVER_URL + "NuevoEstadoPublicacionServlet", JSON.stringify(data_to_send), function(servletResponse) {
             var response = JSON.parse(servletResponse);
-            $("#loaderPublicacion" + i).hide();
             if (response.code == 0) {
-                thisButton.setAttribute("data-target", "#myModal");
-                thisButton.setAttribute("data-toggle", "modal");
-                thisButton.setAttribute("onclick", "modificarInformacion(" + i + ")");
-                thisButton.innerHTML = "Verificado";
-                mBtn = document.getElementById("btn-eliminar-" + i);
-                mPublicacion.removeChild(mBtn);
-                thisButton.click();
+                actualizarInformacion(i);
             }
-            else
-                alert("Fallo código: " + response.code.toString() + " - Descripción: " + response.description);
+            else {
+                $("#loaderModificacion").hide();
+                document.getElementById("btn_modificar").innerHTML = "Actualizar Información";
+                document.getElementById("btn_modificar").disabled = false;
+                alert("Error: " + respuesta.code + " - Descripción: " + respuesta.description);
+            }
         });
     }
+    else
+        alert("El tipo de publicación no puede estar vacío");
 }
 
 function modificarInformacion(i){
@@ -271,7 +318,7 @@ function modificarInformacion(i){
     showTextInputs(tipo, cantidad_autores);
     
     var mBoton = document.getElementById("btn_modificar");
-    mBoton.setAttribute("onclick","actualizarInformacion(" + i + ")");
+    mBoton.setAttribute("onclick","verificarPublicacion(" + i + ")");
     
     document.getElementById("m_tituloPublicacion").value = misPublicaciones[i].Titulo;
     document.getElementById("m_tipoPublicacion").value = misPublicaciones[i].Tipo;
@@ -316,7 +363,7 @@ function eliminarPublicacion(i, j) {
         var respuesta = JSON.parse(serveletResponse);
         $("#loaderPublicacion" + i).hide();
         if (respuesta.code == 0) {
-            document.getElementById("lista-" + misPublicaciones[i].Tipo).removeChild(mPublicacion);
+            document.getElementById("lista-por-verificar").removeChild(mPublicacion);
         }
         else
            alert("Fallo código: " + respuesta.code.toString()+ " - Descripcion: " + respuesta.description); 
@@ -325,9 +372,7 @@ function eliminarPublicacion(i, j) {
 }
 
 function actualizarInformacion(i) {
-    $("#loaderModificacion").show();
-    document.getElementById("btn_modificar").innerHTML = "Actualizando...";
-    document.getElementById("btn_modificar").disabled = true;
+    var mPublicacion;
     var newTitulo;
     var newTipo = "";
     var newCodigo = "";
@@ -340,10 +385,10 @@ function actualizarInformacion(i) {
     var arrayAutores = [];
     var div_autores = document.getElementById("autores-publicacion");
     var data_to_send = new Object();
-    
+
     newTitulo = (document.getElementById("m_tituloPublicacion").value).trim();
     newTipo = document.getElementById("m_tipoPublicacion").value;
-    
+
     if (misPublicaciones[i].Tipo != null) {
         if (newTipo == "libro" || newTipo == "capitulo" || newTipo == "software" || newTipo == "articulo")
             newCodigo = (document.getElementById("m_codigoPublicacion").value).trim();
@@ -386,7 +431,7 @@ function actualizarInformacion(i) {
         }
         data_to_send.Autores_Eliminados = aAutoresEliminados;
         data_to_send.Autores = arrayAutores
-        
+
         data_to_send.codigoPublicacion = newCodigo;
         data_to_send.Lugar = newLugar;
         data_to_send.Editorial = newEditorial;
@@ -407,24 +452,36 @@ function actualizarInformacion(i) {
         data_to_send.Autores_Eliminados = [];
     }
     
-    data_to_send.ID = misPublicaciones[i].ID;
-    data_to_send.Titulo = newTitulo;
-    data_to_send.Tipo = newTipo;
-    
-    postServlet(SERVER_URL + "ActualizarPublicacionServlet", JSON.stringify(data_to_send), function(serveletResponse) {
-        var respuesta = JSON.parse(serveletResponse);
+    let isValid = true;
+    if (data_to_send.FechaInicio != null) isValid = dateValidation(data_to_send.FechaInicio);
+    if (isValid) {
+        data_to_send.ID = misPublicaciones[i].ID;
+        data_to_send.Titulo = newTitulo;
+        data_to_send.Tipo = newTipo;
+
+        postServlet(SERVER_URL + "ActualizarPublicacionServlet", JSON.stringify(data_to_send), function(serveletResponse) {
+            var respuesta = JSON.parse(serveletResponse);
+            $("#loaderModificacion").hide();
+            document.getElementById("btn_modificar").innerHTML = "Actualizar Información";
+            document.getElementById("btn_modificar").disabled = false;
+            if (respuesta.code == 0) {
+                alert("Actualización Correcta!");
+                mPublicacion = document.getElementById("publicacion" + i);
+                document.getElementById("lista-por-verificar").removeChild(mPublicacion);
+                document.getElementById("btn-close-modal").click();
+
+            }
+            else {
+                alert("Error: " + respuesta.code + " - Descripción: " + respuesta.description);
+            }
+        });
+    }
+    else {
+        alert("Error en fecha");
         $("#loaderModificacion").hide();
         document.getElementById("btn_modificar").innerHTML = "Actualizar Información";
         document.getElementById("btn_modificar").disabled = false;
-        
-        if (respuesta.code == 0) {
-            alert("Actualización Correcta!");
-            location.reload(true);
-        }
-        else {
-            alert("Error: " + respuesta.code + " - Descripción: " + respuesta.description);
-        }
-    });
+    }
 }
 
 function goHome(){

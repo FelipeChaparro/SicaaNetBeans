@@ -1,5 +1,6 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+
 
 var contAutor = 1;
 var global_autores = {};
@@ -11,10 +12,35 @@ window.onload = function(){
         document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
         document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
         document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
+        
         // Cargar Nav-bar
         cargarNavBar(SESSION.roles, "Registro Manual");
+        
+        // Cargar Imagen
+        cargarImagen(SESSION.datosBasicos);
+        
         document.getElementsByClassName("infoPublicacion")[1].value = null;
     }
+    else 
+        window.location.href = SERVER_URL;
+}
+
+function cerrarSesion() {
+    sessionStorage.clear();
+    window.location.href = SERVER_URL;
+}
+
+function cargarImagen(oDatosBasicos) {
+    var iSource = "../imagenes/default_avatar_img.png";
+    mImage = document.getElementById("my-profile-img");
+    mImage.setAttribute("title", oDatosBasicos.nombre);
+    mImage.setAttribute("alt", oDatosBasicos.nombre);
+    
+    if (oDatosBasicos.urlImagen != null) {
+        iSource = oDatosBasicos.urlImagen;
+    }
+
+    mImage.setAttribute("src", iSource);
 }
 
 function showInputs(mSelect) {
@@ -113,6 +139,19 @@ function getHTMLInputBox(label, className, placeholder) {
     return mHTML;
 }
 
+function dateValidation(newDate) {
+    let validator = /^\d\d\d\d-\d\d-\d\d$/;
+    if (validator.test(newDate)) {
+        let mArray = newDate.split("-");
+        let isValid = true;
+        if (mArray[0] < 1900) isValid = false;
+        if (mArray[1] < 1 || mArray[1] > 12) isValid = false; 
+        if (mArray[2] < 1 || mArray[2] > 31) isValid = false; 
+        return isValid;
+    }
+    return false
+}
+
 function guardarInfo(){
     document.getElementById("save-btn").disabled = true;
     $("#main-loader").show();
@@ -125,21 +164,21 @@ function guardarInfo(){
     
     infoPublicacion.Titulo = (info[0].value == "") ? null : info[0].value;
     infoPublicacion.Tipo = (info[1].value == "") ? null : info[1].value;
+    
+    if (infoPublicacion.Titulo != null && infoPublicacion.Tipo != null) {
 
-    if (infoPublicacion.Titulo != null && infoPublicacion.Tipo != null ) {
-        
         if (infoPublicacion.Tipo == "libro" || 
             infoPublicacion.Tipo == "articulo" || 
             infoPublicacion.Tipo == "capitulo" || 
             infoPublicacion.Tipo == "software") {
-            infoPublicacion.CodigoPublicacion = (info[2].value == "") ? null : info[2].value;
+            infoPublicacion.codigoPublicacion = (info[2].value == "") ? null : info[2].value;
             infoPublicacion.Lugar = (info[3].value == "") ? null : info[3].value;
         }
         else {
-            infoPublicacion.CodigoPublicacion = null;
+            infoPublicacion.codigoPublicacion = null;
             infoPublicacion.Lugar = (info[2].value == "") ? null : info[2].value;
         }
-        
+
         if (infoPublicacion.Tipo == "libro" || 
             infoPublicacion.Tipo == "articulo" || 
             infoPublicacion.Tipo == "capitulo") {
@@ -149,49 +188,58 @@ function guardarInfo(){
         else {
             infoPublicacion.Editorial = null;
         }
-        
+
         if (infoPublicacion.Tipo == "trabajo dirigido") {
             infoPublicacion.FechaInicio = (info[3].value == "") ? null : info[3].value;
             infoPublicacion.Duracion = (info[4].value == "") ? null : info[4].value;
             infoPublicacion.tipoEspecifico = (info[5].value == "") ? null : info[5].value;
         }
-        
+
         if (infoPublicacion.Tipo == "software") {
             infoPublicacion.FechaInicio = (info[4].value == "") ? null : info[4].value;
             infoPublicacion.Plataforma = (info[5].value == "") ? null : info[5].value;
         }
-             
-        infoPublicacion.Extraido = "Manual";
+        let isValid = true;
+        if (infoPublicacion.FechaInicio != null) isValid = dateValidation(infoPublicacion.FechaInicio);
 
-        for (var i = 0; i < infoAutores.length; i++) {  
-            var objeto_autor = new Object();
-            if (infoAutores[i].value != "Crear un nuevo usuario") {
-                objeto_autor.ID = global_autores[infoAutores[i].value];
+        if (isValid) {
+            infoPublicacion.Extraido = "Manual";
+
+            for (var i = 0; i < infoAutores.length; i++) {  
+                var objeto_autor = new Object();
+                if (infoAutores[i].value != "Crear un nuevo usuario") {
+                    objeto_autor.ID = global_autores[infoAutores[i].value];
+                }
+                else {
+                    objeto_autor.ID = -1;
+                    objeto_autor.Nombre = document.getElementsByClassName("autorPublicacion").item(i).value;
+                }
+                objeto_autor.Rol = rolAutores[i].value;
+                listaAutores.push(objeto_autor);
             }
-            else {
-                objeto_autor.ID = -1;
-                objeto_autor.Nombre = document.getElementsByClassName("autorPublicacion").item(i).value;
-            }
-            objeto_autor.Rol = rolAutores[i].value;
-            listaAutores.push(objeto_autor);
+
+            data_publicacion.token = SESSION.token; 
+            if (infoAutores.length > 0) infoPublicacion.autores = listaAutores;
+            data_publicacion.publicacion = infoPublicacion;
+
+            postServlet(SERVER_URL + "GuardarPublicacion", JSON.stringify(data_publicacion), function(serveletResponse) {
+                $("#main-loader").hide();
+                document.getElementById("save-btn").disabled = false;
+                var respuesta = JSON.parse(serveletResponse);
+                if (respuesta.code == 0) {
+                    alert("Publicación registrada correctamente");
+                    location.reload(true);
+                }
+                else {
+                    alert("Error en el registro: " + respuesta.code.toString() + " - Descripcion: " + respuesta.description);
+                }
+            });
         }
-
-        data_publicacion.token = SESSION.token; 
-        if (infoAutores.length > 0) infoPublicacion.autores = listaAutores;
-        data_publicacion.publicacion = infoPublicacion;
-        console.log(data_publicacion);
-        postServlet(SERVER_URL + "GuardarPublicacion", JSON.stringify(data_publicacion), function(serveletResponse) {
+        else {
+            alert("Error en fecha");
             $("#main-loader").hide();
             document.getElementById("save-btn").disabled = false;
-            var respuesta = JSON.parse(serveletResponse);
-            if (respuesta.code == 0) {
-                alert("Publicación registrada correctamente");
-                location.reload(true);
-            }
-            else {
-                alert("Error en el registro: " + respuesta.code.toString() + " - Descripcion: " + respuesta.description);
-            }
-        });
+        }
     }
     else {
         $("#main-loader").hide();

@@ -1,34 +1,60 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-master/";
+var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
+
 
 var myChart;
 
 window.onload = function(){
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
-    document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
-    document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
-    document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
-    // Cargar Nav-bar
-    cargarNavBar(SESSION.roles, "Estadísticas");
-    
-    $("#loaderGraph").hide();
-    var ctx = document.getElementById("bar-chart").getContext('2d');
-    myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: [],
-            datasets: [
-            {
-                label: "",
-                backgroundColor: [],
-                data: []
+    if (SESSION != null) {
+        document.getElementById("nombre").innerHTML = SESSION.datosBasicos.nombre;
+        document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
+        document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
+        // Cargar Nav-bar
+        cargarNavBar(SESSION.roles, "Estadísticas");
+
+        // Cargar Imagen
+        cargarImagen(SESSION.datosBasicos);
+
+        $("#loaderGraph").hide();
+        var ctx = document.getElementById("bar-chart").getContext('2d');
+        myChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: [],
+                datasets: [
+                {
+                    label: "",
+                    backgroundColor: [],
+                    data: []
+                }
+              ]
+            },
+            options: {
+                legend: { display: false }
             }
-          ]
-        },
-        options: {
-            legend: { display: false }
-        }
-    });
+        });
+    }
+    else
+        window.location.href = SERVER_URL;
+}
+
+function cerrarSesion() {
+    sessionStorage.clear();
+    window.location.href = SERVER_URL;
+}
+
+function cargarImagen(oDatosBasicos) {
+    var iSource = "../imagenes/default_avatar_img.png";
+    mImage = document.getElementById("my-profile-img");
+    mImage.setAttribute("title", oDatosBasicos.nombre);
+    mImage.setAttribute("alt", oDatosBasicos.nombre);
+    
+    if (oDatosBasicos.urlImagen != null) {
+        iSource = oDatosBasicos.urlImagen;
+    }
+
+    mImage.setAttribute("src", iSource);
 }
 
 function exportarDiagrama() {
@@ -114,7 +140,8 @@ function refrescarDiagrama() {
                                             ticks: {
                                                 beginAtZero: true
                                             }
-                                    }]};
+                                    }]
+                                  };
 
                 mInfoDiagram.type = "bar";
                 mInfoDiagram.data = mData;

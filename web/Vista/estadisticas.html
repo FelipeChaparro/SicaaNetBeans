@@ -66,7 +66,7 @@
         <ul class="nav navbar-nav" id="navbar-sicaa">
         </ul>
         <ul class="nav navbar-nav navbar-right">
-          <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+          <li style="cursor: pointer"><a onclick="cerrarSesion()"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
         </ul>
       </div>
     </nav>
@@ -74,7 +74,7 @@
     <!-- ******HEADER****** --> 
     <header class="header">
         <div class="container"> 
-                <img class="profile-image img-responsive pull-left" title="Alexandra Pomares Quimbaya" alt="Alexandra Pomares Quimbaya" height="150px" width="150px" style="border-radius: 50%;" src="https://scholar.google.com/citations?view_op=medium_photo&amp;user=E43l-e0AAAAJ&amp;citpid=2">
+            <img class="profile-image img-responsive pull-left" height="150px" width="150px" style="border-radius: 50%;" id="my-profile-img">
             <div class="profile-content pull-left">
                 <h1 class="name" id="nombre"></h1>
                 <h2 style="font-weight: 700; margin-bottom: 5px;" class="desc" id="facultad"></h2>
@@ -102,17 +102,19 @@
                             </select>
                         </div>
                         <div style="margin-top: 20px;" class="input-group">
-                            <label style="display: block;">Rol:</label>
-                            <label style="margin-left: 10px;" class="checkbox-inline"><input class="cb-rol" type="checkbox" name="Profesor">Profesor</label>
-                            <label class="checkbox-inline" name="Estudiante"><input class="cb-rol" type="checkbox" name="Estudiante">Estudiante</label>
-                            <label class="checkbox-inline" name="Externo"><input class="cb-rol" type="checkbox" name="Externo">Externo</label>
-                        </div>
-                        <div style="margin-top: 20px;" class="input-group">
                             <label style="display: block;">Tipo:</label>
                             <label style="margin-left: 10px;" class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Libro">Libro</label>
                             <label class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Capitulo">Capítulo</label>
                             <label class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Articulo">Artículo</label>
                             <label class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Conferencia">Conferencia</label>
+                            <label class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Trabajo Dirigido">Trabajo dirigido</label>
+                            <label class="checkbox-inline"><input class="cb-tipo" type="checkbox" name="Software">Software</label>
+                        </div>
+                        <div style="margin-top: 20px;" class="input-group">
+                            <label style="display: block;">Rol:</label>
+                            <label style="margin-left: 10px;" class="checkbox-inline"><input class="cb-rol" type="checkbox" name="Profesor">Profesor</label>
+                            <label class="checkbox-inline" name="Estudiante"><input class="cb-rol" type="checkbox" name="Estudiante">Estudiante</label>
+                            <label class="checkbox-inline" name="Externo"><input class="cb-rol" type="checkbox" name="Externo">Externo</label>
                         </div>
                         <div class="form-group" style="margin-top: 20px;">
                             <label >Fecha Desde:</label>
