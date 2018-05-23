@@ -5,16 +5,20 @@
  */
 package Controller;
 
-import JavaBean.BeanExtracionInformacion;
 import JavaBean.BeanPublicacionesDudosas;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 /**
  *
@@ -34,17 +38,19 @@ public class PublicacionDudosaServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         
-        BeanPublicacionesDudosas bean=new BeanPublicacionesDudosas();
-		
-		JSONObject retorno=bean.obtenerPublicacionDudosa("1");
-		//response.setContentType("text/plain");
-		//System.out.println("retorno  :"+retorno);
-		response.setContentType("application/json");
-		response.getWriter().print(retorno);
+        BeanPublicacionesDudosas bean = new BeanPublicacionesDudosas();
         
+	JSONObject respueta_publicacionesDudosas = bean.obtenerPublicacionDudosa(request.getParameter("token"));
+        
+        System.out.println("Respuesta PublicacionDudosaServlet:: "+respueta_publicacionesDudosas);
+        response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.print(respueta_publicacionesDudosas);
+        out.flush();       
     }
 
     /**
@@ -56,9 +62,31 @@ public class PublicacionDudosaServlet extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
        
+        JSONObject respuestaServicio =  new JSONObject();
+        BeanPublicacionesDudosas publicacionesDudosas_bean = new BeanPublicacionesDudosas();
+        JSONParser parser = new JSONParser();
+
+        try {
+            String json=request.getReader().lines().collect(Collectors.joining());
+            JSONObject publicacion = (JSONObject) parser.parse(json);
+            
+            System.out.println("Publciaicon llega: "+publicacion);
+            respuestaServicio = publicacionesDudosas_bean.remplazarPublicacion(publicacion,publicacion.get("publicacionID").toString());
+            
+        } catch (ParseException ex) {response.setContentType("application/json");
+            respuestaServicio.put("code", 9997);
+            respuestaServicio.put("description", "Error en sistema");
+            System.out.println("retorno: "+respuestaServicio);
+            Logger.getLogger(PublicacionesServelet.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.print(respuestaServicio);
+        out.flush();
     }
 
     /**

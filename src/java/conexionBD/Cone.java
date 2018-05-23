@@ -18,13 +18,13 @@ import java.util.logging.Logger;
 public class Cone {
     private static Connection conn;
     private static final String driver = "com.mysql.jdbc.Driver";
-    private static final String user = "sql10231472";
-    private static final String password = "v44jkXCd8H";
-    private static final String url = "jdbc:mysql://sql10.freesqldatabase.com:3306/sql10231472";
+    private static final String user = "be2c85dcda2f03";
+    private static final String password = "70c02146";
+    private static final String url = "jdbc:mysql://us-cdbr-sl-dfw-01.cleardb.net/ibmx_d215d806610ead4?user=be2c85dcda2f03&password=70c02146";
     
     public Cone() {
         try {
-            if (conn == null) {
+            if (conn == null || conn.isClosed()) {
                 Class.forName(driver);
                 conn = (Connection) DriverManager.getConnection(url, user, password);
             }
@@ -35,7 +35,7 @@ public class Cone {
     
     public Connection getConnection() {
         try {
-            if (conn == null) {
+            if (conn == null || conn.isClosed()) {
                 Class.forName(driver);
                 conn = (Connection) DriverManager.getConnection(url, user, password);
             }    

@@ -192,10 +192,10 @@ public class loginDao {
             Statement stmt = null;
             ResultSet rs;
             stmt = conexion.createStatement();
-            System.out.println("select P.IdPersona as IdPersona,PE.Nombre as Nombre, P.Nacionalidad as Nacionalidad, P.Categoria as Categoria, P.IdDepartamento as IdDepartamento,PE.URLImagen AS Imagen from Profesor P\n" +
+            System.out.println("select P.IdPersona as IdPersona,PE.Nombre as Nombre, P.Nacionalidad as Nacionalidad, P.Categoria as Categoria, P.IdDepartamento as IdDepartamento,PE.URLGoogleScholar AS Imagen from Profesor P\n" +
                 "inner join Persona PE on PE.ID=P.IdPersona\n" +
                 "where IdPersona="+user_id);
-            rs = stmt.executeQuery("select P.IdPersona as IdPersona,PE.Nombre as Nombre, P.Nacionalidad as Nacionalidad, P.Categoria as Categoria, P.IdDepartamento as IdDepartamento,PE.URLImagen AS Imagen from Profesor P\n" +
+            rs = stmt.executeQuery("select P.IdPersona as IdPersona,PE.Nombre as Nombre, P.Nacionalidad as Nacionalidad, P.Categoria as Categoria, P.IdDepartamento as IdDepartamento,PE.URLGoogleScholar AS Imagen from Profesor P\n" +
                 "inner join Persona PE on PE.ID=P.IdPersona\n" +
                 "where IdPersona="+user_id);
             while (rs.next()) {
@@ -446,13 +446,16 @@ public class loginDao {
             Statement stmt2 = null;
             ResultSet rs2;
             stmt2 = conexion2.createStatement();
-            System.out.println(" select * from Persona_Publicacion where IdPersona="+user_id);
-            rs2 = stmt2.executeQuery(" select * from Persona_Publicacion where IdPersona ="+user_id);
-            for (int i=0;i<numPublicaciones;i++) {
-                rs2.next();
+            String query = "select * from Persona_Publicacion where IdPersona="+user_id+" and EstadoSistema = 1 and EstadoPublicacion = 'Verificado'";
+            System.out.println(query);
+            rs2 = stmt2.executeQuery(query);
+            for (int i=0;i<numPublicaciones && rs2.next();i++) {
+                
+                if (i > 0)
+                    publicacionesABuscar += ", ";
                 publicacionesABuscar += rs2.getString("IdPublicacion");
-                if (i != numPublicaciones-1)
-                   publicacionesABuscar += ", ";       
+                
+                         
             }
             rs2.close();
             stmt2.close();
@@ -507,7 +510,7 @@ public class loginDao {
         JSONArray podioFacultad = new JSONArray();
         JSONArray podioUniversidad = new JSONArray();
         
-        String user_id_facultad = "";
+        String user_id_facultad = "-1";
         
         respuesta.put("code", 0);
         respuesta.put("description", "Operacion exitosa");
@@ -750,4 +753,68 @@ public class loginDao {
             return respuesta;
         }
     } 
+    
+    public JSONObject guardarImagenGoogle(String user_id, String urlImagen) throws SQLException {
+        JSONObject respuesta_db = new JSONObject();
+        Statement stmt = null;
+        Cone cone = new Cone();
+        String query;
+        try {
+            Connection mConexion = cone.getConnection();
+            stmt = mConexion.createStatement(); 
+            query = "UPDATE Persona SET URLGoogleScholar='"+ urlImagen +"' WHERE ID='" + user_id + "'";
+            System.out.println("Query guardarImagenGoogle: " + query);
+            stmt.execute(query);
+            respuesta_db.put("code", 0);
+        } catch(SQLException e) {
+            System.out.println("Error: " + e);
+            respuesta_db.put("code", 9999);
+            respuesta_db.put("description", "Error en DataBase");
+        } finally {
+            if (stmt != null) stmt.close();
+            //cone.desconectar();
+        }
+        return respuesta_db;
+    }
+    
+    public JSONObject getPuntajeProfesor (String user_id) throws SQLException{
+        JSONObject respuesta = new JSONObject();
+        respuesta.put("code", 0);
+        respuesta.put("description", "Operacion exitosa");
+        int puntaje = 0;
+        try {
+            Cone conex = new Cone();
+            Connection conexion= conex.getConnection();
+            Statement stmt = null;
+            ResultSet rs;
+            stmt = conexion.createStatement();
+            String query = "SELECT Puntos FROM PuntosPublicacion WHERE IdPersona ="+user_id;
+            System.out.println("Query getPuntajeProfesor: "+query);
+            rs = stmt.executeQuery(query);
+            
+            while (rs.next())
+                puntaje = rs.getInt("Puntos");
+            
+            respuesta.put("puntos", puntaje);
+            rs.close();
+            stmt.close();
+            //conex.desconectar();
+            System.out.println("getAreasActuacion(): "+respuesta.toString());
+            return respuesta;
+        } catch (SQLException e) {
+            respuesta.put("code", 9999);
+            respuesta.put("puntos", puntaje);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("getPuntajeProfesor(): "+respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+            return respuesta;
+        } catch (Exception e) {
+            respuesta.put("code", 9997);
+            respuesta.put("puntos", puntaje);
+            respuesta.put("description", "Error de sistema");
+            System.out.println("getPuntajeProfesor(): "+respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+            return respuesta;
+        }
+    }
 }

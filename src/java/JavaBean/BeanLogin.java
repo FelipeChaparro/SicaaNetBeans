@@ -37,6 +37,7 @@ public class BeanLogin {
         JSONObject respuesta_roles_usuariosVO = new JSONObject();
         JSONObject respuesta_roles_completosVO = new JSONObject();
         JSONObject respuesta_datos_basicosVO = new JSONObject();
+        JSONObject respuesta_puntaje_profesor_dao = new JSONObject();
         JSONObject respuesta_medallasVO = new JSONObject();
         JSONObject respuesta_formacion_academicaVO = new JSONObject();
         JSONObject respuesta_publicaciones_recientesVO = new JSONObject();
@@ -99,13 +100,14 @@ public class BeanLogin {
                                 if (Integer.parseInt(respuesta_roles_completosVO.get("code").toString()) == 0) {
                                     respuesta_loginVO.put("roles", respuesta_roles_completosVO.get("roles"));
                                     respuesta_datos_basicosVO = loginDao.getDatosBasicos(user_id);
-
+                                    respuesta_puntaje_profesor_dao = loginDao.getPuntajeProfesor(user_id);
                                     /**
                                      *Si trae datos basicos busco medallas 
                                      */
                                     if (Integer.parseInt(respuesta_datos_basicosVO.get("code").toString()) == 0) {
                                         user_id_departamento = respuesta_datos_basicosVO.get("IdDepartamento").toString();
-                                        respuesta_loginVO.put("datosBasicos", respuesta_datos_basicosVO.get("datosBasicos"));                                    
+                                        respuesta_loginVO.put("datosBasicos", respuesta_datos_basicosVO.get("datosBasicos"));
+                                        respuesta_loginVO.put("puntosTotales", respuesta_puntaje_profesor_dao.get("puntos"));
                                         respuesta_medallasVO = loginDao.getMedallas(user_id);
 
                                         /**
@@ -227,6 +229,7 @@ public class BeanLogin {
         JSONObject respuesta_roles_usuariosVO = new JSONObject();
         JSONObject respuesta_roles_completosVO = new JSONObject();
         JSONObject respuesta_datos_basicosVO = new JSONObject();
+        JSONObject respuesta_puntaje_profesor_dao = new JSONObject();
         JSONObject respuesta_medallasVO = new JSONObject();
         JSONObject respuesta_formacion_academicaVO = new JSONObject();
         JSONObject respuesta_publicaciones_recientesVO = new JSONObject();
@@ -272,13 +275,15 @@ public class BeanLogin {
                         if (Integer.parseInt(respuesta_roles_completosVO.get("code").toString()) == 0) {
                             respuesta_cargarInformacionBasicaVO.put("roles", respuesta_roles_completosVO.get("roles"));
                             respuesta_datos_basicosVO = loginDao.getDatosBasicos(user_id);
-
+                            respuesta_puntaje_profesor_dao = loginDao.getPuntajeProfesor(user_id);
+                            
                             /**
                              *Si trae datos basicos busco medallas 
                              */
                             if (Integer.parseInt(respuesta_datos_basicosVO.get("code").toString()) == 0) {
                                 user_id_departamento = respuesta_datos_basicosVO.get("IdDepartamento").toString();
                                 respuesta_cargarInformacionBasicaVO.put("datosBasicos", respuesta_datos_basicosVO.get("datosBasicos"));                                    
+                                respuesta_cargarInformacionBasicaVO.put("puntosTotales", respuesta_puntaje_profesor_dao.get("puntos"));
                                 respuesta_medallasVO = loginDao.getMedallas(user_id);
 
                                 /**

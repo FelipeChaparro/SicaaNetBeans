@@ -58,6 +58,7 @@ public class GuardarPublicacion extends HttpServlet {
             respuestaServlet = beansp.guardarPublicacionDB(myJson); 
             System.out.println("Respuesta de BeanGuardarPublicacion: " + respuestaServlet);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
             out.print(respuestaServlet);
@@ -69,6 +70,7 @@ public class GuardarPublicacion extends HttpServlet {
             respuestaServlet.put("description", "Error en base de datos");
             System.out.println("Servlet GuardarPublicacion: " + respuestaServlet);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().print(respuestaServlet);  
             Logger.getLogger(GuardarPublicacion.class.getName()).log(Level.SEVERE, null, ex);
         }

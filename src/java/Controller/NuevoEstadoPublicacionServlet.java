@@ -82,9 +82,11 @@ public class NuevoEstadoPublicacionServlet extends HttpServlet {
             JSONObject mObject = (JSONObject) mParser.parse(request.getReader());
             response_servlet = mBean.cambiarEstadoPublicacion(mObject);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
         } catch(IOException | ParseException e) {
             System.out.println("Error: " + e);
             response_servlet.put("code", 9999);
+            response.setCharacterEncoding("UTF-8");
             response_servlet.put("description", "Error en Servlet");
         } finally {
             response.setContentType("application/json");

@@ -82,6 +82,7 @@ public class EstadisticasServelet extends HttpServlet {
         BeanEstadisticas beanEstadisticas= new BeanEstadisticas();
         JSONObject res = beanEstadisticas.getEstadisticasByFiltros(json);
         response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.print(res);

@@ -2,7 +2,9 @@ package JavaBean;
 
 
 import Entidad.Publicacion;
+import Dao.parametrosSistemaDao;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -21,15 +23,23 @@ public class BeanExtraccionResearch {
 		super();
 	}
 	
-	public  JSONObject obtenerInformacion(String url) throws IOException {
-		
+	public  JSONObject obtenerInformacion(String url) throws IOException, SQLException {
+            JSONObject respuesta_parametros_sistema_dao = new JSONObject();
+            
+            parametrosSistemaDao parametros_sistema_dao = new parametrosSistemaDao();
+            
+            respuesta_parametros_sistema_dao = parametros_sistema_dao.getParametrosSistema();            
+            String cookieResearch  = ((JSONObject)respuesta_parametros_sistema_dao.get("parametros")).get("cookieResearch").toString();
+            
+            //String cookieResearch = "did=c8FGoDHG0xE9NiXqSwWLr0AiqcmF63cyLE7b504Sub2RW3Ro6SplycKwEz5e4XIL; ptc=RG1.4696773588665341929.1509926780; _ga=GA1.2.1292523840.1520299527; sid=C6Iv56vJP0Xlm12k8V20HgSetcR1Wz24YCs8j7vbKw0ouvOnxxE111Y0LvcFizca1q2CjRMgcVV0m0IdKevSo2yPkcCnnrSgEi2KfjGt61FSGwatSTIzgqnVzsYAqnlB; chseen=1; _gid=GA1.2.433362298.1526337598; cookieconsent_dismissed=true; captui=NzAxMThlMDFkMDVhMzUyYzk2NDE4MDFiNjllOTRlNWUzNmMyZTY1M2YzNmFkYWU0Yjk3NzY0Zjk4Y2U1NmNmMl9mRmpQZWFlRG5GQlJHek9pN1g2T2hFSjBUVmxPUFVwaDQ5bzU%3D; _gat=1";
+            
             JSONObject informacionResearch = new JSONObject();
             List<Publicacion> publicaciones=new ArrayList<Publicacion>();
             String urlImagen="";
 
             Document document = Jsoup.connect(url)
                 .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36")
-                .header("cookie","sid=72wkTWX8B9R4bmJRy2ozKEP0Q3E5Nu8u4okXGns0k1yJmNBTa0Y6rIKS8y815vqpRxfXXY3o9d00FBqVM0R5KRJFe01J3EZIzeUxO6fc02OFft1HidA2bvhQnpIc4rLl; did=1a0r0eb1TEPcI0mPlJ19zBzsydISG7cwD1fzCwV0F0wjR0Wcc4Y5tOyMG0L5s0eg; ptc=RG1.86429550282323832.1525066193; _ga=GA1.2.1985139287.1525066183; _gid=GA1.2.1518963699.1525066183; cookieconsent_dismissed=true; __gads=ID=60a4e6d125cea06e:T=1525066197:S=ALNI_Mb-4O3WvRyxrXfQ_R2svgtFb4hD1Q; chseen=1; captui=NDE2YTA4OTg2NTU5NTM4ODBjZjZjNjBhMTBhMTIyNGQwZmQ2NzMyNmY5YTk3ZjA5ZWY0YzlkY2MxYWE4OWM5Nl8xenVYMlRJV3dvTkVnMXFyQ3JmRVBiZzQybGtYb2FCTEMzYzA%3D; _gat=1").timeout(100000).get();
+                .header("cookie",cookieResearch).timeout(100000).get();
 
             //Obteiene la foto
             Element e = document.select("meta[property=og:image]").first();
@@ -54,7 +64,7 @@ public class BeanExtraccionResearch {
              for(String u : url54){
                         Document document1 = Jsoup.connect(u)
 			   .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36")
-			   .header("cookie","sid=72wkTWX8B9R4bmJRy2ozKEP0Q3E5Nu8u4okXGns0k1yJmNBTa0Y6rIKS8y815vqpRxfXXY3o9d00FBqVM0R5KRJFe01J3EZIzeUxO6fc02OFft1HidA2bvhQnpIc4rLl; did=1a0r0eb1TEPcI0mPlJ19zBzsydISG7cwD1fzCwV0F0wjR0Wcc4Y5tOyMG0L5s0eg; ptc=RG1.86429550282323832.1525066193; _ga=GA1.2.1985139287.1525066183; _gid=GA1.2.1518963699.1525066183; cookieconsent_dismissed=true; __gads=ID=60a4e6d125cea06e:T=1525066197:S=ALNI_Mb-4O3WvRyxrXfQ_R2svgtFb4hD1Q; chseen=1; captui=NDE2YTA4OTg2NTU5NTM4ODBjZjZjNjBhMTBhMTIyNGQwZmQ2NzMyNmY5YTk3ZjA5ZWY0YzlkY2MxYWE4OWM5Nl8xenVYMlRJV3dvTkVnMXFyQ3JmRVBiZzQybGtYb2FCTEMzYzA%3D; _gat=1").timeout(100000).get();
+			   .header("cookie",cookieResearch).timeout(100000).get();
 		        for(Element el1 : document1.select("meta[itemProp=mainEntityOfPage]")){
                             String url1=el1.attr("content");
                             urls.add("https://www.researchgate.net/"+url1);
@@ -69,7 +79,7 @@ public class BeanExtraccionResearch {
                 if (url1.contains("publication/") && !urls.contains("https://www.researchgate.net/" + url1)) {
                     System.out.println("URL publicacion: https://www.researchgate.net/" + url1.toString());
                     urls.add("https://www.researchgate.net/" + url1);
-                    
+                    System.out.println("URL agregada: https://www.researchgate.net/" + url1);
                 }
             }
             
@@ -94,9 +104,10 @@ public class BeanExtraccionResearch {
             for(String urls2 :urls ){
                 //System.out.println("URL: "+urls2.toString());
                 JSONObject publicacionIndividual = new JSONObject();
-                Document document1 = Jsoup.connect(urls2)
+                System.out.println("URL conectarse: "+urls2);
+                Document document1 = Jsoup.connect(urls2.replace("https://www.researchgate.net/https://www.researchgate.net", "https://www.researchgate.net"))
                     .userAgent("Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36")
-                    .header("cookie","sid=72wkTWX8B9R4bmJRy2ozKEP0Q3E5Nu8u4okXGns0k1yJmNBTa0Y6rIKS8y815vqpRxfXXY3o9d00FBqVM0R5KRJFe01J3EZIzeUxO6fc02OFft1HidA2bvhQnpIc4rLl; did=1a0r0eb1TEPcI0mPlJ19zBzsydISG7cwD1fzCwV0F0wjR0Wcc4Y5tOyMG0L5s0eg; ptc=RG1.86429550282323832.1525066193; _ga=GA1.2.1985139287.1525066183; _gid=GA1.2.1518963699.1525066183; cookieconsent_dismissed=true; __gads=ID=60a4e6d125cea06e:T=1525066197:S=ALNI_Mb-4O3WvRyxrXfQ_R2svgtFb4hD1Q; chseen=1; captui=NDE2YTA4OTg2NTU5NTM4ODBjZjZjNjBhMTBhMTIyNGQwZmQ2NzMyNmY5YTk3ZjA5ZWY0YzlkY2MxYWE4OWM5Nl8xenVYMlRJV3dvTkVnMXFyQ3JmRVBiZzQybGtYb2FCTEMzYzA%3D; _gat=1")
+                    .header("cookie",cookieResearch)
                     .timeout(100000)
                     .get();
                                                                 
@@ -137,8 +148,13 @@ public class BeanExtraccionResearch {
 
                 String tipo="";
 
-                Element eletipo=document1.select("strong.publication-meta-type").first();
-                tipo= eletipo.text();
+                try {
+                    Element eletipo=document1.select("strong.publication-meta-type").first();
+                    tipo = eletipo.text();
+                } catch (Exception ex) {
+                    tipo = "";
+                }
+                
 
                 Element elDoi=document1.select("meta[property=citation_doi]").first();
                 if(elDoi != null ){

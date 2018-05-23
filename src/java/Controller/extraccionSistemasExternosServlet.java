@@ -39,6 +39,7 @@ public class extraccionSistemasExternosServlet extends HttpServlet {
 		//response.setContentType("text/plain");
 		//System.out.println("retorno  :"+retorno);
 		response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
 		response.getWriter().print(retorno);
 	}
 

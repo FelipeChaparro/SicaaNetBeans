@@ -61,6 +61,7 @@ public class login_servelet extends HttpServlet {
             
             System.out.println("Respuesta login_servelet:: "+respuesta_loginVO);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
             out.print(respuesta_loginVO);
@@ -71,6 +72,7 @@ public class login_servelet extends HttpServlet {
             respuesta_loginVO.put("description", "Error de parser respuesta");
             System.out.println("retrno: "+respuesta_loginVO);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().print(respuesta_loginVO);        
             Logger.getLogger(login_servelet.class.getName()).log(Level.SEVERE, null, ex);
 
@@ -80,6 +82,7 @@ public class login_servelet extends HttpServlet {
             respuesta_loginVO.put("description", "Error de sistema");
 
             System.out.println("retrno: "+respuesta_loginVO);
+            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().print(respuesta_loginVO);        
             Logger.getLogger(login_servelet.class.getName()).log(Level.SEVERE, null, ex);

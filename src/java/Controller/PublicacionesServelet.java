@@ -77,6 +77,7 @@ public class PublicacionesServelet extends HttpServlet {
             
             System.out.println("Respuesta bean_user_session: "+respuesta);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
             out.print(respuesta);
@@ -87,6 +88,7 @@ public class PublicacionesServelet extends HttpServlet {
             respuesta.put("code", 9998);
             respuesta.put("description", "Error en base de datos");
             System.out.println("retorno: "+respuesta);
+            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
             response.getWriter().print(respuesta);        
             Logger.getLogger(PublicacionesServelet.class.getName()).log(Level.SEVERE, null, ex);
@@ -123,6 +125,7 @@ public class PublicacionesServelet extends HttpServlet {
             Logger.getLogger(PublicacionesServelet.class.getName()).log(Level.SEVERE, null, ex);
         }
         response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.print(respuestaServicio);

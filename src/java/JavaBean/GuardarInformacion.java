@@ -7,6 +7,7 @@ package JavaBean;
 
 
 import Dao.puntosDAO;
+import Dao.loginDao;
 import com.mysql.jdbc.Connection;
 import conexionBD.Cone;
 import java.sql.Date;
@@ -130,7 +131,7 @@ public class GuardarInformacion {
                      sql = "INSERT INTO FormacionAcademica " +
                      "(ID,IdPersona,Categoria, Titulo,Universidad,FechaInicio,FechaFin,Descripcion) "+
                      "VALUES ('" + idFormacion + "','"+json.get("id")+"','"+obj.get("categoria") +"','"+obj.get("titulo") +"','"+obj.get("universidad") +"','"+ sqlDate1+"','"+ sqlDate2+"','"+obj.get("descripcion") +"')";
-
+                     System.out.println("Query insert informacion academcia: "+sql);
                      stmt1.executeUpdate(sql);
                      stmt1.close(); 
                     
@@ -280,15 +281,15 @@ public class GuardarInformacion {
             JSONArray listaEventos = (JSONArray) eventos.get("eventos");
 
             
-            //respuesta_existePublicacion_libros = beanPublicacionesEJB.validarPublicacionesNuevas(libro, json.get("id").toString(),"CvLac");
+            respuesta_existePublicacion_libros = beanPublicacionesEJB.validarPublicacionesNuevas(libro, json.get("id").toString(),"CvLac");
             
-            //respuesta_existePublicacion_articulos = beanPublicacionesEJB.validarPublicacionesNuevas(articulos, json.get("id").toString(),"CvLac");
+            respuesta_existePublicacion_articulos = beanPublicacionesEJB.validarPublicacionesNuevas(articulos, json.get("id").toString(),"CvLac");
 
-            //respuesta_existePublicacion_capitulos = beanPublicacionesEJB.validarPublicacionesNuevas(capitulo, json.get("id").toString(),"CvLac");
+            respuesta_existePublicacion_capitulos = beanPublicacionesEJB.validarPublicacionesNuevas(capitulo, json.get("id").toString(),"CvLac");
             
-            //respuesta_existePublicacion_software = beanPublicacionesEJB.validarPublicacionesNuevas(listaSoftware, json.get("id").toString(), "CvLac");
+            respuesta_existePublicacion_software = beanPublicacionesEJB.validarPublicacionesNuevas(listaSoftware, json.get("id").toString(), "CvLac");
             
-            //respuesta_existePublicacion_trabajosDirigidos = beanPublicacionesEJB.validarPublicacionesNuevas(listaTrbajosDirigidos, json.get("id").toString(), "CvLac");
+            respuesta_existePublicacion_trabajosDirigidos = beanPublicacionesEJB.validarPublicacionesNuevas(listaTrbajosDirigidos, json.get("id").toString(), "CvLac");
             
             respuesta_existePublicacion_eventos = beanPublicacionesEJB.validarPublicacionesNuevas(listaEventos, json.get("id").toString(), "CvLac");
             
@@ -311,7 +312,10 @@ public class GuardarInformacion {
             JSONArray publicaciones=(JSONArray) json.get("publicaciones");
             
             BeanPublicaciones beanPublicacionesEJB = new BeanPublicaciones();
-
+            loginDao login_dao = new loginDao();
+            
+            login_dao.guardarImagenGoogle(json.get("id").toString(),json.get("urlImagen").toString());
+           
             respuesta_existePublicacion = beanPublicacionesEJB.validarPublicacionesNuevas(publicaciones, json.get("id").toString(),"GoogleScholar");
             
             

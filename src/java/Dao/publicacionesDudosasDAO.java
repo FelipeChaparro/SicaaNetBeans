@@ -42,6 +42,7 @@ public class publicacionesDudosasDAO {
             String query1="Select DISTINCT PublicacionDudosa.ID AS nump "+ 
                   "FROM PublicacionDudosa INNER JOIN Persona_Publicacion on PublicacionDudosa.ID=Persona_Publicacion.IdPublicacion WHERE Persona_Publicacion.IdPersona ="+user_id+" AND PublicacionDudosa.EstadoSistema="+1+" AND Persona_Publicacion.EstadoSistema="+1;
           
+               System.out.println("Query publicacionDudosas: "+query1);
             rsA = stmt.executeQuery(query1);
             
             List<String> resultado = new ArrayList<String>();
@@ -65,22 +66,25 @@ public class publicacionesDudosasDAO {
                     pub2.put("Extraido",rs1.getString("Extraido"));
                     pub2.put("userId",user_id);
                     pub2.put("fuente","original");
+                    pub2.put("plataforma",rs1.getString("plataforma"));
+                    pub2.put("duracion",rs1.getString("duracion"));
+                    pub2.put("tipoEspecifico",rs1.getString("tipoEspecifico"));
                     pub2.put("publicacionID",rs1.getString("ID"));
                     
                     pub.add(pub2);
                 }
                 
-                
-                 rs1.close();
-                 stmt1.close();
+                rs1.close();
+                stmt1.close();
                  
                 stmt1 = conexion.createStatement();
-                query="Select * FROM PublicacionDudosa WHERE ID="+rsA.getString("nump");
+                query="Select * FROM PublicacionDudosa WHERE EstadoSistema=1 AND ID="+rsA.getString("nump");
                 rs1 = stmt1.executeQuery(query);
                
                 while (rs1.next()) {
                     JSONObject pub2 = new JSONObject();
                     pub2.put("Titulo",rs1.getString("Titulo"));
+                    pub2.put("ID", rs1.getString("idPublicacionDudosa"));
                     pub2.put("Tipo",rs1.getString("Tipo"));
                     pub2.put("codigoPublicacion",rs1.getString("codigoPublicacion"));
                     pub2.put("Lugar",rs1.getString("Lugar"));
@@ -89,76 +93,33 @@ public class publicacionesDudosasDAO {
                     pub2.put("Extraido",rs1.getString("Extraido"));
                     pub2.put("userId",user_id);
                     pub2.put("fuente","dudosas");
+                    pub2.put("plataforma",rs1.getString("plataforma"));
+                    pub2.put("duracion",rs1.getString("duracion"));
+                    pub2.put("tipoEspecifico",rs1.getString("tipoEspecifico"));
                     pub2.put("publicacionID",rs1.getString("ID"));
-                    
                     pub.add(pub2);
                 }
-                
-                
+       
                 rs1.close();
                 stmt1.close();
-                
-                
-                
-               pubTotales.put("publicacion",pub);
-               publicacion12.add(pubTotales);
-                    resultado.add(rsA.getString("nump"));
-                    System.out.println("......................");
-                    System.out.println(rsA.getString("nump"));
+
+                pubTotales.put("publicacion",pub);
+                publicacion12.add(pubTotales);
+                resultado.add(rsA.getString("nump"));
+
                
             }
             rsA.close();
             stmt.close();
-            
-            
-                        
-            
-            
+
              } catch (SQLException ex) {
                     Logger.getLogger(publicacionesDudosasDAO.class.getName()).log(Level.SEVERE, null, ex);
                     code=9999;
              } 
-               /* rs1.close();
-                stmt1.close();
-                
-                stmt1 = conexion.createStatement();
-                query="Select * FROM Publicacion WHERE ID="+rs.getString("nump");
-                rs1 = stmt.executeQuery(query);
-                
-                while (rs1.next()) {
-                    JSONObject pub2 = new JSONObject();
-                    pub2.put("Titulo",rs1.getString("Titulo"));
-                    pub2.put("Tipo",rs1.getString("Tipo"));
-                    pub2.put("codigoPublicacion",rs1.getString("codigoPublicacion"));
-                    pub2.put("Lugar",rs1.getString("Lugar"));
-                    pub2.put("Editorial",rs1.getString("Editorial"));
-                    pub2.put("FechaInicio",rs1.getString("FechaInicio"));
-                    pub2.put("Extraido",rs1.getString("Extraido"));
-                    pub2.put("userId",user_id);
-                    pub2.put("publicacionID",rs1.getString("ID"));
-                    
-                    pub.add(pub2);
-                }
-                
-                
-                 rs1.close();
-                 stmt1.close();
-                 
-                
-                 pubTotales.put("publicacion",pub);
-                 publicacion12.add(pubTotales);*/
-                 
-            
-            
-            
+
             publicaciones.put("publicaciones",publicacion12);
             publicaciones.put("code",code);
-                
-         
-            
-             
-            
-    
+   
         return publicaciones;   
     }
 
@@ -218,7 +179,7 @@ public class publicacionesDudosasDAO {
        
     }
     
-    public void cambiarEstado(JSONObject mNewData){
+    public void cambiarEstado (JSONObject mNewData){
          Cone conex = new Cone();
          Connection conexion= conex.getConnection();
       
@@ -247,5 +208,123 @@ public class publicacionesDudosasDAO {
         }
         
     }
+    
+    public JSONObject eliminarTodasDudosas (String idPublicaiconDudosaOriginal){
+         
+        JSONObject respuesta = new JSONObject();
+        Cone conex = new Cone();
+        Connection conexion= conex.getConnection();
+        Statement stmt1 = null;
+        String query = "UPDATE PublicacionDudosa SET EstadoSistema = 0 WHERE ID="+idPublicaiconDudosaOriginal;
+        System.out.println("Query eliminarDudosas(): "+query);
+        
+        try {
+            stmt1 = conexion.createStatement();  
+            stmt1.execute(query);
+            stmt1.close();
+            respuesta.put("code", 0);
+            respuesta.put("desciption", "Operacion exitosa");
+        } catch(SQLException ex) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("eliminarDudosas(): "+respuesta.toString());
+            Logger.getLogger(publicacionesDudosasDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return respuesta;
+    }
+    
+    public JSONObject remplazarDudosa (JSONObject publicaicon,String idPublicaiconDudosaOriginal){
+         
+        JSONObject respuesta = new JSONObject();
+        Cone conex = new Cone();
+        Connection conexion= conex.getConnection();
+        Statement stmt1 = null;
+        String query = "UPDATE Publicacion SET "
+                    + "Titulo='" + publicaicon.get("Titulo")  + "',"
+                    + "Tipo='" + publicaicon.get("Tipo") + "',"
+                    + "codigoPublicacion=" + ((publicaicon.get("codigoPublicacion") == null) ? null : "'" + publicaicon.get("codigoPublicacion") + "'") + ","
+                    + "Lugar=" + ((publicaicon.get("Lugar") == null) ? null : "'" + publicaicon.get("Lugar") + "'") + ","
+                    + "Editorial=" + ((publicaicon.get("Editorial") == null) ? null : "'" + publicaicon.get("Editorial") + "'") + ","
+                    + "Extraido=" + ((publicaicon.get("Extraido") == null) ? null : "'" + publicaicon.get("Extraido") + "'") + ","
+                    + "FechaInicio=" + ((publicaicon.get("FechaInicio") == null) ? null : "'" + publicaicon.get("FechaInicio") + "'") + ","
+                    + "Duracion=" + ((publicaicon.get("Duracion") == null) ? null : "'" + publicaicon.get("Duracion") + "'") + ","
+                    + "Plataforma=" + ((publicaicon.get("Plataforma") == null) ? null : "'" + publicaicon.get("Plataforma") + "'") + ","
+                    + "tipoEspecifico=" + ((publicaicon.get("tipoEspecifico") == null) ? null : "'" + publicaicon.get("tipoEspecifico") + "'")
+                    + " WHERE ID=" + idPublicaiconDudosaOriginal;
+        
+        System.out.println("Query remplazarDudosa(): "+query);
+        
+        try {
+            stmt1 = conexion.createStatement();  
+            stmt1.execute(query);
+            stmt1.close();
+            respuesta.put("code", 0);
+            respuesta.put("desciption", "Operacion exitosa");
+            
+            respuesta = cambiarEstadoDudosaXPendienteVirifica(publicaicon.get("publicacionID").toString(),publicaicon.get("userId").toString());
+            
+        } catch(SQLException ex) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("remplazarDudosa(): "+respuesta.toString());
+            Logger.getLogger(publicacionesDudosasDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return respuesta;
+    }
+    
+    private JSONObject cambiarEstadoDudosaXPendienteVirifica (String idPublicacion, String idPersona){
+         
+        JSONObject respuesta = new JSONObject();
+        Cone conex = new Cone();
+        Connection conexion= conex.getConnection();
+        Statement stmt1 = null;
+        String query = "update Persona_Publicacion set EstadoPublicacion = 'Pendiente de verificacion' where IdPublicacion = "+idPublicacion+" and IdPersona ="+idPersona;
+        
+        System.out.println("Query cambiarEstadoDudosaXPendienteVirifica(): "+query);
+        
+        try {
+            stmt1 = conexion.createStatement();  
+            stmt1.execute(query);
+            stmt1.close();
+            respuesta.put("code", 0);
+            respuesta.put("desciption", "Operacion exitosa");
+        } catch(SQLException ex) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("cambiarEstadoDudosaXPendienteVirifica(): "+respuesta.toString());
+            Logger.getLogger(publicacionesDudosasDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return respuesta;
+    }
+    
+    public JSONObject eliminarDudosa (String idPublicaiconDudosa){
+         
+        JSONObject respuesta = new JSONObject();
+        Cone conex = new Cone();
+        Connection conexion= conex.getConnection();
+        Statement stmt1 = null;
+        String query = "UPDATE PublicacionDudosa SET EstadoSistema = 0 WHERE idPublicacionDudosa="+idPublicaiconDudosa;
+        System.out.println("Query eliminarDudosas(): "+query);
+        
+        try {
+            stmt1 = conexion.createStatement();  
+            stmt1.execute(query);
+            stmt1.close();
+            respuesta.put("code", 0);
+            respuesta.put("desciption", "Operacion exitosa");
+        } catch(SQLException ex) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("eliminarDudosas(): "+respuesta.toString());
+            Logger.getLogger(publicacionesDudosasDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        
+        return respuesta;
+    }
+    
+    
     
 }

@@ -82,12 +82,15 @@ public class ActualizarPublicacionServlet extends HttpServlet {
             JSONParser mParser = new JSONParser();
             mObject = (JSONObject) mParser.parse(request.getReader());
             respuesta_servlet = mBean.actualizarPublicacion(mObject);
+            response.setCharacterEncoding("UTF-8");
             response.setStatus(HttpServletResponse.SC_OK);
         } catch (IOException | ParseException e) {
             System.out.println(e);
             respuesta_servlet.put("code", 9999);
+            response.setCharacterEncoding("UTF-8");
             respuesta_servlet.put("description","Error del Servlet");
         } finally {
+            response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
             out.print(respuesta_servlet);

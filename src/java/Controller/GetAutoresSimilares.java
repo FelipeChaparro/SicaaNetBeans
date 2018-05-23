@@ -56,6 +56,7 @@ public class GetAutoresSimilares extends HttpServlet {
         respuesta_servlet.put("autores", arregloUsuarios);
      
         response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.print(respuesta_servlet);

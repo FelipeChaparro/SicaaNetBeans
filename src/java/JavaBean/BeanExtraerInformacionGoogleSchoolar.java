@@ -10,8 +10,10 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import Dao.loginDao;
+import Dao.parametrosSistemaDao;
+import java.sql.SQLException;
 
-import Entidad.Publicacion;
 
 public class BeanExtraerInformacionGoogleSchoolar {
 	
@@ -19,9 +21,16 @@ public class BeanExtraerInformacionGoogleSchoolar {
 		super();
 	}
 	
-	public JSONObject obtenerInformacion(String url) throws IOException {
+	public JSONObject obtenerInformacion(String url) throws IOException, SQLException {
             
-            String cookieGoogle = "CONSENT=YES+ES.es+V10; GSP=LM=1523144400:S=JbcfPCDuxxrEndYA; SID=DAa1AkkfAIYUeXjnFerwwYm2F732HvYsj7LByxphpjJBLY3eUbBaqvUZa1Ls6na-FF-6tQ.; HSID=ANp_ODUlPvY0tD6Xj; SSID=ATdaTt9Su0F63Frj8; APISID=Z9Bf4RDJNO65kAkq/AisIulpRRWeyfoTFr; SAPISID=Zeq2q8uBLcz_ouJl/ARhyu-YVusSFB02_M; 1P_JAR=2018-5-1-0; NID=129=Em9Mve0yMVf7v0_2rWa0DLCdRpIqnkXNg3dex_avogQXxoPZ65SbIhSQ83bxK3hApn3oPp19b9iBmqgeRMhK7fXCSFYv6_5_OAQ6V7ljNOgi8zIzrif9IgHl4jAkh9LNRhWuxThk9mUzXgpxlqqU1Os0wSBZ5qIAImz9i9uIY60X94CpJkI2fVBsD5lLvO11N6ru5EyqiEw7TSRyVTziiCnowagdudnfu0nfvkUG6msuWdYfZAUFR06nvw; GOOGLE_ABUSE_EXEMPTION=ID=055535b100256100:TM=1525150542:C=r:IP=177.252.254.15-:S=APGng0v7hRYoh8VerFrvzmHRKgwq2lrCSg; SIDCC=AEfoLeYhnYNUdSRnOy-pKXasgiSp0xwV0AAxsFD78AB13S6SUFeTrA3DOKhwu5pbIXYTYo8JXw";
+            JSONObject respuesta_parametros_sistema_dao = new JSONObject();
+            
+            parametrosSistemaDao parametros_sistema_dao = new parametrosSistemaDao();
+            
+            respuesta_parametros_sistema_dao = parametros_sistema_dao.getParametrosSistema();            
+            String cookieGoogle  = ((JSONObject)respuesta_parametros_sistema_dao.get("parametros")).get("cookieGoogle").toString();
+            
+            //String cookieGoogle = "CONSENT=YES+ES.es+V10; GSP=LM=1523144400:S=JbcfPCDuxxrEndYA; SID=DAa1AkkfAIYUeXjnFerwwYm2F732HvYsj7LByxphpjJBLY3eUbBaqvUZa1Ls6na-FF-6tQ.; HSID=ANp_ODUlPvY0tD6Xj; SSID=ATdaTt9Su0F63Frj8; APISID=Z9Bf4RDJNO65kAkq/AisIulpRRWeyfoTFr; SAPISID=Zeq2q8uBLcz_ouJl/ARhyu-YVusSFB02_M; 1P_JAR=2018-5-10-1; NID=130=FGBwFpnj2L3up256gElThTM3ZINg07909iJGdqm4Nnm48ZojHRLUPrxrb-8iO_WhCWpewPkUIYdy3H1MuGIse__ELs2cUD_HCjkFxVAAV-5oP1A8gT2SoqNvwZEulJZT4IuCERy1NLkWxX5zfEeM_p0xQsev1eToKjXwjoxHFKTNyY_SpvDgMMH423dOev1kBHGfOr0YLjN3nRPNxhQ7YrG6Lqsh4RZaoqaARZmOPTE7dLufA3Dsn0_5GqXAkSI3mUJ8IOe1ZQ; GOOGLE_ABUSE_EXEMPTION=ID=f31643576e491c38:TM=1526357173:C=r:IP=177.252.248.193-:S=APGng0sZ99Q3jDlJp2StQ3ZmyX9O4ZgImg; SIDCC=AEfoLeYQU2M6lhWTM0TOo3NZzdMoQfqQyAtEYED3yqIn37rw7wLid8EH075tkNotcIw46kJ4y9M";
             
             boolean pedriMasPublicaciones = false;
             JSONObject respuesta = new JSONObject();
@@ -44,6 +53,8 @@ public class BeanExtraerInformacionGoogleSchoolar {
                 System.out.println("URL publicacion: "+urlGoo+el.attr("data-href").replace("amp;", ""));
                 listaUrlsPublicacionesTodas.add(urlGoo+el.attr("data-href").replace("amp;", ""));
             }
+
+            String imagenGoogle = "https://scholar.google.com/citations?view_op=view_photo&user="+url.split("user=")[1].split("=")[0]+"&citpid=2";
 
             for(String urlPublicacion: listaUrlsPublicacionesTodas){
                     //System.out.println("URL bien: "+urlGoo+urlPub.replace("amp;", ""));
@@ -69,24 +80,31 @@ public class BeanExtraerInformacionGoogleSchoolar {
                     }
                     System.out.println("Autores: "+autor.toJSONString());
                     articulo.put("autor", autor);
-                    //System.out.println("-- autores: "+autores.first().text());
-                    Boolean tieneFecha = publicacion.select("div.gsc_vcd_field").get(1).toString().contains("Fecha");
-                    if (tieneFecha) {
-                        String fechaPublicacionCompleta = publicacion.select("div.gsc_vcd_value").get(1).text().toString().trim();
-                        String[] fechaSplit = fechaPublicacionCompleta.split("/");
-                        if (fechaSplit.length == 1) {
-                            System.out.println("Fecha si ano: "+fechaSplit[0]+"/01/01");
-                            articulo.put("fecha",fechaSplit[0]+"/01/01");
+                    try {
+                    
+                        Boolean tieneFecha = publicacion.select("div.gsc_vcd_field").get(1).toString().contains("Fecha");
+                        if (tieneFecha) {
+                            String fechaPublicacionCompleta = publicacion.select("div.gsc_vcd_value").get(1).text().toString().trim();
+                            String[] fechaSplit = fechaPublicacionCompleta.split("/");
+                            if (fechaSplit.length == 1) {
+                                System.out.println("Fecha si ano: "+fechaSplit[0]+"/01/01");
+                                articulo.put("fecha",fechaSplit[0]+"/01/01");
+                            }
+                            else {
+                                System.out.println("Fecha si: "+fechaPublicacionCompleta);
+                                articulo.put("fecha",fechaPublicacionCompleta);
+                            }
                         }
                         else {
-                            System.out.println("Fecha si: "+fechaPublicacionCompleta);
-                            articulo.put("fecha",fechaPublicacionCompleta);
+                            System.out.println("Fecha no: "+null); 
+                            articulo.put("fecha",null);
                         }
-                    }
-                    else {
+                        
+                    } catch (Exception e) {
                         System.out.println("Fecha no: "+null); 
                         articulo.put("fecha",null);
                     }
+                    
 
                     Elements tipo = publicacion.select("div.gsc_vcd_field");
                     if (tipo.size() >= 3) {
@@ -205,6 +223,7 @@ public class BeanExtraerInformacionGoogleSchoolar {
 
             System.out.println("Fin publicaciones: "+articulos);
             respuesta.put("publicaciones", articulos);
+            respuesta.put("urlImagen", imagenGoogle);
             return respuesta; 		   
 	}
 	

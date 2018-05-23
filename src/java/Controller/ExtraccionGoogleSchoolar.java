@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.simple.JSONObject;
 
 import JavaBean.BeanExtraerInformacionGoogleSchoolar;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Servlet implementation class ExtraccionGoogleSchoolar
@@ -30,13 +33,24 @@ public class ExtraccionGoogleSchoolar extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		BeanExtraerInformacionGoogleSchoolar bean=new BeanExtraerInformacionGoogleSchoolar();
-		String url = request.getParameter("urlschoolar");
-		System.out.println("la url de google schoolar es: "+url);
-		JSONObject retorno=bean.obtenerInformacion(url);
-		response.setContentType("application/json");
-		response.getWriter().print(retorno);
+            JSONObject retorno = new JSONObject();
+            try {
+                // TODO Auto-generated method stub
+                BeanExtraerInformacionGoogleSchoolar bean=new BeanExtraerInformacionGoogleSchoolar();
+                String url = request.getParameter("urlschoolar");
+                System.out.println("la url de google schoolar es: "+url);
+                retorno=bean.obtenerInformacion(url);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().print(retorno);
+            } catch (SQLException ex) {
+                retorno.put("code", 9998);
+                retorno.put("description", "Error en base de datos");
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().print(retorno);
+                Logger.getLogger(ExtraccionGoogleSchoolar.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	/**

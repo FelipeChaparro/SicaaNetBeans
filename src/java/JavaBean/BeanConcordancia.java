@@ -24,8 +24,8 @@ public class BeanConcordancia {
         Double porcentageConfianza = 0.0;
         
         if (tipo.equals("NOMBRE")){
-            String nombreUno = StringUtils.stripAccents(palabraUno).trim().toUpperCase().replace(".","").replace("-", " ");
-            String nombreDos = StringUtils.stripAccents(palabraDos).trim().toUpperCase().replace(".","").replace("-", " ");
+            String nombreUno = StringUtils.stripAccents(palabraUno).trim().toUpperCase().replace(".","").replace("-", " ").replace(":"," ");
+            String nombreDos = StringUtils.stripAccents(palabraDos).trim().toUpperCase().replace(".","").replace("-", " ").replace(":"," ");
                         
             String[] nombreUnoTokenizado = nombreUno.split(",");
             String[] nombreDosTokenizado = nombreDos.split(",");
@@ -40,8 +40,8 @@ public class BeanConcordancia {
                 
         }
         else if (tipo.equals("NOMBRE_PUBLICACION")) {
-            String tituloUno = StringUtils.stripAccents(palabraUno).toUpperCase();
-            String tituloDos = StringUtils.stripAccents(palabraDos).toUpperCase();
+            String tituloUno = StringUtils.stripAccents(palabraUno).toUpperCase().replace(".","").replace("-", " ").replace(":"," ");
+            String tituloDos = StringUtils.stripAccents(palabraDos).toUpperCase().replace(".","").replace("-", " ").replace(":"," ");
             
             porcentageConfianza = jaroWinklerDistance.apply(tituloUno, tituloDos);
             //System.out.println(tituloUno + " - " +tituloDos + ": "+porcentageConfianza);

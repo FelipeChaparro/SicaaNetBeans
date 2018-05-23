@@ -84,7 +84,7 @@ public class NubePalabrasServlet extends HttpServlet {
             
             if ((int) respuesta_parametrosSistemaDao.get("code") == 0) {
                 //(int) respuesta_parametrosSistemaDao.get("maximoNubePalabras")
-                respuesta_bean_nube_palabras = bean_nube_palabras.getAllPalabarsByFiltrosBean(departamento, facultad, nombre, usarDpto, 20);
+                respuesta_bean_nube_palabras = bean_nube_palabras.getAllPalabarsByFiltrosBean(departamento, facultad, nombre, usarDpto, 100);
                 respuesta = respuesta_bean_nube_palabras;
             }
             else
@@ -92,6 +92,7 @@ public class NubePalabrasServlet extends HttpServlet {
 
             System.out.println("FIN NubePalabrasServlet: "+respuesta);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             PrintWriter out = response.getWriter();
             out.print(respuesta);
@@ -103,6 +104,7 @@ public class NubePalabrasServlet extends HttpServlet {
             respuesta.put("description", "Error en base de datos");
             System.out.println("retorno: "+respuesta);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().print(respuesta);        
             Logger.getLogger(PublicacionesServelet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -111,6 +113,7 @@ public class NubePalabrasServlet extends HttpServlet {
             respuesta.put("description", "Error en base de IOException");
             System.out.println("retorno: "+respuesta);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().print(respuesta);     
             Logger.getLogger(NubePalabrasServlet.class.getName()).log(Level.SEVERE, null, ex);
         } catch (Exception ex) {
@@ -119,6 +122,7 @@ public class NubePalabrasServlet extends HttpServlet {
             respuesta.put("description", "Error de sistema");
             System.out.println("retorno: "+respuesta);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
             response.getWriter().print(respuesta);     
             Logger.getLogger(NubePalabrasServlet.class.getName()).log(Level.SEVERE, null, ex);
         }

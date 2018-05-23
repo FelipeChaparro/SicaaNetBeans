@@ -83,8 +83,10 @@ public class DesactivarPublicacionServlet extends HttpServlet {
             mInfo = (JSONObject) mParser.parse(request.getReader());
             respuesta_servlet = mBean.desactivarPublicacion(mInfo);
             response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
         } catch(IOException | ParseException e) {
             respuesta_servlet.put("code", 9999);
+            response.setCharacterEncoding("UTF-8");
             respuesta_servlet.put("description", "Error en Servlet");
             System.out.println("Error: " + e);
         } finally {

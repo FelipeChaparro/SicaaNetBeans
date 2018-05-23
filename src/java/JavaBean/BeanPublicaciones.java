@@ -79,11 +79,14 @@ public class BeanPublicaciones {
                     /**
                      * COMPARAR CADA PUBLICACION NUEVA CON LAS DEL AUTOR
                      */
+                    System.out.println("Titulo nuevo: "+publicacionIndividualNueva.get("titulo"));
+                    //System.out.println("Titulo sistema: "+((JSONObject) publicacionesSistemaDeUsuario.get(i)).get("Titulo"));
                     respuesta_comparacionPublicacionConLista = comparacionPublicacionConLista(publicacionIndividualNueva, publicacionesSistemaDeUsuario);
                     
                     /**
                      * 0: Publicacion ya existe 
                      */
+                    System.out.println("Valor: "+respuesta_comparacionPublicacionConLista.get("codigoEvaluacion").toString());
                     if (Integer.parseInt(respuesta_comparacionPublicacionConLista.get("codigoEvaluacion").toString()) == 0) {
                         System.out.println("YA EXISTE");
                     }
@@ -99,6 +102,12 @@ public class BeanPublicaciones {
                              */
                             System.out.println("INSERTAR DUDOSAS");
                             respuesta_insertPublicacionDudosa = INEG1.insertPublicacionDudosa(publicacionIndividualNueva, (JSONArray) respuesta_comparacionPublicacionConLista.get("publicacionesDudosas"),fuenteExtraccion);
+                            
+                            if ((int) respuesta_insertPublicacionDudosa.get("code")==0 && ((JSONArray) respuesta_comparacionPublicacionConLista.get("publicacionesDudosas")).size()>0) {
+                                String idPublicaiconXCambiarEstado = ((JSONObject)((JSONArray) respuesta_comparacionPublicacionConLista.get("publicacionesDudosas")).get(0)).get("ID").toString();
+                                respuesta_insertPublicacionDudosa = INEG1.changeStateXDudosa(idPublicaiconXCambiarEstado);
+                            }
+                            
                         }
                         else
                             System.out.println("YA EXISTE DUDOSAS"); 
@@ -155,6 +164,8 @@ public class BeanPublicaciones {
                                 respuesta_insertarPublicacionNueva = INEG1.insertReferenciaPublicacion(profesorId, ExistePublicacion);
                             }
                             else{
+                                System.out.println("Titulo insertar: "+publicacionIndividualNueva.get("titulo"));;
+                                System.out.println("Tipo insertar: "+publicacionIndividualNueva.get("tipo"));
                                 respuesta_insertarPublicacionNueva = INEG1.insertPublicacionAutomatica(profesorId, publicacionIndividualNueva, autoresInsertar,fuenteExtraccion);
                                 if(puntosPublicacion.getId() != -1){
                                     puntos+=20;
@@ -163,6 +174,7 @@ public class BeanPublicaciones {
                             }
                         }
                         else {
+                            System.out.println("Tipo insertar: "+publicacionIndividualNueva.get("tipo"));
                             respuesta_insertarPublicacionNueva = INEG1.insertPublicacionAutomatica(profesorId, publicacionIndividualNueva, autoresInsertar,fuenteExtraccion);
                             if(puntosPublicacion.getId() != -1){
                                 puntos+=20;
@@ -250,11 +262,11 @@ public class BeanPublicaciones {
             
             publicacionIndividualDeLista = (JSONObject)listaPublicaciones.get(i);
             
-            System.out.println("Publicacion individual: "+publicacionIndividual.toJSONString());
-            System.out.println("Publciaion de lista: "+publicacionIndividualDeLista.toJSONString());
+            //System.out.println("Publicacion individual: "+publicacionIndividual.toJSONString());
+            //System.out.println("Publciaion de lista: "+publicacionIndividualDeLista.toJSONString());
             porcentajeConfianza = beanConcordancia.getSimilarity(publicacionIndividual.get("titulo").toString(), publicacionIndividualDeLista.get("Titulo").toString(), "NOMBRE_PUBLICACION");
             
-            if ((porcentajeConfianza >= 0.98 && publicacionIndividual.get("tipo") != null && publicacionIndividualDeLista.get("tipo")!= null && publicacionIndividual.get("tipo").toString().equalsIgnoreCase(publicacionIndividualDeLista.get("tipo").toString())) || porcentajeConfianza==1.0) {
+            if (porcentajeConfianza >= 0.98) {
                 /** 
                  * SALE - NO SE INSERTA PORQUE YA EXISTE
                  */
@@ -284,7 +296,11 @@ public class BeanPublicaciones {
                     /**
                      * PUBLICACION NUEVA ES DUDOSA DE ESTAS PUBLICACIONES DE SISTEMA
                      */
-                    publicacionesDudosas.add(publicacionIndividualDeLista);
+                    /**
+                     * Si la publicacion esta en veriicada 
+                     */
+                    if (!publicacionIndividualDeLista.get("EstadoPublicacion").toString().equalsIgnoreCase("Verificado"))
+                        publicacionesDudosas.add(publicacionIndividualDeLista);
                 }
             }
         }

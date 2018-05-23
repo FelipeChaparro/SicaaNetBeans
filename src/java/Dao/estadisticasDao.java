@@ -133,8 +133,8 @@ public class estadisticasDao {
             respuesta.put("estadisticas", estadisticas);
          
         }  catch (SQLException ex) {
-            respuesta.put("code", 9997);
-            respuesta.put("description", "Error de sistema");
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
             System.out.println("getParametrosSistema(): "+respuesta.toString());
             Logger.getLogger(filtrosPublicacionDao.class.getName()).log(Level.SEVERE, null, ex);
         }

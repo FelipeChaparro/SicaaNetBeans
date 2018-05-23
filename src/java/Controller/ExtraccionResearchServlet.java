@@ -9,6 +9,9 @@ package Controller;
 import JavaBean.BeanExtraccionResearch;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -35,13 +38,25 @@ public class ExtraccionResearchServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		BeanExtraccionResearch bean= new BeanExtraccionResearch();
-		String url = request.getParameter("urlresearch");
-		System.out.println("la url es"+url);
-		JSONObject retorno=bean.obtenerInformacion(url);
-		response.setContentType("application/json");
-		response.getWriter().print(retorno);
+            JSONObject retorno = new JSONObject();
+            
+            try {
+                // TODO Auto-generated method stub
+                BeanExtraccionResearch bean= new BeanExtraccionResearch();
+                String url = request.getParameter("urlresearch");
+                System.out.println("la url es"+url);
+                retorno=bean.obtenerInformacion(url);
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().print(retorno);
+            } catch (SQLException ex) {
+                retorno.put("code", 9998);
+                retorno.put("description", "Error en base de datos");
+                response.setContentType("application/json");
+                response.setCharacterEncoding("UTF-8");
+                response.getWriter().print(retorno);
+                Logger.getLogger(ExtraccionResearchServlet.class.getName()).log(Level.SEVERE, null, ex);
+            }
 	}
 
 	/**

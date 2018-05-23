@@ -36,7 +36,7 @@ public class BeanGuardarPublicacion {
             String token = json.get("token").toString();
             JSONObject objUserID = myLogin.getUserIDByToken(token);
             if (Integer.parseInt(objUserID.get("code").toString()) == 0) {
-                respuestaBean = myPublicacion.insertPublicacion(objUserID.get("id").toString(), publicacion);
+                respuestaBean = myPublicacion.insertPublicacion(objUserID.get("id").toString(), publicacion, "Verificado");
                 Puntos puntosPublicacion=myPublicacion.buscarPuntosProfesor((String) objUserID.get("id"));
                 
                 int puntos=0;

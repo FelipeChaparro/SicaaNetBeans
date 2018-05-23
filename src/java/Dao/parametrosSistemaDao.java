@@ -46,6 +46,9 @@ public class parametrosSistemaDao {
                 parametros.put("tiempo_sesion", rs.getString("tiempo_sesion"));
                 parametros.put("numero_podio_publicaciones", rs.getString("numero_podio_publicaciones"));
                 parametros.put("numero_publicaciones_recientes", rs.getString("numero_publicaciones_recientes"));
+                parametros.put("numero_nube_palabras", rs.getString("numero_nube_palabras"));
+                parametros.put("cookieResearch", rs.getString("cookieResearch"));
+                parametros.put("cookieGoogle", rs.getString("cookieGoogle"));
             }
             respuesta.put("parametros", parametros);
             rs.close();

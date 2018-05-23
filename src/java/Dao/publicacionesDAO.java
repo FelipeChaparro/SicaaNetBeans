@@ -159,13 +159,18 @@ public class publicacionesDAO {
         return respuesta_db;
     }	
     
-    public JSONObject insertPublicacion(String user_id, JSONObject newPublicacion) throws SQLException {
+    public JSONObject insertPublicacion(String user_id, JSONObject newPublicacion, String estadoID) throws SQLException {
         JSONObject respuesta = new JSONObject();
         respuesta.put("code", 0);
         respuesta.put("description", "Operacion exitosa");
         Statement stmt;
         ResultSet rs;
         int idPublicacion = 0, idNuevoUsuario = 0;
+        String estado = "Verificado";
+        
+        if (estadoID.equalsIgnoreCase("NO_VERIFICADO"))
+            estado = "Pendiente de verificacion";
+        
         try {
             Cone conex = new Cone();
             Connection conexion= conex.getConnection();
@@ -175,7 +180,7 @@ public class publicacionesDAO {
                     + " VALUES ("
                     + ((newPublicacion.get("Titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("Titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ") +"'") + ","
                     + ((newPublicacion.get("Tipo") == null) ? null : "'" + newPublicacion.get("Tipo") +"'") + ","
-                    + ((newPublicacion.get("CodigoPublicacion") == null) ? null : "'" + newPublicacion.get("CodigoPublicacion") +"'") + ","
+                    + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion") +"'") + ","
                     + ((newPublicacion.get("Lugar") == null) ? null : "'" + newPublicacion.get("Lugar") +"'") + ","
                     + ((newPublicacion.get("Editorial") == null) ? null : "'" + newPublicacion.get("Editorial") +"'") + ","
                     + ((newPublicacion.get("FechaInicio") == null) ? null : "'" + newPublicacion.get("FechaInicio") +"'")+ ","
@@ -194,7 +199,7 @@ public class publicacionesDAO {
                     + "'" + user_id + "',"
                     + "'" + idPublicacion + "',"
                     + "'" + "Profesor" + "',"
-                    + "'" + "Verificado" + "',"
+                    + "'" + estado + "',"
                     + "'" + 1 + "')";
             stmt.execute(query);
             // Insertar autores adicionales en Persona_Publicacion
@@ -631,6 +636,13 @@ public class publicacionesDAO {
         ResultSet rs;
         int idPublicacion = 0, idNuevoUsuario = 0;
         try {
+            
+            if (newPublicacion.get("fecha")!=null && !newPublicacion.get("fecha").equals("")){
+                String[] fechaString = newPublicacion.get("fecha").toString().split("/");
+                if (fechaString.length != 3)
+                    newPublicacion.put("fecha", "");
+            }
+            
             Cone conex = new Cone();
             Connection conexion= conex.getConnection();
             stmt = conexion.createStatement();
@@ -639,7 +651,7 @@ public class publicacionesDAO {
                     + " VALUES ("
                     + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ").replace("'"," ").replace(":", " ") +"'") + ","
                     + ((newPublicacion.get("tipo") == null) ? null : "'" + newPublicacion.get("tipo") +"'") + ","
-                    + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion") +"'") + ","
+                    + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion").toString().replace("-","").replace("/","").replace("[.]","") +"'") + ","
                     + ((newPublicacion.get("lugarPublicacion") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("lugarPublicacion").toString().replace("'"," ")) +"'") + ","
                     + ((newPublicacion.get("editorial") == null) ? null : "'" + newPublicacion.get("editorial") +"'") + ","
                     + (((newPublicacion.get("fecha") == null) || newPublicacion.get("fecha").equals("")) ? null : "'" + newPublicacion.get("fecha") +"'")+ ","
@@ -669,34 +681,40 @@ public class publicacionesDAO {
                 for (int i = 0; i < listaCoautores.size(); i++) {
                     JSONObject autor = (JSONObject) listaCoautores.get(i);
                     if (!autor.get("id").toString().equals(user_id)) {
-                        if (!autor.get("id").toString().equals("-1")) {
-                            query = "INSERT INTO Persona_Publicacion"
-                                    + " VALUES ("
-                                    + "'" + autor.get("id") + "',"
-                                    + "'" + idPublicacion + "',"
-                                    + null + ","
-                                    + "'" + "Pendiente de verificacion" + "',"
-                                    + "'" + 1 + "')";
+                        try {
+                            if (!autor.get("id").toString().equals("-1")) {
+                                query = "INSERT INTO Persona_Publicacion"
+                                        + " VALUES ("
+                                        + "'" + autor.get("id") + "',"
+                                        + "'" + idPublicacion + "',"
+                                        + null + ","
+                                        + "'" + "Pendiente de verificacion" + "',"
+                                        + "'" + 1 + "')";
 
-                        } else {
-                            query = "INSERT INTO Persona (Nombre, Registrado, EstadoSistema) "
-                                    + "VALUES (" 
-                                    + "'" + StringUtils.stripAccents(autor.get("nombre").toString()).trim().toUpperCase().replace(".","").replace("-", " ") + "',"
-                                    + "'" + 0 + "',"
-                                    + "'" + 1 + "')";
+                            } else {
+                                query = "INSERT INTO Persona (Nombre, Registrado, EstadoSistema) "
+                                        + "VALUES (" 
+                                        + "'" + StringUtils.stripAccents(autor.get("nombre").toString()).trim().toUpperCase().replace(".","").replace("-", " ") + "',"
+                                        + "'" + 0 + "',"
+                                        + "'" + 1 + "')";
+                                System.out.println("Query insertar persona: "+query);
+                                stmt.execute(query);
+                                query = "SELECT LAST_INSERT_ID()";
+                                rs = stmt.executeQuery(query);
+                                if (rs.next()) idNuevoUsuario = rs.getInt(1); rs.close();
+                                query = "INSERT INTO Persona_Publicacion"
+                                        + " VALUES ("
+                                        + "'" + idNuevoUsuario + "',"
+                                        + "'" + idPublicacion + "',"
+                                        + null + ","
+                                        + "'" + "Pendiente de verificacion" + "',"
+                                        + "'" + 1 + "')";
+                            }
                             stmt.execute(query);
-                            query = "SELECT LAST_INSERT_ID()";
-                            rs = stmt.executeQuery(query);
-                            if (rs.next()) idNuevoUsuario = rs.getInt(1); rs.close();
-                            query = "INSERT INTO Persona_Publicacion"
-                                    + " VALUES ("
-                                    + "'" + idNuevoUsuario + "',"
-                                    + "'" + idPublicacion + "',"
-                                    + null + ","
-                                    + "'" + "Pendiente de verificacion" + "',"
-                                    + "'" + 1 + "')";
+                        } catch (Exception ex) {
+                            System.out.println("Error al insertar Co autor");
+                            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, ex);
                         }
-                        stmt.execute(query);
                     }
                 }
             }
@@ -734,7 +752,7 @@ public class publicacionesDAO {
                     + publicacionIndivisualSistema.get("ID")+ ","
                     + ((newPublicacion.get("titulo") == null) ? null : "'" + StringUtils.stripAccents(newPublicacion.get("titulo").toString()).trim().toUpperCase().replace(".","").replace("-", " ") .replace("'"," ").replace(":", " ")+"'") + ","
                     + ((newPublicacion.get("tipo") == null) ? null : "'" + newPublicacion.get("tipo") +"'") + ","
-                    + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion") +"'") + ","
+                    + ((newPublicacion.get("codigoPublicacion") == null) ? null : "'" + newPublicacion.get("codigoPublicacion").toString().replace("-","").replace("/","").replace("[.]","") +"'") + ","
                     + ((newPublicacion.get("lugar") == null) ? null : "'" + newPublicacion.get("lugar") +"'") + ","
                     + ((newPublicacion.get("editorial") == null) ? null : "'" + newPublicacion.get("editorial") +"'") + ","
                     + ((newPublicacion.get("fechaInicio") == null) ? null : "'" + newPublicacion.get("fechaInicio") +"'")+ ","  
@@ -888,11 +906,11 @@ public class publicacionesDAO {
             String query = "";
             
             if (action.equalsIgnoreCase("VERIFICADAS")) {
-                query = "select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.tipoEspecifico, P.duracion, P.plataforma, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado' and PP.IdPersona ="+personaID+" ORDER BY PP.IdPublicacion";
+                query = "select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.tipoEspecifico, P.duracion, P.plataforma, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Verificado' and PP.IdPersona ="+personaID;
                 System.out.println("Query getAllPublicacionesByActionPersonaID - VERIFICADAS: "+query);
             }
             else {
-                query = "select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.tipoEspecifico, P.duracion, P.plataforma, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Pendiente de verificacion' and  PP.IdPersona ="+personaID+" ORDER BY PP.IdPublicacion";
+                query = "select P.ID, P.Titulo,P.Tipo ,P.codigoPublicacion, P.Lugar ,P.Editorial ,P.FechaInicio, P.Extraido, P.tipoEspecifico, P.duracion, P.plataforma, PP.EstadoPublicacion from Publicacion P inner join Persona_Publicacion PP on P.ID=PP.idPublicacion where  PP.EstadoSistema = 1 and PP.EstadoPublicacion = 'Pendiente de verificacion' and  PP.IdPersona ="+personaID;
                 System.out.println("Query getAllPublicacionesByActionPersonaID - NO_VERIFICADAS: "+query);
             }
             rs = stmt.executeQuery(query);
@@ -1020,7 +1038,8 @@ public class publicacionesDAO {
         
         return respuesta;
     }
-  public JSONObject getAllTitulosByFiltros (String departamento, String facultad, String nombreProfesor,int tipoConsulta) throws SQLException{
+    
+    public JSONObject getAllTitulosByFiltros (String departamento, String facultad, String nombreProfesor,int tipoConsulta) throws SQLException{
         JSONObject respuesta = new JSONObject();
         respuesta.put("code", 0);
         respuesta.put("description", "Operacion exitosa");
@@ -1103,6 +1122,33 @@ public class publicacionesDAO {
         return respuesta;
     }
    
+    public JSONObject changeStateXDudosa (String idPublicacion) throws SQLException {
+        JSONObject respuesta = new JSONObject();
+        Cone conex = new Cone();
+        respuesta.put("code", 0);
+        respuesta.put("description", "Operacion exitosa");
+        Statement stmt;
+        ResultSet rs;
+        try {
+            Connection conexion= conex.getConnection();
+            stmt = conexion.createStatement();
+            // Insertar publicacion
+            String query = "update Persona_Publicacion set EstadoPublicacion = 'Ambigua' where IdPublicacion = "+idPublicacion;
+            System.out.println("Query changeStateXDudosa: "+query);
+            stmt.execute(query);
+            stmt.close();
+           
+        } catch (SQLException e) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("changeStateXDudosa: " + respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+            return respuesta;
+        }finally{
+            //conex.desconectar();
+        }
+        return respuesta;
+    }
     
 }
 

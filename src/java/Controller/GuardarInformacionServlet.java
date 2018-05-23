@@ -8,7 +8,6 @@ package Controller;
 
 import JavaBean.GuardarInformacion;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -57,7 +56,6 @@ public class GuardarInformacionServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
          try {
-             System.out.println("Estoy en post");
              String json=request.getReader().lines().collect(Collectors.joining());
              GuardarInformacion bean=new GuardarInformacion();
              boolean res=bean.guardarInformacionCVLACDB(json);

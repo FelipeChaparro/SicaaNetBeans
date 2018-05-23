@@ -55,11 +55,12 @@ public class ConsultarPublicacion extends HttpServlet {
         JSONObject res=bn.buscarPorFiltros(json);
         System.out.println("--------------------------------------");
         System.out.println(res);
-         response.setStatus(HttpServletResponse.SC_OK);
-            response.setContentType("application/json");
-            PrintWriter out = response.getWriter();
-            out.print(res);
-            out.flush();      
+        response.setStatus(HttpServletResponse.SC_OK);
+            response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+        PrintWriter out = response.getWriter();
+        out.print(res);
+        out.flush();      
     }
 
     /**

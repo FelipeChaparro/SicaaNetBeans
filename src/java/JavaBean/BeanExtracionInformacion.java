@@ -184,17 +184,20 @@ public class BeanExtracionInformacion {
 				
 				
 			   }
-			  JSONArray idiomas = new JSONArray(); 
-			  for(Element e : elementoDatos.select("li")) {
-				JSONObject idioma= new JSONObject(); 
+                          
+                        try {
+                            JSONArray idiomas = new JSONArray(); 
+                            for(Element e : elementoDatos.select("li")) {
+                                JSONObject idioma= new JSONObject(); 
                                 idioma.put("idioma",e.text().trim());
                                 idiomas.add(idioma);
-                                  
-			  }
-                         combined.put("idiomas",idiomas);
+                            }
+                            combined.put("idiomas",idiomas);
+                        } catch (Exception e) {
+                            JSONArray idiomas = new JSONArray(); 
+                            combined.put("idiomas",idiomas);
+                        }
 			  
-	        
-		
 		} 
                 catch (IOException ioe) {
 		   ioe.printStackTrace();
@@ -562,6 +565,7 @@ public class BeanExtracionInformacion {
 				    	   //Titulo
 				         // System.out.println(parts2[0].trim());
 				          capituloLibros.put("titulo", parts2[0].trim());
+                                          capituloLibros.put("tipo", "capitulo");
 				          String [] parts3=parts2[1].split("ISBN:");
 				          if(parts3.length>=2) {
 				        	//En
@@ -588,8 +592,7 @@ public class BeanExtracionInformacion {
                                                 int fechaArt=Integer.parseInt(obtfecha[obtfecha.length-1]);
                                                 Date sqlDate1=new java.sql.Date(fechaArt-1900,0,1);
                                                 capituloLibros.put("fecha", sqlDate1.toString());
-				        	  
-				        	
+
 				          }
 				       
 				       }
