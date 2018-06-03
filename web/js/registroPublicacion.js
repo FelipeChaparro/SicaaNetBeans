@@ -1,6 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
-
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-dev/";
 
 var contAutor = 1;
 var global_autores = {};
@@ -166,7 +165,7 @@ function guardarInfo(){
     infoPublicacion.Tipo = (info[1].value == "") ? null : info[1].value;
     
     if (infoPublicacion.Titulo != null && infoPublicacion.Tipo != null) {
-
+        
         if (infoPublicacion.Tipo == "libro" || 
             infoPublicacion.Tipo == "articulo" || 
             infoPublicacion.Tipo == "capitulo" || 
@@ -178,7 +177,7 @@ function guardarInfo(){
             infoPublicacion.codigoPublicacion = null;
             infoPublicacion.Lugar = (info[2].value == "") ? null : info[2].value;
         }
-
+        
         if (infoPublicacion.Tipo == "libro" || 
             infoPublicacion.Tipo == "articulo" || 
             infoPublicacion.Tipo == "capitulo") {
@@ -188,20 +187,20 @@ function guardarInfo(){
         else {
             infoPublicacion.Editorial = null;
         }
-
+        
         if (infoPublicacion.Tipo == "trabajo dirigido") {
             infoPublicacion.FechaInicio = (info[3].value == "") ? null : info[3].value;
             infoPublicacion.Duracion = (info[4].value == "") ? null : info[4].value;
             infoPublicacion.tipoEspecifico = (info[5].value == "") ? null : info[5].value;
         }
-
+        
         if (infoPublicacion.Tipo == "software") {
             infoPublicacion.FechaInicio = (info[4].value == "") ? null : info[4].value;
             infoPublicacion.Plataforma = (info[5].value == "") ? null : info[5].value;
         }
         let isValid = true;
         if (infoPublicacion.FechaInicio != null) isValid = dateValidation(infoPublicacion.FechaInicio);
-
+        
         if (isValid) {
             infoPublicacion.Extraido = "Manual";
 

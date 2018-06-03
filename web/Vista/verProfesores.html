@@ -1,0 +1,139 @@
+<html>
+    <head>
+        <title>Buscar Profesores | SICAA</title>
+        <!-- Meta -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="Responsive HTML5 Website landing Page for Developers">
+        <meta name="author" content="SICAA">
+        <link rel="icon" href="../favicon.ico">
+        <!-- Global CSS -->
+        <link rel="stylesheet" href="../assets/plugins/bootstrap/css/bootstrap.min.css">   
+        <!-- Plugins CSS -->
+        <link rel="stylesheet" href="../assets/plugins/font-awesome/css/font-awesome.css">
+
+        <link id="theme-style" rel="stylesheet" href="../assets/css/styles.css">
+        <!-- Fuente de Google --> 
+        <link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
+        <link href='https://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+ 
+        <!-- Javascript -->          
+        <script type="text/javascript" src="../assets/plugins/jquery-1.11.1.min.js"></script>
+        <script type="text/javascript" src="../assets/plugins/jquery-migrate-1.2.1.min.js"></script>
+        <script type="text/javascript" src="../assets/plugins/bootstrap/js/bootstrap.min.js"></script> 
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+        
+    <style>
+        button:focus {outline: none !important;}
+        .smallLoader {
+          border: 5px solid #f3f3f3;
+          -webkit-animation: spin 1s linear infinite;
+          animation: spin 1s linear infinite;
+          border-top: 5px solid #555;
+          border-radius: 50%;
+          width: 50px;
+          height: 50px;
+        }
+
+        /* Safari */
+        @-webkit-keyframes spin {
+          0% { -webkit-transform: rotate(0deg); }
+          100% { -webkit-transform: rotate(360deg); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+        }
+    </style>
+</head> 
+    <body>
+        <nav style="font-family: 'Lato', arial, sans-serif;" class="navbar navbar-default">
+          <div class="container-fluid">
+            <ul class="nav navbar-nav" id="navbar-sicaa">
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <li style="cursor: pointer"><a onclick="cerrarSesion()"><span class="glyphicon glyphicon-log-in"></span> Logout</a></li>
+            </ul>
+          </div>
+        </nav>
+
+        <!-- ******HEADER****** --> 
+        <header class="header">
+            <div class="container"> 
+                <img class="profile-image img-responsive pull-left" height="150px" width="150px" style="border-radius: 50%;" id="my-profile-img">
+                <div class="profile-content pull-left">
+                    <h1 class="name" id="nombre"></h1>
+                    <h2 style="font-weight: 700; margin-bottom: 5px;" class="desc" id="facultad"></h2>
+                    <h2 class="desc" id="departamento"></h2>
+                </div><!--//profile-->            
+            </div><!--//container-->
+        </header><!--//header-->
+
+       <div class="container sections-wrapper">
+            <div class="row">
+                   <section class="latest section">
+                        <div class="section-inner">
+                            <h2 class="heading">Buscar Profesores</h2>
+                            <hr class="divider" />
+                            <div class="form-group">
+                                <input style="margin-right: 5px;" type="radio" name="rb-profesor" value="autor" onclick="handlerInputs(this)">
+                                <label >Nombre del Profesor:</label>
+                                <input id="autor-name" style="width: 300px; margin-left: 10px;" type="text" class="form-control" placeholder="Ingrese el nombre del profesor" disabled>
+                            </div>
+                            <div class="form-group" style="margin-top: 20px; width: 300px;">
+                                <input style="margin-right: 5px;" type="radio" name="rb-profesor" value="departamento" onclick="handlerInputs(this)">
+                                <label>Departamento: </label>
+                                <select style="margin-left: 10px;" class="form-control" id="dp-name" disabled>
+                                </select>
+                            </div>
+                            <div class="form-group" style="margin-top: 20px; width: 300px;">
+                                <input style="margin-right: 5px;" type="radio" name="rb-profesor" value="facultad" onclick="handlerInputs(this)">
+                                <label>Facultad: </label>
+                                <select style="margin-left: 10px;" class="form-control" id="f-name" disabled>
+                                </select>
+                            </div>
+                            
+                            <button id="btnBuscar" onclick="buscarProfesor()" style="margin-top: 30px;" type="button" class="btn btn-info"><span class="glyphicon glyphicon-search"></span> Buscar</button>
+                            <hr class="divider"/> 
+                            <center><div style="display:none;" id="main-loader" class="smallLoader"></div></center>
+                            <div class="panel-group" id="accordion"></div> 
+                        </div><!--//section-inner-->       
+                    </section><!--//section-->            
+                </div><!--//secondary-->
+        </div><!--//masonry-->
+        
+    <!--//Modal - Información Profesor -->
+    <div class="modal fade" id="myInfo" role="dialog" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Información Profesor</h4>
+                </div>
+                <center><div style="margin:20px; display:none;" class="smallLoader" id="modal-loader"></div></center>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div><!--//Modal- Informacion Profesor-->
+    <!-- ******FOOTER****** --> 
+    <footer class="footer">
+        <div class="container text-center">
+                <small class="copyright">Designed by Sicaa Team</small>
+        </div><!--//container-->
+    </footer><!--//footer-->
+
+    <!-- custom js -->
+        
+    <script type="text/javascript" src="../assets/js/main.js"></script>   
+    <script type="text/javascript" src="../js/verProfesores.js"></script>
+
+    </body>
+</html>

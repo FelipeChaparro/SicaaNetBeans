@@ -1,6 +1,5 @@
 //var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNBGIT/";
-
+var SERVER_URL = "http://localhost:8080/SicaaNetBeans-dev/";
 var misPublicaciones = [];
 var aAutoresEliminados;
 var userToken;

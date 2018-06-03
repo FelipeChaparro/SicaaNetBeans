@@ -2,6 +2,8 @@
 var SERVER_URL = "http://localhost:8080/SicaaNetBeans-dev/";
 var radio_selection = null;
 var last_words = [];
+var mDepartamentos = {};
+var mFacultades = {};
 
 window.onload = function(){
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
@@ -10,13 +12,101 @@ window.onload = function(){
         document.getElementById("departamento").innerHTML = SESSION.datosBasicos.nombreDepartamento;
         document.getElementById("facultad").innerHTML = SESSION.datosBasicos.nombreFacultad;
         // Cargar Nav-bar
-        cargarNavBar(SESSION.roles, "Nube de palabras");
+        cargarNavBar(SESSION.roles, "Buscar Profesores");
 
         // Cargar Imagen
         cargarImagen(SESSION.datosBasicos);
+    
+        //Insertar lista de departamentos
+        insertList("dp-name", SESSION.departamentos);
+        
+        // Insertar lista de facultades
+        insertList("f-name", SESSION.facultades);
+        
+        for (var i = 0; i < SESSION.departamentos.length; i++)
+            mDepartamentos[SESSION.departamentos[i].Nombre] = SESSION.departamentos[i].ID;
+        
+        for (var i = 0; i < SESSION.facultades.length; i++)
+            mFacultades[SESSION.facultades[i].Nombre] = SESSION.facultades[i].ID;
+        
     }  
     else
         window.location.href = SERVER_URL;
+}
+
+function insertList(selectID, mList) {
+    var mSelect = document.getElementById(selectID);
+    if (mSelect != null) {
+        mSelect.innerHTML = "";
+        for (var i = 0; i < mList.length; i++) {
+            mSelect.innerHTML += "<option>" + mList[i].Nombre + "</option>";
+        }
+    }
+}
+
+function buscarProfesor() {
+    var param = "action=";
+    if (radio_selection != null) {
+        document.getElementById("accordion").innerHTML = "";
+        document.getElementById("main-loader").style.display = "block";
+        param += radio_selection;
+        
+        if (radio_selection == "INFO_BASICA_NAME")
+            param += "&nombre=" + 
+                document.getElementById("autor-name").value;
+        
+        if (radio_selection == "INFO_BASICA_DPTO")
+            param += "&idDepartamento=" + 
+                mDepartamentos[document.getElementById("dp-name").value];
+        
+        if (radio_selection == "INFO_BASICA_FACU")
+            param += "&idFacultad=" + 
+                mFacultades[document.getElementById("f-name").value];
+        
+        getServlet(SERVER_URL + "ProfesoresServlet", null, param, function(servletResponse) {
+            var jsonResponse = JSON.parse(servletResponse);
+            document.getElementById("main-loader").style.display = "none";
+            if (jsonResponse.code === 0) {
+                if (jsonResponse.profesores.length > 0) {
+                    for (var i = 0; i < jsonResponse.profesores.length; i++) {
+                        document.getElementById("accordion").innerHTML += getPanelCollapse(i, jsonResponse.profesores[i]);
+                    }
+                }
+                else
+                    document.getElementById("accordion").innerHTML = "No se encontraron profesores";
+            }
+            else
+                alert("Error código: " + jsonResponse.code + " - Descripción: " + jsonResponse.description);
+        });
+    }
+    else
+        alert("Seleccione algún filtro");
+}
+
+function getPanelCollapse(number, infoProfesor) {
+    var mHTML = "";
+    var urlImagen = "../imagenes/default_avatar_img.png";
+    if (infoProfesor.urlImagen != null) urlImagen = infoProfesor.urlImagen;
+    
+    mHTML = "<div class='panel panel-default'>";
+    mHTML += "<div class='panel-heading'>";
+    mHTML += "<h4 class='panel-title'>";
+    mHTML += "<a style='text-decoration:none;' data-toggle='collapse' data-parent='#accordion' href='#collapse" + number + "'>" + infoProfesor.nombre + "</a>";
+    mHTML += "</h4></div>";
+    mHTML += "<div id='collapse" + number +"' class='panel-collapse collapse'>";
+    mHTML += "<div class='panel-body'>"
+            + "<img height='150px' width='150px' style='border-radius: 50%; margin-bottom:20px;' src='" + urlImagen + "'>"
+            + "<p><span style='color:#000000'>Categoría:</span> " + infoProfesor.categoria + "</p>"
+            + "<p><span style='color:#000000'>Número de Publicaciones:</span> " + infoProfesor.numeroPublicaciones + "</p>"
+            + "<p><span style='color:#000000'>Javepoints:</span> " + infoProfesor.puntos + "</p>"
+            + "<a onclick='showMoreInformation(" + infoProfesor.id + ")' data-toggle='modal' data-target='#myInfo' style='cursor: pointer;text-decoration:none;'> Ver más</a>"
+            + "</div>";
+    mHTML += "</div></div>";
+    return mHTML;
+}
+
+function showMoreInformation(idProfesor) {
+    
 }
 
 function cerrarSesion() {
@@ -44,57 +134,10 @@ function insertTargetDiv(id) {
         + "<a onclick='exportarPalabras(this)'><button style='margin-top: 10px;' type='button' class='btn btn-info'>Exportar</button></a>";
 }
 
-function refrescarNube() {
-    
-    if (radio_selection != null) {
-        var params;
-        insertTargetDiv("parent-cloud");
-        
-        if (radio_selection == "autor-name") {
-            params = "Nombre=" + document.getElementById(radio_selection).value
-                    + "&Facultad=" + ""
-                    + "&Departamento=" + ""
-                    + "&UsarDpto=";
-        }
-
-        if (radio_selection == "f-name") {
-            params = "Nombre=" + ""
-                    + "&Facultad=" + document.getElementById(radio_selection).value
-                    + "&Departamento=" + ""
-                    + "&UsarDpto=";
-        }
-   
-        if (radio_selection == "dp-name") {
-            params = "Nombre=" + ""
-                    + "&Facultad=" + ""
-                    + "&Departamento=" + document.getElementById(radio_selection).value
-                    + "&UsarDpto=true";
-        }
-        
-        console.log(params);
-        
-        $('#my-cloud').jQCloud('destroy');
-        
-        getServlet(SERVER_URL + "NubePalabrasServlet", null, params, function(servletResponse){
-            var response = JSON.parse(servletResponse);
-            last_words = response.nube;
-            
-            if (response.code == 0) {
-                
-                $('#my-cloud').jQCloud(response.nube, 
-                            { 
-                                autoResize: true, 
-                                delay: 100,
-                                shape: 'elliptic'
-                            });
-            }
-        });
-    }
-}
-
 function handlerInputs(mNode) {
+    radio_selection = "";
     if (mNode.value == "autor") {
-        radio_selection = "autor-name";
+        radio_selection += "INFO_BASICA_NAME";
         if (document.getElementById("autor-name").disabled)
             document.getElementById("autor-name").disabled = false;
         if (!document.getElementById("dp-name").disabled)
@@ -103,7 +146,7 @@ function handlerInputs(mNode) {
             document.getElementById("f-name").disabled = true;
     }
     if (mNode.value == "departamento") {
-        radio_selection = "dp-name";
+        radio_selection += "INFO_BASICA_DPTO";
         if (document.getElementById("dp-name").disabled)
             document.getElementById("dp-name").disabled = false;
         if (!document.getElementById("autor-name").disabled)
@@ -112,7 +155,7 @@ function handlerInputs(mNode) {
             document.getElementById("f-name").disabled = true;
     }
     if (mNode.value == "facultad") {
-        radio_selection = "f-name";
+        radio_selection += "INFO_BASICA_FACU";
         if (document.getElementById("f-name").disabled)
             document.getElementById("f-name").disabled = false;
         if (!document.getElementById("dp-name").disabled)
@@ -120,7 +163,6 @@ function handlerInputs(mNode) {
         if (!document.getElementById("autor-name").disabled)
             document.getElementById("autor-name").disabled = true;
     }
-    
 }
 
 function exportarPalabras(anchor) {
