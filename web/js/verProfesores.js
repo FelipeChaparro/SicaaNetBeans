@@ -1,5 +1,5 @@
-//var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-dev/";
+var SERVER_URL = "https://sicaadev.mybluemix.net/";
+//var SERVER_URL = "http://localhost:8080/SicaaNetBeans-dev/";
 var radio_selection = null;
 var last_words = [];
 var mDepartamentos = {};
@@ -28,7 +28,6 @@ window.onload = function(){
         
         for (var i = 0; i < SESSION.facultades.length; i++)
             mFacultades[SESSION.facultades[i].Nombre] = SESSION.facultades[i].ID;
-        
     }  
     else
         window.location.href = SERVER_URL;
@@ -66,6 +65,7 @@ function buscarProfesor() {
         getServlet(SERVER_URL + "ProfesoresServlet", null, param, function(servletResponse) {
             var jsonResponse = JSON.parse(servletResponse);
             document.getElementById("main-loader").style.display = "none";
+            //console.log(jsonResponse);
             if (jsonResponse.code === 0) {
                 if (jsonResponse.profesores.length > 0) {
                     for (var i = 0; i < jsonResponse.profesores.length; i++) {
@@ -106,7 +106,77 @@ function getPanelCollapse(number, infoProfesor) {
 }
 
 function showMoreInformation(idProfesor) {
+    document.getElementById("modal-body").innerHTML = "";
+    document.getElementById("modal-loader").style.display = "block";
+    var param ="action=INFO_DETALLE&idProfesor=" + idProfesor;
     
+    getServlet(SERVER_URL + "ProfesoresServlet", null, param, function(servletResponse) {
+        document.getElementById("modal-loader").style.display = "none";
+        var jsonResponse = JSON.parse(servletResponse);
+        if (jsonResponse.code == 0) {
+            var stringContent = "";
+            stringContent += "<h4>Áreas de Actuación</h4>";
+            for (var i = 0; i < jsonResponse.areasActuacion.length; i++) {
+                stringContent += "<p> - " + jsonResponse.areasActuacion[i].nombre + "</p>";
+            }
+            
+            stringContent += "<h4 style='margin-top:30px;'>Formación Académica</h4>";
+            for (var i = 0; i < jsonResponse.formacionAcademica.length; i++) {
+                stringContent += "<p> - " + jsonResponse.formacionAcademica[i].titulo + "</p>";
+                stringContent += "<p style='font-size:12px; margin-left:15px;'>" + jsonResponse.formacionAcademica[i].universidad +" (" 
+                    + jsonResponse.formacionAcademica[i].fechaInicio +  " - "
+                    + jsonResponse.formacionAcademica[i].fechaFin + ")</p>";
+            }
+            
+            stringContent += "<h4 style='margin-top:30px;'>Publicaciones</h4>";
+            stringContent += "<p> - Trabajos dirigidos: " 
+                + jsonResponse.totalPublicaciones.totalTrabajosDirigidos + "</p>";
+            stringContent += "<p> - Libros: " 
+                + jsonResponse.totalPublicaciones.totalLibros + "</p>";
+            stringContent += "<p> - Software: " 
+                + jsonResponse.totalPublicaciones.totalSoftwares + "</p>";
+            stringContent += "<p> - Artículos: " 
+                + jsonResponse.totalPublicaciones.totalArticulos + "</p>";
+            stringContent += "<p> - Conferencias: " 
+                + jsonResponse.totalPublicaciones.totalConferencias + "</p>";
+            stringContent += "<p> - Capítulos: " 
+                + jsonResponse.totalPublicaciones.totalCapitulos + "</p>";
+            
+            stringContent += "<h4 style='margin-top:30px;'>Medallas</h4><center>";
+            for (var i = 0; i < jsonResponse.medallas.length; i++) {
+                let nameMedalla = (jsonResponse.medallas[i].acomplished == 1) ? 
+                                    "m" + jsonResponse.medallas[i].nombreMedalla : 
+                                    "noMedalla";
+                                    
+                let imgSource = "../assets/images/medallas/" + nameMedalla + ".png";
+                
+                stringContent += "<a data-toggle='popover' data-placement='top' " 
+                            + "title='" + jsonResponse.medallas[i].nombreMedalla + "' "
+                            + "data-content='" + getInfoMedalla(jsonResponse.medallas[i].nombreMedalla) + "' "
+                            + "style='cursor:pointer;margin:10px;'>"
+                                + "<img width='100px'"
+                                + "src='" + imgSource + "'>"
+                            +"</a>";
+            }
+            
+            document.getElementById("modal-body").innerHTML = stringContent + "</center>";
+            $('[data-toggle="popover"]').popover(); 
+        }
+        else
+            alert("Error código: " + jsonResponse.code + " - Descripción: " + jsonResponse.description);
+    });
+}
+
+function getInfoMedalla(name) {
+    var info = "";
+    if (name == "Bilingue") info = "Se otorga por dominar 2 o más idiomas.";
+    if (name == "Cientifico") info = "Se otorga por avanzar en la actividad científica, cultural o académica.";
+    if (name == "Director") info = "Se otorga por ser director de un trabajo de grado reconocido.";
+    if (name == "Doctor") info = "Se otorga por tener doctorado.";
+    if (name == "Investigador") info = "Se otorga por ser investigador.";
+    if (name == "Administrativo") info = "Se otorga por participar en labores administrativas del programa.";
+    if (name == "Jefe") info = "Se otorga por ser jefe de sección.";
+    return info;
 }
 
 function cerrarSesion() {

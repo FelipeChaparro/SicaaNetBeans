@@ -1,5 +1,5 @@
-//var SERVER_URL = "https://sicaadev.mybluemix.net/";
-var SERVER_URL = "http://localhost:8080/SicaaNetBeans-dev/";
+var SERVER_URL = "https://sicaadev.mybluemix.net/";
+//var SERVER_URL = "http://localhost:8080/SicaaNetBeans-dev/";
 var last_publicaciones;
 window.onload = function(){
     var SESSION = JSON.parse(sessionStorage.getItem("principal"));
