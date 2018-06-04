@@ -43,7 +43,10 @@ public class BeanLogin {
         JSONObject respuesta_publicaciones_recientesVO = new JSONObject();
         JSONObject respuesta_podio_publicacionesVO = new JSONObject();
         JSONObject respuesta_areas_actuacionVO = new JSONObject();
+        JSONObject respuesta_facultadesVO = new JSONObject();
+        JSONObject respuesta_departamentosVO = new JSONObject();
 
+        
         String user_id = "";
         String user_id_departamento = "";
         JSONObject parametros = new JSONObject();
@@ -135,15 +138,33 @@ public class BeanLogin {
                                                         respuesta_loginVO.put("areasActuacion", respuesta_areas_actuacionVO.get("areasActuacion"));
                                                         respuesta_podio_publicacionesVO = loginDao.getPodioPublicaciones(Integer.parseInt(parametros.get("numero_podio_publicaciones").toString()),user_id_departamento);
                                                         
-                                                        if (Integer.parseInt(respuesta_podio_publicacionesVO.get("code").toString()) == 0) {
+                                                        if ((int) respuesta_podio_publicacionesVO.get("code") == 0) {
                                                             respuesta_loginVO.put("podioPublicacionPrograma", respuesta_podio_publicacionesVO.get("podioPublicacionPrograma"));
                                                             respuesta_loginVO.put("podioPublicacionFacultad", respuesta_podio_publicacionesVO.get("podioPublicacionFacultad"));
                                                             respuesta_loginVO.put("podioPublicacionUniversidad", respuesta_podio_publicacionesVO.get("podioPublicacionUniversidad"));
+
+                                                            respuesta_facultadesVO = loginDao.getAllFacultades();
+
+                                                            if ((int) respuesta_facultadesVO.get("code")==0) {
+                                                                respuesta_loginVO.put("facultades", respuesta_facultadesVO.get("facultades"));
+                                                                respuesta_departamentosVO = loginDao.getAllDepartamentos();
+
+                                                                if ((int) respuesta_departamentosVO.get("code") == 0)
+                                                                    respuesta_loginVO.put("departamentos", respuesta_departamentosVO.get("departamentos"));
+                                                                else {
+                                                                    respuesta_loginVO.put("code", respuesta_departamentosVO.get("code"));
+                                                                    respuesta_loginVO.put("description", respuesta_departamentosVO.get("description"));
+                                                                }
+                                                            }
+                                                            else {
+                                                                respuesta_loginVO.put("code", respuesta_facultadesVO.get("code"));
+                                                                respuesta_loginVO.put("description", respuesta_facultadesVO.get("description"));
+                                                            }
                                                         }
                                                         else {
                                                             respuesta_loginVO.put("code", respuesta_podio_publicacionesVO.get("code"));
                                                             respuesta_loginVO.put("description", respuesta_podio_publicacionesVO.get("description"));
-                                                        }                                                    
+                                                        }                                        
                                                     }
                                                     else {
                                                         respuesta_loginVO.put("code", respuesta_areas_actuacionVO.get("code"));
@@ -202,7 +223,7 @@ public class BeanLogin {
                 respuesta_loginVO.put("code", respuesta_parametros_sistemaVO.get("code"));
                 respuesta_loginVO.put("description", respuesta_parametros_sistemaVO.get("description"));
             }
-           
+            
             System.out.println("Respuesta BeanLogin: "+respuesta_loginVO);
                            
         } catch (SQLException ex) {
@@ -235,6 +256,8 @@ public class BeanLogin {
         JSONObject respuesta_publicaciones_recientesVO = new JSONObject();
         JSONObject respuesta_podio_publicacionesVO = new JSONObject();
         JSONObject respuesta_areas_actuacionVO = new JSONObject();
+        JSONObject respuesta_facultadesVO = new JSONObject();
+        JSONObject respuesta_departamentosVO = new JSONObject();
 
         String user_id = "";
         String user_id_departamento = "";
@@ -311,15 +334,33 @@ public class BeanLogin {
                                                 respuesta_cargarInformacionBasicaVO.put("areasActuacion", respuesta_areas_actuacionVO.get("areasActuacion"));
                                                 respuesta_podio_publicacionesVO = loginDao.getPodioPublicaciones(Integer.parseInt(parametros.get("numero_podio_publicaciones").toString()),user_id_departamento);
 
-                                                if (Integer.parseInt(respuesta_podio_publicacionesVO.get("code").toString()) == 0) {
+                                                if ((int) respuesta_podio_publicacionesVO.get("code") == 0) {
                                                     respuesta_cargarInformacionBasicaVO.put("podioPublicacionPrograma", respuesta_podio_publicacionesVO.get("podioPublicacionPrograma"));
                                                     respuesta_cargarInformacionBasicaVO.put("podioPublicacionFacultad", respuesta_podio_publicacionesVO.get("podioPublicacionFacultad"));
                                                     respuesta_cargarInformacionBasicaVO.put("podioPublicacionUniversidad", respuesta_podio_publicacionesVO.get("podioPublicacionUniversidad"));
+
+                                                    respuesta_facultadesVO = loginDao.getAllFacultades();
+
+                                                    if ((int) respuesta_facultadesVO.get("code")==0) {
+                                                        respuesta_cargarInformacionBasicaVO.put("facultades", respuesta_facultadesVO.get("facultades"));
+                                                        respuesta_departamentosVO = loginDao.getAllDepartamentos();
+
+                                                        if ((int) respuesta_departamentosVO.get("code") == 0)
+                                                            respuesta_cargarInformacionBasicaVO.put("departamentos", respuesta_departamentosVO.get("departamentos"));
+                                                        else {
+                                                            respuesta_cargarInformacionBasicaVO.put("code", respuesta_departamentosVO.get("code"));
+                                                            respuesta_cargarInformacionBasicaVO.put("description", respuesta_departamentosVO.get("description"));
+                                                        }
+                                                    }
+                                                    else {
+                                                        respuesta_cargarInformacionBasicaVO.put("code", respuesta_facultadesVO.get("code"));
+                                                        respuesta_cargarInformacionBasicaVO.put("description", respuesta_facultadesVO.get("description"));
+                                                    }
                                                 }
                                                 else {
                                                     respuesta_cargarInformacionBasicaVO.put("code", respuesta_podio_publicacionesVO.get("code"));
                                                     respuesta_cargarInformacionBasicaVO.put("description", respuesta_podio_publicacionesVO.get("description"));
-                                                }                                                    
+                                                } 
                                             }
                                             else {
                                                 respuesta_cargarInformacionBasicaVO.put("code", respuesta_areas_actuacionVO.get("code"));

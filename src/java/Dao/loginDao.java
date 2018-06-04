@@ -817,4 +817,97 @@ public class loginDao {
             return respuesta;
         }
     }
+    
+    public JSONObject getAllFacultades () throws SQLException{
+        JSONObject respuesta = new JSONObject();
+        respuesta.put("code", 0);
+        respuesta.put("description", "Operacion exitosa");
+        
+        JSONArray listaFacultades = new JSONArray();
+        
+        try {
+            Cone conex = new Cone();
+            Connection conexion= conex.getConnection();
+            Statement stmt = null;
+            ResultSet rs;
+            stmt = conexion.createStatement();
+            String query = "SELECT ID, Nombre FROM facultad where publicaciones = 1 order by Nombre";
+            System.out.println("Query getAllFacultades: "+query);
+            rs = stmt.executeQuery(query);
+ 
+            while (rs.next()) {
+                JSONObject facultadIndividual = new JSONObject();
+                facultadIndividual.put("ID",rs.getInt("ID"));
+                facultadIndividual.put("Nombre", rs.getString("Nombre"));
+                listaFacultades.add(facultadIndividual);
+            }
+            
+            respuesta.put("facultades", listaFacultades);
+            rs.close();
+            stmt.close();
+            //conex.desconectar();
+            System.out.println("getAllFacultades(): "+respuesta.toString());
+            return respuesta;
+        } catch (SQLException e) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("getAllFacultades(): "+respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+            return respuesta;
+        } catch (Exception e) {
+            respuesta.put("code", 9997);
+            respuesta.put("description", "Error de sistema");
+            System.out.println("getAllFacultades(): "+respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+            return respuesta;
+        }
+    }
+    
+    public JSONObject getAllDepartamentos () throws SQLException{
+        JSONObject respuesta = new JSONObject();
+        respuesta.put("code", 0);
+        respuesta.put("description", "Operacion exitosa");
+        
+        JSONArray listaDepartamentos = new JSONArray();
+        
+        try {
+            Cone conex = new Cone();
+            Connection conexion= conex.getConnection();
+            Statement stmt = null;
+            ResultSet rs;
+            stmt = conexion.createStatement();
+            String query = "SELECT D.ID, D.Nombre " +
+                "FROM departamento D inner join facultad F on F.ID = D.IdFacultad " +
+                "where F.publicaciones = 1 and D.publicaciones = 1 " +
+                "order by F.Nombre,D.Nombre";
+            System.out.println("Query getAllDepartamentos: "+query);
+            rs = stmt.executeQuery(query);
+ 
+            while (rs.next()) {
+                JSONObject departamentoIndividual = new JSONObject();
+                departamentoIndividual.put("ID",rs.getInt("ID"));
+                departamentoIndividual.put("Nombre", rs.getString("Nombre"));
+                listaDepartamentos.add(departamentoIndividual);
+            }
+            
+            respuesta.put("departamentos", listaDepartamentos);
+            rs.close();
+            stmt.close();
+            //conex.desconectar();
+            System.out.println("getAllDepartamentos(): "+respuesta.toString());
+            return respuesta;
+        } catch (SQLException e) {
+            respuesta.put("code", 9999);
+            respuesta.put("description", "Error en base de datos");
+            System.out.println("getAllDepartamentos(): "+respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+            return respuesta;
+        } catch (Exception e) {
+            respuesta.put("code", 9997);
+            respuesta.put("description", "Error de sistema");
+            System.out.println("getAllDepartamentos(): "+respuesta.toString());
+            Logger.getLogger(loginDao.class.getName()).log(Level.SEVERE, null, e);
+            return respuesta;
+        }
+    }
 }

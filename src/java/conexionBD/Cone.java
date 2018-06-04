@@ -20,7 +20,7 @@ public class Cone {
     private static final String driver = "com.mysql.jdbc.Driver";
     private static final String user = "be2c85dcda2f03";
     private static final String password = "70c02146";
-    private static final String url = "jdbc:mysql://us-cdbr-sl-dfw-01.cleardb.net/ibmx_d215d806610ead4?user=be2c85dcda2f03&password=70c02146";
+   private static final String url = "jdbc:mysql://us-cdbr-sl-dfw-01.cleardb.net/ibmx_d215d806610ead4?user=be2c85dcda2f03&password=70c02146?autoReconnect=true";    
     
     public Cone() {
         try {
